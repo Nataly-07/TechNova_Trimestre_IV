@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Usuarios - Technova</title>
+
+  <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="estilodas.css">
+  <link rel="stylesheet" href="stilotech.css">
+  <script src="usuarios.js" defer></script>
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo">
+      <img src="imagenes/logo technova.png" alt="Logo">
+      <span>TECHNOVA</span>
+    </a>
+
+    <div class="search-bar">
+      <input type="text" placeholder="¿Qué estás buscando hoy?">
+      <button class="search-btn">&#128269;</button>
+    </div>
+
+    <div class="acciones-usuario">
+      <a href="#" class="account"><i class='bx bx-user-circle'></i> <span>Perfil</span></a>
+      <a href="index.html" class="account"><i class='bx bx-log-out'></i> <span>Cerrar Sesion</span></a>
+      <a href="#" class="account"><i class='bx bx-cog'></i> <span>Configuracion</span></a>
+    </div>
+  </header>
+
+  <div class="dashboard-wrapper">
+    <div class="menu-dashboard">
+      <div class="top-menu">
+        <div class="logo">
+          <img src="./imagenes/logo technova.png" alt=""> 
+          <span>Dashboard Empleado</span>
+        </div>
+        <div class="toggle">
+          <i class='bx bx-menu'></i>
+        </div>
+      </div>
+
+      <div class="input-search">
+        <i class='bx bx-search'></i>
+        <input type="text" class="input" placeholder="Buscar">
+      </div>
+
+      <!-- MENÚ -->
+      <div class="menu">
+        <div class="enlace"><a href="perfilemp.html"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
+        <div class="enlace"><a href="verclientes.html"><i class='bx bx-user'></i>Ver Clientes</a></div>
+        <div class="enlace"><a href="mensajesemp.html"><i class='bx bx-message'></i> Mensajes</a></div>
+        <div class="enlace"><a href="productoemp.html"><i class='bx bx-shopping-bag'></i> Ver Productos</a></div>
+        <div class="enlace"><a href="pedidosemp.html"><i class='bx bx-cart'></i> Ver Pedidos</a></div>
+        <div class="enlace"><a href="atencionemp.html"><i class='bx bx-headphone'></i> Atencion Al Cliente</a></div>
+        <div class="enlace"><a href="index.html"><i class='bx bx-log-out'></i> Cerrar Sesion</a></div>
+      </div>
+    </div><!-- /.menu-dashboard -->
+
+    <main class="main-content">
+      <h1>Usuarios</h1>
+
+      <div class="cards">
+        <!-- Aquí irán los productos de ejemplo -->
+        <div class="card">
+          <img src=".//images.png" alt="Usuario 1">
+          <h2>Juan Pérez</h2>
+          <p>juan.perez@technova.com</p>
+        </div>
+
+        <div class="card">
+          <img src=".//images.png" alt="Usuario 2">
+          <h2>María López</h2>
+          <p>maria.lopez@technova.com</p>
+        </div>
+
+        <div class="card">
+          <img src=".//images.png" alt="Usuario 3">
+          <h2>Carlos Rivera</h2>
+          <p>carlos.rivera@technova.com</p>
+        </div>
+
+      </div><!-- /cards -->
+
+    </main><!-- /main-content -->
+
+  </div><!-- /dashboard-wrapper -->
+
+  <footer>
+    &copy; 2025 Technova
+  </footer>
+
+</body>
+</html>

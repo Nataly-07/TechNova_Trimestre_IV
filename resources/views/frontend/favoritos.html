@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="inventario.css">
+  <link rel="stylesheet" href="estilodas.css">
+  <link rel="stylesheet" href="stilotech.css">
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Favoritos</title>
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">
+      <img src="imagenes/logo technova.png" alt="Logo">
+      <span>TECHNOVA</span>
+    </a>
+
+    <div class="search-bar">
+      <input type="text" placeholder="¿Qué estás buscando hoy?">
+      <button aria-label="Buscar">&#128269;</button>
+    </div>
+
+    <div class="acciones-usuario">
+      <a href="perfilad.html"><i class='bx bx-user-circle'></i> <span>Perfil</span></a>
+      <a href="index.html"><i class='bx bx-log-out'></i> <span>Cerrar sesión</span></a>
+      <a href="configuraciones.html"><i class='bx bx-cog'></i> <span>Configuraciones</span></a>
+    </div>
+  </header>
+
+  <div class="dashboard-wrapper">
+    <div class="menu-dashboard">
+      <div class="top-menu">
+        <div class="logo">
+          <img src="./imagenes/logo technova.png" alt=""> 
+          <span>Dashboard Cliente</span>
+        </div>
+        <div class="toggle"><i class='bx bx-menu'></i></div>
+      </div>
+
+      <div class="input-search">
+        <i class='bx bx-search'></i>
+        <input type="text" class="input" placeholder="Buscar">
+      </div>
+
+      <!-- MENÚ -->
+      <div class="menu">
+        <div class="enlace"><a href="perfilcli.html"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
+        <div class="enlace"><a href="favoritos.html"><i class='bx bx-heart'></i> Favoritos</a></div>
+        <div class="enlace"><a href="mensajescli.html"><i class='bx bx-message'></i> Mensajes</a></div>
+        <div class="enlace"><a href="pedidoscli.html"><i class='bx bx-cart'></i> Pedidos</a></div>
+        <div class="enlace"><a href="mediopagos.html"><i class='bx bx-credit-card'></i>Medios De  Pagos</a></div>
+        <div class="enlace"><a href="miscompras.html"><i class='bx bx-cart'></i> Mis Compras</a></div>
+        <div class="enlace"><a href="atencion.html"><i class='bx bx-headphone'></i> Atencion Al Cliente</a></div>
+         <div class="enlace"><a href="index.html"><i class='bx bx-log-out'></i> Cerrar Sesion</a></div>
+      </div>
+    </div>
+
+    <main class="main-content">
+      <h1>Favoritos</h1>
+
+      <h2>Celulares</h2>
+
+      <div class="products-grid">
+        <div class="product-item">
+          <img src="https://www.clevercel.co/cdn/shop/files/Portadas_SamsungS21.webp?v=1749850525" alt="Celular 1">
+          <h3>Samsung S21</h3>
+          <p>Valor: $ 1.500.000</p>
+        </div>
+        <div class="product-item">
+          <img src="https://m.media-amazon.com/images/I/71jHXolW9yL.jpg" alt="Celular 2">
+          <h3>iPhone 13</h3>
+          <p>Valor: $ 4.000.000</p>
+        </div>
+        <div class="product-item">
+          <img src="https://http2.mlstatic.com/D_Q_NP_913257-MLU77559498201_072024-O.webp" alt="Celular 3">
+          <h3>Xiaomi Redmi Note 10</h3>
+          <p>Valor: $ 900.000</p>
+        </div>
+      </div>
+
+      <h2>Computadores</h2>
+
+      <div class="products-grid">
+        <div class="product-item">
+          <img src="https://reset.net.co/wp-content/uploads/2022/06/HP-14-Celeron-8GB-SSD-256GB-14-cf2509la-5.webp" alt="Computador 1">
+          <h3>Portátil HP</h3>
+          <p>Valor: $ 2.500.000</p>
+        </div>
+        <div class="product-item">
+          <img src="https://m.media-amazon.com/images/I/51FJlZmqO8L.jpg" alt="Computador 2">
+          <h3>MacBook Air</h3>
+          <p>Valor: $ 5.000.000</p>
+        </div>
+        <div class="product-item">
+          <img src="https://m.media-amazon.com/images/I/81PGX7kO4kL._AC_SL1500_.jpg" alt="Computador 3">
+          <h3>ASUS ZenBook</h3>
+          <p>Valor: $ 3.000.000</p>
+        </div>
+      </div>
+
+    </main><!-- /main-content -->
+
+  </div><!-- /dashboard-wrapper -->
+
+  <footer>
+    &copy; 2025 Technova
+  </footer>
+
+  <script src="app.js" defer></script>
+
+</body>
+</html>

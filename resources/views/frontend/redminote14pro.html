@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redmi Note 14 Pro 256 GB | Technova</title>
+  <link rel="stylesheet" href="stilotech.css" />
+  <link rel="stylesheet" href="producto.css" />
+  <script src="carrito.js" defer></script>
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo">
+      <img src="imagenes/logo technova.png" alt="Logo" />
+      <span>TECHNOVA</span>
+    </a>
+    <div class="search-bar">
+      <input type="text" placeholder="¿Qué estás buscando hoy?" />
+      <button class="search-btn">&#128269;</button>
+    </div>
+    <div class="acciones-usuario">
+      <a href="iniciosesion.html" class="account"><span>Iniciar Sesión</span></a>
+      <a href="creacioncuenta.html" class="account"><span>Crear Cuenta</span></a>
+      <a href="comprainfo.html" class="cart">
+        <span class="cart-icon">&#128722;</span>
+        <span>Mi Carrito</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="producto-individual">
+      <div class="producto-detalle-contenedor">
+        <div class="img-producto">
+          <img src="imagenes/redminote14pro.webp" alt="Redmi Note 14 Pro" />
+        </div>
+
+        <div class="info-producto">
+          <h1 class="titulo-producto">Redmi Note 14 Pro 256 GB</h1>
+          <p class="calificacion">⭐⭐⭐⭐⭐ <span>(4.9)</span></p>
+
+          <p class="descripcion">
+            El Redmi Note 14 Pro ofrece tecnología de alta gama a un precio accesible. Con su pantalla AMOLED, cámara de 200 MP, procesador MediaTek de alto rendimiento y batería duradera, es perfecto para disfrutar multimedia, gaming y productividad.
+          </p>
+
+          <ul class="caracteristicas">
+            <li>🌈 Pantalla AMOLED 6.67” FHD+ 120 Hz</li>
+            <li>📸 Cámara de 200 MP con estabilizador OIS</li>
+            <li>⚙️ Procesador MediaTek Dimensity 8200 Ultra</li>
+            <li>💾 256 GB almacenamiento + 12 GB RAM</li>
+            <li>🔋 Batería 5000 mAh + carga rápida de 120W</li>
+          </ul>
+
+          <div class="precio-section">
+            <p class="precio-original">$2.199.010</p>
+            <p class="precio-descuento">$1.449.010 <span class="descuento">-34%</span></p>
+          </div>
+
+          <button class="carrito-btn elegante"
+            onclick="agregarAlCarrito('Redmi Note 14 Pro 256 GB', 1449010, 'imagenes/redminote14pro.webp')">
+            🛒 Agregar al carrito
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="carrito-float">
+    <h2>Carrito</h2>
+    <ul id="lista-carrito"></ul>
+    <p>Total: $<span id="total">0</span></p>
+    <a id="irCarritoBtn" href="comprainfo.html">Ir al Carrito</a>
+    <button id="vaciarCarritoBtn" class="vaciar-btn">Vaciar Carrito</button>
+  </div>
+
+  <footer>
+    <p>© 2025 TECHNOVA. Todos los derechos reservados.</p>
+  </footer>
+
+  <script type="text/javascript">
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+      var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+      s1.async = true;
+      s1.src = "https://embed.tawk.to/68632ae6db555c190ce714bb/1iv1lv5no";
+      s1.charset = "UTF-8";
+      s1.setAttribute("crossorigin", "*");
+      s0.parentNode.insertBefore(s1, s0);
+    })();
+  </script>
+</body>
+</html>

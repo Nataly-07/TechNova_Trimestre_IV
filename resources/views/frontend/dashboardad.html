@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard TECHNOVA</title>
+
+  <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="stilotech.css">
+  <link rel="stylesheet" href="estilodas.css">
+  
+    <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo">
+      <img src="imagenes/logo technova.png" alt="Logo">
+      <span>TECHNOVA</span>
+    </a>
+
+    <div class="search-bar">
+      <input type="text" placeholder="¿Qué estás buscando hoy?">
+      <button class="search-btn">&#128269;</button>
+    </div>
+
+    <div class="acciones-usuario">
+      <a href="404.html" class="account"><i class='bx bx-user-circle'></i> <span>Perfil</span></a>
+      <a href="index.html" class="account"><i class='bx bx-log-out'></i> <span>Cerrar Sesión</span></a>
+      <a href="error500.html" class="cart"><i class='bx bx-cog'></i> <span>Configuración</span></a>
+    </div>
+  </header>
+
+  <div class="dashboard-wrapper">
+    <div class="menu-dashboard">
+      <!-- Menú lateral -->
+      <div class="top-menu">
+        <div class="logo">
+          <img src="./imagenes/logo technova.png" alt="">
+          <span>Panel Administrador</span>
+        </div>
+        <div class="toggle">
+          <i class='bx bx-menu'></i>
+        </div>
+      </div>
+
+      <div class="input-search">
+        <i class='bx bx-search'></i>
+        <input type="text" class="input" placeholder="Buscar">
+      </div>
+
+     <div class="menu">
+        <div class="enlace"><a href="perfilad.html"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
+        <div class="enlace"><a href="usuarios.html"><i class='bx bx-user'></i> Usuarios</a></div>
+        <div class="enlace"><a href="dashboardad.html"><i class='bx bx-chart'></i> Estadisticas</a></div>
+        <div class="enlace"><a href="mensajes.html"><i class='bx bx-message'></i> Mensajes</a></div>
+        <div class="enlace"><a href="inventarioproductos.html"><i class='bx bx-shopping-bag'></i> Inventario</a></div>
+        <div class="enlace"><a href="pedidosad.html"><i class='bx bx-cart'></i> Pedidos</a></div>
+        <div class="enlace"><a href="pagos.html"><i class='bx bx-credit-card'></i> Pagos</a></div>
+        <div class="enlace"><a href="proveedores.html"><i class='bx bx-user-circle'></i> Proveedores</a></div>
+        <div class="enlace"><a href="configuraciones.html"><i class='bx bx-cog'></i> Configuraciones</a></div>
+        <div class="enlace"><a href="index.html"><i class='bx bx-log-out'></i> Cerrar Sesion</a></div>
+      </div>
+
+    </div><!-- /.menu-dashboard -->
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <h1>Dashboard</h1>
+
+      <div class="cards">
+        <div class="card"><h3>Usuarios</h3><p>125</p></div>
+        <div class="card"><h3>Productos</h3><p>54</p></div>
+        <div class="card"><h3>Mensajes</h3><p>18</p></div>
+        <div class="card"><h3>Ventas</h3><p>$12,000</p></div>
+      </div>
+
+      <section class="graficas">
+        <div class="grafica-container">
+          <h2>Ventas mensuales</h2>
+          <canvas id="graficaVentas"></canvas>
+        </div>
+
+        <div class="grafica-container">
+          <h2>Categorías de Productos</h2>
+          <canvas id="graficaCategorias"></canvas>
+        </div>
+      </section>
+
+      <h2>Últimos mensajes</h2>
+      <ul class="messages-list">
+        <li>Juan Pérez: Consulta de producto</li>
+        <li>María López: Queja en el pedido</li>
+        <li>Carlos Rivera: Necesito apoyo técnico</li>
+      </ul>
+    </main>
+  </div>
+
+  <footer>&copy; 2025 TECHNOVA</footer>
+
+  <script>
+    // Gráfica de línea
+    const ctxVentas = document.getElementById('graficaVentas').getContext('2d');
+    new Chart(ctxVentas, {
+      type: 'line',
+      data: {
+        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Ventas ($)',
+          data: [1200, 1900, 3000, 2200, 2700, 3500],
+          borderColor: 'rgba(0, 200, 83, 0.9)',
+          backgroundColor: 'rgba(0, 200, 83, 0.2)',
+          tension: 0.3,
+          fill: true
+        }]
+      }
+    });
+
+    // Gráfica de dona/pie
+    const ctxCategorias = document.getElementById('graficaCategorias').getContext('2d');
+    new Chart(ctxCategorias, {
+      type: 'doughnut',
+      data: {
+        labels: ['Computadores', 'Accesorios', 'Celulares', 'Periféricos'],
+        datasets: [{
+          label: 'Productos',
+          data: [20, 15, 10, 9],
+          backgroundColor: [
+            '#00d4ff',
+            '#ffcc00',
+            '#3399ff',
+            '#ff6666'
+          ],
+          borderWidth: 1
+        }]
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Motorola Edge 50 Ultra 512 GB | Technova</title>
+  <link rel="stylesheet" href="stilotech.css" />
+  <link rel="stylesheet" href="producto.css" />
+  <script src="carrito.js" defer></script>
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo">
+      <img src="imagenes/logo technova.png" alt="Logo" />
+      <span>TECHNOVA</span>
+    </a>
+    <div class="search-bar">
+      <input type="text" placeholder="¿Qué estás buscando hoy?" />
+      <button class="search-btn">&#128269;</button>
+    </div>
+    <div class="acciones-usuario">
+      <a href="iniciosesion.html" class="account"><span>Iniciar Sesión</span></a>
+      <a href="creacioncuenta.html" class="account"><span>Crear Cuenta</span></a>
+      <a href="comprainfo.html" class="cart">
+        <span class="cart-icon">&#128722;</span>
+        <span>Mi Carrito</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="producto-individual">
+      <div class="producto-detalle-contenedor">
+        <div class="img-producto">
+          <img src="imagenes/motoedge50ult.webp" alt="Motorola Edge 50 Ultra" />
+        </div>
+
+        <div class="info-producto">
+          <h1 class="titulo-producto">Motorola Edge 50 Ultra 512 GB</h1>
+          <p class="calificacion">⭐⭐⭐⭐☆ <span>(4.4)</span></p>
+
+          <p class="descripcion">
+            El Motorola Edge 50 Ultra es la combinación de potencia y elegancia. Con su cámara de 200 MP, procesador Snapdragon y pantalla pOLED de 6.7" a 144 Hz, es perfecto para quienes quieren velocidad, estilo y fotografía de alta gama.
+          </p>
+
+          <ul class="caracteristicas">
+            <li>📸 Cámara triple 200 MP + Ultra Gran Angular + Zoom</li>
+            <li>⚡ Snapdragon 8 Gen 3 + 12 GB RAM</li>
+            <li>💾 Almacenamiento de 512 GB</li>
+            <li>🌈 Pantalla pOLED 6.7” FHD+ a 144 Hz</li>
+            <li>🔋 Batería 4500 mAh + TurboPower 125W</li>
+          </ul>
+
+          <div class="precio-section">
+            <p class="precio-original">$4.999.900</p>
+            <p class="precio-descuento">$3.999.900 <span class="descuento">-20%</span></p>
+          </div>
+
+          <button class="carrito-btn elegante"
+            onclick="agregarAlCarrito('Motorola Edge 50 Ultra 512 GB', 3999900, 'imagenes/motoedge50ult.webp')">
+            🛒 Agregar al carrito
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="carrito-float">
+    <h2>Carrito</h2>
+    <ul id="lista-carrito"></ul>
+    <p>Total: $<span id="total">0</span></p>
+    <a id="irCarritoBtn" href="comprainfo.html">Ir al Carrito</a>
+    <button id="vaciarCarritoBtn" class="vaciar-btn">Vaciar Carrito</button>
+  </div>
+
+  <footer>
+    <p>© 2025 TECHNOVA. Todos los derechos reservados.</p>
+  </footer>
+
+  <script type="text/javascript">
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+      var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+      s1.async = true;
+      s1.src = "https://embed.tawk.to/68632ae6db555c190ce714bb/1iv1lv5no";
+      s1.charset = "UTF-8";
+      s1.setAttribute("crossorigin", "*");
+      s0.parentNode.insertBefore(s1, s0);
+    })();
+  </script>
+</body>
+</html>

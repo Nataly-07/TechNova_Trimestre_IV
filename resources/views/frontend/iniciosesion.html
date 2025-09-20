@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TECHNOVA - Iniciar sesión</title>
+  <link rel="stylesheet" href="estilos.css" />
+</head>
+<body>
+ <header class="header">
+  <div class="menu-icon">&#9776;</div>
+
+  <a href="index.html" class="logo">
+    <img src="imagenes/logo technova.png" alt="Logo">
+    <span>TECHNOVA</span>
+  </a>
+
+  <div class="search-bar">
+    <input type="text" placeholder="¿Qué estás buscando hoy?">
+    <button class="search-btn">&#128269;</button>
+  </div>
+
+  <div class="acciones-usuario">
+    <a href="iniciosesion.html" class="account">
+      <span>Iniciar Sesión</span>
+    </a>
+    <a href="creacioncuenta.html" class="account">
+      <span>Crear Cuenta</span>
+    </a>
+    <a href="404.html" class="cart">
+      <span class="cart-icon">&#128722;</span>
+      <span>Mi Carrito</span>
+    </a>
+  </div>
+</header>
+
+  <main class="login-box">
+    <h2>TECHNOVA</h2>
+    <h3>Iniciar sesión</h3>
+    <form id="iniciosesion">
+      <label for="email">Correo electrónico</label>
+      <input type="email" id="email" placeholder="Ingresa tu correo" required />
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" placeholder="Ingresa tu contraseña" required />
+      <button type="submit" class="login-btn">Iniciar sesión</button>
+      <div class="google-login">
+      <img src=".//google_720255.png" alt="" />
+      <a href="https://workspace.google.com/intl/es-419/gmail/">Registrarse con Google</a>
+      </div>
+      <a href="creacioncuenta.html">Crear cuenta</a>
+      <a href="" class="forgot">Olvidé mi contraseña</a>
+    </form>
+  </main>
+  <footer>
+    <p>© 2025 TECHNOVA. Todos los derechos reservados.</p>
+  </footer>
+   
+  <div id="msg-flotante" class="msg-flotante oculto"></div>
+
+  <script src="validacion.js"></script>
+</body>
+</html>
+
+</body>
+</html>

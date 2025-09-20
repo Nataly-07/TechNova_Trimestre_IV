@@ -1,0 +1,77 @@
+@extends('layouts.app')
+
+@section('content')
+<main class="main-content">
+    <h1>Usuarios</h1>
+
+    <!-- 📋 Formulario para nuevo usuario -->
+     <div class="form-nuevo-usuario">
+      <h2>Agregar Nuevo Usuario</h2>
+      <form action="{{ route('usuarios.store') }}" method="POST">
+        @csrf
+        <input type="text" name="name" placeholder="Nombre completo" required />
+        <input type="email" name="email" placeholder="Correo electrónico" required />
+        <input type="password" name="password" placeholder="Contraseña" required />
+        <input type="password" name="password_confirmation" placeholder="Confirmar contraseña" required />
+        <input type="text" name="first_name" placeholder="Primer nombre" />
+        <input type="text" name="last_name" placeholder="Apellido" />
+        <input type="text" name="document_type" placeholder="Tipo de documento" />
+        <input type="text" name="document_number" placeholder="Número de documento" />
+        <input type="text" name="phone" placeholder="Teléfono" />
+        <input type="text" name="address" placeholder="Dirección" />
+        <select name="role" required>
+          <option value="cliente">Cliente</option>
+          <option value="admin">Administrador</option>
+          <option value="empleado">Empleado</option>
+        </select>
+        <button type="submit"><i class='bx bx-user-plus'></i> Agregar Usuario</button>
+      </form>
+    </div>
+
+<div class="acciones-usuarios">
+      <input type="text" id="buscadorUsuarios" placeholder="Buscar usuario..." />
+    </div>
+
+    <div class="filtro-roles">
+  <label for="filtroRol">Filtrar por rol:</label>
+  <select id="filtroRol">
+    <option value="todos">Todos</option>
+    <option value="admin">Administrador</option>
+    <option value="cliente">Cliente</option>
+    <option value="empleado">Empleado</option>
+  </select>
+</div>
+
+    <h2 id="contadorUsuarios">Total de usuarios: {{ count($users) }}</h2>
+
+    <!-- Tabla de Usuarios -->
+    <table class="table-usuarios">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="usuarios-body">
+        <!-- Aquí se insertan dinámicamente los usuarios -->
+        @foreach($users as $user)
+        <tr>
+          <td>{{ $user->name }}</td>
+          <td>{{ $user->email }}</td>
+          <td>{{ $user->role }}</td>
+          <td>
+            <a href="{{ route('usuarios.edit', $user->id) }}">Editar</a>
+            <form action="{{ route('usuarios.destroy', $user->id) }}" method="POST" style="display:inline;">
+              @csrf
+              @method('DELETE')
+              <button type="submit" onclick="return confirm('¿Estás seguro de eliminar este usuario?')">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+        @endforeach
+      </tbody>
+    </table>
+</main>
+@endsection
