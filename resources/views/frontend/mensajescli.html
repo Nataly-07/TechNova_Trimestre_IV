@@ -31,34 +31,7 @@
   </header>
 
   <div class="dashboard-wrapper">
-    <div class="menu-dashboard">
-      <div class="top-menu">
-        <div class="logo">
-          <img src="./imagenes/logo technova.png" alt=""> 
-          <span>Dashboard  Cliente</span>
-        </div>
-        <div class="toggle">
-          <i class='bx bx-menu'></i>
-        </div>
-      </div>
-
-      <div class="input-search">
-        <i class='bx bx-search'></i>
-        <input type="text" class="input" placeholder="Buscar">
-      </div>
-
-      <!-- MENÚ -->
-      <div class="menu">
-        <div class="enlace"><a href="perfilcli.html"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
-        <div class="enlace"><a href="favoritos.html"><i class='bx bx-heart'></i> Favoritos</a></div>
-        <div class="enlace"><a href="mensajescli.html"><i class='bx bx-message'></i> Mensajes</a></div>
-        <div class="enlace"><a href="pedidoscli.html"><i class='bx bx-cart'></i> Pedidos</a></div>
-        <div class="enlace"><a href="mediopagos.html"><i class='bx bx-credit-card'></i>Medios De  Pagos</a></div>
-        <div class="enlace"><a href="miscompras.html"><i class='bx bx-cart'></i> Mis Compras</a></div>
-        <div class="enlace"><a href="atencion.html"><i class='bx bx-headphone'></i> Atencion Al Cliente</a></div>
-         <div class="enlace"><a href="index.html"><i class='bx bx-log-out'></i> Cerrar Sesion</a></div>
-      </div>
-    </div>
+    @include('frontend.layouts.sidebar-cliente')
     
     <main class="main-content">
       <h1>Mensajes</h1>

@@ -20,8 +20,10 @@
     </div>
 
     <div class="search-bar">
-      <input type="text" placeholder="¿Qué estás buscando hoy?">
-      <button class="search-btn">&#128269;</button>
+      <form action="{{ route('buscar') }}" method="GET" class="search-form">
+        <input type="text" name="q" placeholder="¿Qué estás buscando hoy?" class="search-input" value="{{ request('q') }}">
+        <button type="submit" class="search-btn">&#128269;</button>
+      </form>
     </div>
 
     <div class="acciones-usuario">
@@ -44,14 +46,14 @@
 
       <div class="input-search">
         <i class='bx bx-search'></i>
-        <input type="text" class="input" placeholder="Buscar">
+        <input type="text" class="input" id="buscador-menu" placeholder="Buscar">
       </div>
 
       <div class="menu">
         <div class="enlace"><a href="{{ route('perfilemp') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
         <div class="enlace"><a href="{{ route('empleado.usuarios.cliente') }}"><i class='bx bx-user'></i> Usuarios</a></div>
         <div class="enlace"><a href="#"><i class='bx bx-message'></i> Mensajes</a></div>
-        <div class="enlace"><a href="{{ route('empleado.inventario') }}"><i class='bx bx-shopping-bag'></i> Inventario</a></div>
+        <div class="enlace"><a href="{{ route('empleado.inventario') }}"><i class='bx bx-shopping-bag'></i> Visualización Artículos</a></div>
         <div class="enlace"><a href="#"><i class='bx bx-cart'></i> Pedidos</a></div>
         <div class="enlace"><a href="{{ url('atencion') }}"><i class='bx bx-headphone'></i> Atencion Al Cliente</a></div>
         <div class="enlace">
@@ -105,14 +107,14 @@
             <i class='bx bx-shopping-bag'></i>
           </div>
           <div class="card-content">
-            <h3>Inventario</h3>
-            <p>Controla el stock de productos</p>
+            <h3>Visualización Artículos</h3>
+            <p>Visualiza el stock de productos</p>
             <div class="card-stats">
               <span class="stat-number">-</span>
               <span class="stat-label">productos en inventario</span>
             </div>
             <a href="{{ route('empleado.inventario') }}" class="card-button">
-              <i class='bx bx-right-arrow-alt'></i> Ver Inventario
+              <i class='bx bx-right-arrow-alt'></i> Ver Artículos
             </a>
           </div>
         </div>
@@ -152,28 +154,6 @@
         </div>
       </div>
 
-      <!-- Quick Actions -->
-      <div class="quick-actions">
-        <h2>Acciones Rápidas</h2>
-        <div class="action-buttons">
-          <a href="{{ route('empleado.usuarios.cliente') }}" class="action-btn primary">
-            <i class='bx bx-user'></i>
-            <span>Gestionar Usuarios</span>
-          </a>
-          <a href="{{ route('empleado.inventario') }}" class="action-btn secondary">
-            <i class='bx bx-shopping-bag'></i>
-            <span>Ver Inventario</span>
-          </a>
-          <a href="#" class="action-btn tertiary">
-            <i class='bx bx-message'></i>
-            <span>Mensajes</span>
-          </a>
-          <a href="{{ url('atencion') }}" class="action-btn quaternary">
-            <i class='bx bx-headphone'></i>
-            <span>Atención Cliente</span>
-          </a>
-        </div>
-      </div>
 
     </main><!-- /main-content -->
 
@@ -182,6 +162,31 @@
   <footer>
     &copy; {{ date('Y') }} Technova
   </footer>
+
+  <script>
+    // Filtro de búsqueda en el menú
+    document.addEventListener('DOMContentLoaded', function() {
+      const buscador = document.getElementById('buscador-menu');
+      const enlaces = document.querySelectorAll('.menu .enlace a');
+      
+      if (buscador && enlaces.length > 0) {
+        buscador.addEventListener('input', function() {
+          const termino = this.value.toLowerCase();
+          
+          enlaces.forEach(function(enlace) {
+            const texto = enlace.textContent.toLowerCase();
+            const enlaceDiv = enlace.closest('.enlace');
+            
+            if (texto.includes(termino)) {
+              enlaceDiv.style.display = 'block';
+            } else {
+              enlaceDiv.style.display = 'none';
+            }
+          });
+        });
+      }
+    });
+  </script>
 
 </body>
 </html>

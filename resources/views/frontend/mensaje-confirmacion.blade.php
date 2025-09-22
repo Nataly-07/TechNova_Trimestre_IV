@@ -24,8 +24,10 @@
     @endif
     
     <div class="search-bar">
-      <input type="text" placeholder="¿Qué estás buscando hoy?">
-      <button class="search-btn">&#128269;</button>
+      <form action="{{ route('buscar') }}" method="GET" class="search-form">
+        <input type="text" name="q" placeholder="¿Qué estás buscando hoy?" class="search-input" value="{{ request('q') }}">
+        <button type="submit" class="search-btn">&#128269;</button>
+      </form>
     </div>
     
     <div class="acciones-usuario">

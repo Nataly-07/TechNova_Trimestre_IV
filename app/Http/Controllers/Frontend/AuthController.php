@@ -77,6 +77,16 @@ class AuthController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        // Determinar el rol basado en el email
+        $role = 'cliente'; // Por defecto es cliente
+        // Extraer la parte antes del @ del email
+        $emailParts = explode('@', $request->correo);
+        $username = $emailParts[0] ?? '';
+        
+        if (str_ends_with($username, '.technova')) {
+            $role = 'admin';
+        }
+
         $user = User::create([
             'name' => $request->nombre . ' ' . $request->apellido,
             'first_name' => $request->nombre,
@@ -87,7 +97,7 @@ class AuthController extends Controller
             'phone' => $request->telefono,
             'address' => $request->direccion,
             'password' => Hash::make($request->password),
-            'role' => 'cliente',
+            'role' => $role,
         ]);
 
         // No login automatico, redirigir a login

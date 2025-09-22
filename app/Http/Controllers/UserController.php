@@ -24,16 +24,69 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'first_name' => 'nullable|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'document_type' => 'nullable|string|max:50',
-            'document_number' => 'nullable|string|max:50',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:255',
+            'nombre' => [
+                'required',
+                'string',
+                'max:255',
+                'min:2',
+                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'
+            ],
+            'apellido' => [
+                'required',
+                'string',
+                'max:255',
+                'min:2',
+                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'
+            ],
+            'tipo-doc' => 'required|string|in:CC,TI,CE',
+            'documento' => [
+                'required',
+                'string',
+                'min:7',
+                'max:20',
+                'regex:/^\d+$/',
+                'unique:users,document_number'
+            ],
+            'correo' => [
+                'required',
+                'string',
+                'email:rfc,dns',
+                'max:255',
+                'unique:users,email'
+            ],
+            'telefono' => [
+                'required',
+                'string',
+                'size:10',
+                'regex:/^\d+$/'
+            ],
+            'direccion' => [
+                'required',
+                'string',
+                'min:8',
+                'max:255'
+            ],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/'
+            ],
             'role' => 'required|string|in:admin,empleado,cliente',
+        ], [
+            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'nombre.min' => 'El nombre debe tener al menos 2 caracteres.',
+            'apellido.regex' => 'El apellido solo puede contener letras y espacios.',
+            'apellido.min' => 'El apellido debe tener al menos 2 caracteres.',
+            'documento.regex' => 'El documento solo puede contener números.',
+            'documento.min' => 'El documento debe tener al menos 7 dígitos.',
+            'correo.email' => 'El correo debe tener un formato válido.',
+            'telefono.size' => 'El teléfono debe tener exactamente 10 dígitos.',
+            'telefono.regex' => 'El teléfono solo puede contener números.',
+            'direccion.min' => 'La dirección debe tener al menos 8 caracteres.',
+            'password.regex' => 'La contraseña debe contener al menos: una mayúscula, una minúscula, un número y un carácter especial.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
         ]);
 
         if ($validator->fails()) {
@@ -41,19 +94,19 @@ class UserController extends Controller
         }
 
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name' => $request->nombre . ' ' . $request->apellido,
+            'email' => $request->correo,
             'password' => Hash::make($request->password),
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'document_type' => $request->document_type,
-            'document_number' => $request->document_number,
-            'phone' => $request->phone,
-            'address' => $request->address,
+            'first_name' => $request->nombre,
+            'last_name' => $request->apellido,
+            'document_type' => $request->{'tipo-doc'},
+            'document_number' => $request->documento,
+            'phone' => $request->telefono,
+            'address' => $request->direccion,
             'role' => $request->role,
         ]);
 
-        return redirect()->route('perfilad')->with('success', 'Usuario creado correctamente');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario creado correctamente');
     }
 
     public function edit($id)
@@ -67,15 +120,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
-            'password' => 'nullable|string|min:8|confirmed',
-            'first_name' => 'nullable|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'document_type' => 'nullable|string|max:50',
-            'document_number' => 'nullable|string|max:50',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:255',
             'role' => 'required|string|in:admin,empleado,cliente',
         ]);
 
@@ -83,22 +127,12 @@ class UserController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $user->name = $request->name;
-        $user->email = $request->email;
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-        }
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->document_type = $request->document_type;
-        $user->document_number = $request->document_number;
-        $user->phone = $request->phone;
-        $user->address = $request->address;
-        $user->role = $request->role;
+        // Solo actualizar el rol
+        $user->update([
+            'role' => $request->role,
+        ]);
 
-        $user->save();
-
-        return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado correctamente');
+        return redirect()->route('usuarios.index')->with('success', 'Rol de usuario actualizado correctamente');
     }
 
     public function destroy($id)
@@ -113,7 +147,12 @@ class UserController extends Controller
     {
         $users = User::all();
         $productos = \App\Models\Producto::with('caracteristicas')->get();
-        return view('frontend.perfilad', compact('users', 'productos'));
+        $proveedores = \App\Models\Proveedor::all();
+        
+        // Contar reportes disponibles (productos, usuarios, ventas)
+        $reportesDisponibles = 3; // productos, usuarios, ventas
+        
+        return view('frontend.perfilad', compact('users', 'productos', 'proveedores', 'reportesDisponibles'));
     }
 
     public function perfilEmpleado()
@@ -125,6 +164,31 @@ class UserController extends Controller
     public function perfilCliente()
     {
         $productos = \App\Models\Producto::with('caracteristicas')->get();
-        return view('frontend.perfilcli', compact('productos'));
+        $mediosPagoCount = \App\Models\UserPaymentMethod::where('user_id', auth()->id())->count();
+        $comprasCount = \App\Models\Compra::where('ID_Usuario', auth()->id())->count();
+        
+        // Contar favoritos del usuario
+        $favoritosCount = \App\Models\Favorito::where('user_id', auth()->id())->count();
+        
+        // Contar productos en el carrito del usuario
+        $carritoCount = \App\Models\DetalleCarrito::whereHas('carrito', function($query) {
+            $query->where('ID_Usuario', auth()->id());
+        })->count();
+        
+        // Contar pedidos del usuario
+        $pedidosCount = \App\Models\Venta::where('ID_Usuario', auth()->id())->count();
+        
+        // Contar mensajes pendientes (asumiendo que hay un modelo Mensaje)
+        $mensajesCount = 0; // Por ahora 0, se puede implementar cuando exista el modelo
+        
+        return view('frontend.perfilcli', compact(
+            'productos', 
+            'mediosPagoCount', 
+            'comprasCount',
+            'favoritosCount',
+            'carritoCount',
+            'pedidosCount',
+            'mensajesCount'
+        ));
     }
 }

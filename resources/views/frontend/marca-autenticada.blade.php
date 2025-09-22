@@ -15,8 +15,10 @@
   </a>
 
  <div class="search-bar">
-  <input type="text" id="buscador-header" placeholder="¿Qué estás buscando hoy?" />
-  <button class="search-btn">&#128269;</button>
+  <form action="{{ route('buscar') }}" method="GET" class="search-form">
+    <input type="text" name="q" placeholder="¿Qué estás buscando hoy?" class="search-input" value="{{ request('q') }}" />
+    <button type="submit" class="search-btn">&#128269;</button>
+  </form>
 </div>
 
   <div class="acciones-usuario">
@@ -86,15 +88,11 @@
         }
       @endphp
       <img src="{{ $imgSrc }}" alt="{{ $producto->Nombre }}" style="width: 100%; max-width: 200px; height: auto; border-radius: 10px; margin-bottom: 15px;">
-      <a href="#" style="display: inline-block; margin: 10px 0; background: var(--gradient-secondary); color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.9em; font-weight: bold;">Ver Más Detalles</a>
+      <a href="{{ route('producto.detalles', $producto->ID_Producto) }}" style="display: inline-block; margin: 10px 0; background: var(--gradient-secondary); color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.9em; font-weight: bold;">Ver Más Detalles</a>
       <h3 style="font-weight: bold; margin: 10px 0; color: #333; font-size: 1.1em;">{{ $producto->Nombre }}</h3>
       <p style="margin: 5px 0; color: #666;">4.5 ⭐</p>
-      <p class="precio-original" style="text-decoration: line-through; color: #999; margin: 5px 0; font-size: 0.9em;">
-        ${{ number_format($producto->caracteristicas->Precio_Venta * 1.05, 0, ',', '.') }}
-      </p>
-      <p class="precio-descuento" style="color: #00d4ff; font-weight: bold; margin: 5px 0; font-size: 1.1em;">
+      <p class="precio-actual" style="color: #00d4ff; font-weight: bold; margin: 5px 0; font-size: 1.1em;">
         ${{ number_format($producto->caracteristicas->Precio_Venta, 0, ',', '.') }}
-        <span class="descuento" style="background: var(--gradient-light); color: #00d4ff; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-left: 5px;">-5%</span>
       </p>
       <button class="carrito-btn" style="background: var(--gradient-secondary); border: none; border-radius: 50%; width: 40px; height: 40px; color: white; font-size: 18px; cursor: pointer; position: absolute; bottom: 15px; right: 15px; transition: all 0.3s ease;">
         &#128722;

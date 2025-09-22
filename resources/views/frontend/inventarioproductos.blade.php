@@ -21,7 +21,7 @@
         </div>
 
         <div class="search-bar">
-            <input type="text" placeholder="¿Qué estás buscando hoy?">
+            <input type="text" id="buscador-productos" placeholder="¿Qué estás buscando hoy?">
             <button class="search-btn">&#128269;</button>
         </div>
 
@@ -579,6 +579,29 @@
     <footer>
         &copy; {{ date('Y') }} Technova
     </footer>
+
+    <script>
+        // Filtro de búsqueda para productos
+        document.addEventListener('DOMContentLoaded', function() {
+            const buscador = document.getElementById('buscador-productos');
+            const productos = document.querySelectorAll('.producto-item, .producto-card, tr[data-producto]');
+            
+            if (buscador && productos.length > 0) {
+                buscador.addEventListener('input', function() {
+                    const valor = this.value.toLowerCase();
+                    
+                    productos.forEach(function(producto) {
+                        const contenido = producto.textContent.toLowerCase();
+                        if (contenido.includes(valor)) {
+                            producto.style.display = '';
+                        } else {
+                            producto.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>

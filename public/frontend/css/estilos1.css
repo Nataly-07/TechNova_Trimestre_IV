@@ -169,20 +169,53 @@ input.invalid + .icono::before {
 
 .password-requisitos {
   background: var(--gradient-light);
-  padding: 10px;
-  border-radius: 6px;
+  padding: 12px;
+  border-radius: 8px;
   font-size: 13px;
   text-align: left;
   margin-top: -10px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
 }
 .password-requisitos .requisito {
-  margin: 4px 0;
-  opacity: 0.7;
+  margin: 5px 0;
+  opacity: 0.8;
+  color: #4a5568;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 .password-requisitos .requisito.valid {
   opacity: 1;
-  font-weight: bold;
+  font-weight: 600;
   color: #00d4ff;
+  transform: translateX(5px);
+}
+/* Transición especial cuando todos los requisitos están completos */
+.password-requisitos.all-complete {
+  background: linear-gradient(135deg, #e6f7ff 0%, #b3e5fc 100%);
+  border-color: #00d4ff;
+  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+  transform: scale(1.02);
+  animation: successPulse 0.6s ease-in-out;
+}
+.password-requisitos.all-complete .requisito.valid {
+  color: #0277bd;
+  font-weight: 700;
+}
+/* Ocultar los requisitos cuando se completen todos */
+.password-requisitos.all-complete {
+  opacity: 0;
+  max-height: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+}
+/* Animación de éxito antes de ocultar */
+@keyframes successPulse {
+  0% { transform: scale(1.02); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1.02); }
 }
 
 /* Confirmación */

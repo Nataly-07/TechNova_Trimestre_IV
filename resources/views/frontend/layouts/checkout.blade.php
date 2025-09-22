@@ -17,8 +17,10 @@
     </a>
 
     <div class="search-bar">
-      <input type="text" placeholder="¿Qué estás buscando hoy?">
-      <button class="search-btn">&#128269;</button>
+      <form action="{{ route('buscar') }}" method="GET" class="search-form">
+        <input type="text" name="q" placeholder="¿Qué estás buscando hoy?" class="search-input" value="{{ request('q') }}">
+        <button type="submit" class="search-btn">&#128269;</button>
+      </form>
     </div>
 
     <div class="acciones-usuario">
@@ -45,10 +47,12 @@
       <div class="cart-section">
         <h2 class="cart-title">Mi Carrito</h2>
         <div class="cart-products">
-          @foreach($productos as $detalle)
+          @if(isset($productos) && count($productos) > 0)
+            @foreach($productos as $detalle)
+            @if($detalle->producto)
             <div class="cart-product">
               @php
-                $imgSrc = $detalle->producto->Imagen;
+                $imgSrc = $detalle->producto->Imagen ?? null;
                 if (!$imgSrc) {
                     $imgSrc = asset('frontend/imagenes/foto perfil.webp');
                 } elseif (!preg_match('/^https?:\/\//', $imgSrc)) {
@@ -62,7 +66,11 @@
                 <p>Valor: ${{ number_format($detalle->producto->caracteristicas->Precio_Venta ?? 0, 0, ',', '.') }}</p>
               </div>
             </div>
-          @endforeach
+            @endif
+            @endforeach
+          @else
+            <p>No hay productos en el carrito</p>
+          @endif
         </div>
         <div class="cart-summary">
           <p><strong>Total:</strong> ${{ number_format($total ?? 0, 0, ',', '.') }}</p>

@@ -8,6 +8,8 @@ use App\Models\Compra;
 use App\Models\DetalleCompra;
 use App\Models\Producto;
 use App\Models\Carrito;
+use App\Models\DetalleCarrito;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PedidosClienteController extends Controller
 {
@@ -127,6 +129,100 @@ class PedidosClienteController extends Controller
         return view('frontend.pedido-detalle', compact('compra'));
     }
 
+    public function factura($id)
+    {
+        $user = Auth::user();
+        
+        $compra = Compra::where('ID_Compras', $id)
+            ->where('ID_Usuario', $user->id)
+            ->with(['detalles.producto.caracteristica'])
+            ->firstOrFail();
+
+        // Procesar los datos para la factura
+        $factura = [
+            'id' => $compra->ID_Compras,
+            'fecha' => $compra->Fecha_Compra,
+            'total' => $compra->Total,
+            'estado' => $this->determinarEstado($compra),
+            'metodo_pago' => $this->obtenerMetodoPago($compra),
+            'productos' => [],
+            'direccion' => $this->obtenerDireccion($compra),
+            'transportadora' => $this->obtenerTransportadora($compra),
+            'numero_guia' => $this->obtenerNumeroGuia($compra),
+            'cliente' => [
+                'nombre' => $user->first_name . ' ' . $user->last_name,
+                'email' => $user->email,
+                'documento' => $user->document_number ?? 'N/A',
+                'telefono' => $user->phone ?? 'N/A',
+            ]
+        ];
+
+        // Agregar productos del pedido
+        foreach ($compra->detalles as $detalle) {
+            if ($detalle->producto) {
+                $factura['productos'][] = [
+                    'nombre' => $detalle->producto->Nombre,
+                    'cantidad' => $detalle->Cantidad,
+                    'precio' => $detalle->Precio,
+                    'subtotal' => $detalle->Cantidad * $detalle->Precio,
+                    'imagen' => $detalle->producto->Imagen,
+                    'caracteristicas' => $detalle->producto->caracteristica,
+                ];
+            }
+        }
+
+        return view('frontend.factura', compact('factura'));
+    }
+
+    public function facturaPDF($id)
+    {
+        $user = Auth::user();
+        
+        $compra = Compra::where('ID_Compras', $id)
+            ->where('ID_Usuario', $user->id)
+            ->with(['detalles.producto.caracteristica'])
+            ->firstOrFail();
+
+        // Procesar los datos para la factura
+        $factura = [
+            'id' => $compra->ID_Compras,
+            'fecha' => $compra->Fecha_Compra,
+            'total' => $compra->Total,
+            'estado' => $this->determinarEstado($compra),
+            'metodo_pago' => $this->obtenerMetodoPago($compra),
+            'productos' => [],
+            'direccion' => $this->obtenerDireccion($compra),
+            'transportadora' => $this->obtenerTransportadora($compra),
+            'numero_guia' => $this->obtenerNumeroGuia($compra),
+            'cliente' => [
+                'nombre' => $user->first_name . ' ' . $user->last_name,
+                'email' => $user->email,
+                'documento' => $user->document_number ?? 'N/A',
+                'telefono' => $user->phone ?? 'N/A',
+            ]
+        ];
+
+        // Agregar productos del pedido
+        foreach ($compra->detalles as $detalle) {
+            if ($detalle->producto) {
+                $factura['productos'][] = [
+                    'nombre' => $detalle->producto->Nombre,
+                    'cantidad' => $detalle->Cantidad,
+                    'precio' => $detalle->Precio,
+                    'subtotal' => $detalle->Cantidad * $detalle->Precio,
+                    'imagen' => $detalle->producto->Imagen,
+                    'caracteristicas' => $detalle->producto->caracteristica,
+                ];
+            }
+        }
+
+        // Generar PDF
+        $pdf = Pdf::loadView('frontend.factura-pdf', compact('factura'));
+        $pdf->setPaper('A4', 'portrait');
+        
+        return $pdf->download('factura-' . $factura['id'] . '.pdf');
+    }
+
     public function cancelar($id)
     {
         $user = Auth::user();
@@ -176,6 +272,94 @@ class PedidosClienteController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error al cancelar el pedido: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function volverAPedir($id)
+    {
+        $user = Auth::user();
+        
+        try {
+            $compra = Compra::where('ID_Compras', $id)
+                ->where('ID_Usuario', $user->id)
+                ->with(['detalles.producto'])
+                ->firstOrFail();
+
+            // Verificar que el pedido existe
+            if (!$compra) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pedido no encontrado'
+                ]);
+            }
+
+            // Obtener o crear carrito del usuario
+            $carrito = Carrito::where('ID_Usuario', $user->id)
+                ->where('Estado', 'activo')
+                ->first();
+
+            if (!$carrito) {
+                $carrito = Carrito::create([
+                    'ID_Usuario' => $user->id,
+                    'Fecha_Creacion' => now(),
+                    'Estado' => 'activo'
+                ]);
+            } else {
+                // Limpiar detalles del carrito actual
+                DetalleCarrito::where('ID_Carrito', $carrito->ID_Carrito)->delete();
+            }
+
+            // Agregar productos del pedido al carrito
+            $productosAgregados = 0;
+            $productosNoDisponibles = [];
+
+            foreach ($compra->detalles as $detalle) {
+                if ($detalle->producto) {
+                    $producto = $detalle->producto;
+                    
+                    // Verificar disponibilidad
+                    if ($producto->Stock >= $detalle->Cantidad) {
+                        // Crear detalle en el carrito
+                        DetalleCarrito::create([
+                            'ID_Carrito' => $carrito->ID_Carrito,
+                            'ID_Producto' => $producto->ID_Producto,
+                            'Cantidad' => $detalle->Cantidad
+                        ]);
+                        $productosAgregados++;
+                    } else {
+                        $productosNoDisponibles[] = [
+                            'nombre' => $producto->Nombre,
+                            'solicitado' => $detalle->Cantidad,
+                            'disponible' => $producto->Stock
+                        ];
+                    }
+                }
+            }
+
+            // Preparar mensaje de respuesta
+            $mensaje = "Se agregaron {$productosAgregados} productos al carrito.";
+            
+            if (!empty($productosNoDisponibles)) {
+                $mensaje .= " Algunos productos no están disponibles en la cantidad solicitada: ";
+                foreach ($productosNoDisponibles as $producto) {
+                    $mensaje .= "{$producto['nombre']} (solicitado: {$producto['solicitado']}, disponible: {$producto['disponible']}), ";
+                }
+                $mensaje = rtrim($mensaje, ', ');
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $mensaje,
+                'productos_agregados' => $productosAgregados,
+                'productos_no_disponibles' => $productosNoDisponibles,
+                'redirect_url' => route('checkout.informacion')
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al procesar la solicitud: ' . $e->getMessage()
             ]);
         }
     }

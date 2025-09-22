@@ -31,12 +31,26 @@ class CarritoController extends Controller
             ]);
         }
 
-        // Obtener productos del carrito con sus detalles
-        $productos = $carrito->detalles()->with('producto.caracteristicas')->get();
+        // Obtener productos del carrito con sus detalles, excluyendo productos que no existen
+        $productos = $carrito->detalles()
+            ->with('producto.caracteristicas')
+            ->whereHas('producto')
+            ->get();
         
         $total = 0;
         foreach ($productos as $detalle) {
-            $total += $detalle->producto->caracteristicas->Precio_Venta * $detalle->Cantidad;
+            // Verificar que el producto existe
+            if (!$detalle->producto) {
+                // Si el producto no existe, saltarlo y continuar
+                continue;
+            }
+            
+            if ($detalle->producto->caracteristicas) {
+                $total += $detalle->producto->caracteristicas->Precio_Venta * $detalle->Cantidad;
+            } else {
+                // Si no hay características, usar el precio del producto directamente
+                $total += $detalle->producto->Precio * $detalle->Cantidad;
+            }
         }
 
         return view('frontend.carrito', compact('productos', 'total', 'carrito'));

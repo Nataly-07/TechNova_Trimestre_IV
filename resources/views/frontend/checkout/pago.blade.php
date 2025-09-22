@@ -18,7 +18,8 @@
         </select>
       </div>
     @endif
-    <div class="form-group">
+    <div class="form-group" id="metodo_pago_group">
+      <label>Método de pago</label>
       <select name="metodo_pago" id="metodo_pago">
         @foreach($metodosDisponibles as $value => $label)
           <option value="{{ $value }}">{{ $label }}</option>
@@ -52,19 +53,32 @@
     document.addEventListener('DOMContentLoaded', function(){
       var selector = document.getElementById('metodo_pago');
       var tarjetaCampos = document.getElementById('tarjeta_campos');
+      var metodoPagoGroup = document.getElementById('metodo_pago_group');
       var savedSelect = document.getElementById('saved_payment_method_id');
+      
       function toggle(){
         var v = selector.value;
         var usingCard = (v === 'tarjeta_credito' || v === 'tarjeta_debito');
         var usingSaved = savedSelect && savedSelect.value;
-        if(usingCard && !usingSaved){
-          tarjetaCampos.style.display = '';
-        } else {
+        
+        // Si se selecciona una tarjeta guardada, ocultar el selector de métodos de pago
+        if(usingSaved){
+          metodoPagoGroup.style.display = 'none';
           tarjetaCampos.style.display = 'none';
+        } else {
+          metodoPagoGroup.style.display = '';
+          if(usingCard){
+            tarjetaCampos.style.display = '';
+          } else {
+            tarjetaCampos.style.display = 'none';
+          }
         }
       }
+      
       selector.addEventListener('change', toggle);
-      if(savedSelect){ savedSelect.addEventListener('change', toggle); }
+      if(savedSelect){ 
+        savedSelect.addEventListener('change', toggle); 
+      }
       toggle();
     });
   </script>

@@ -35,11 +35,21 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        // Determinar el rol basado en el email
+        $role = 'cliente'; // Por defecto es cliente
+        // Extraer la parte antes del @ del email
+        $emailParts = explode('@', $request->email);
+        $username = $emailParts[0] ?? '';
+        
+        if (str_ends_with($username, '.technova')) {
+            $role = 'admin';
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'cliente',
+            'role' => $role,
         ]);
 
         event(new Registered($user));

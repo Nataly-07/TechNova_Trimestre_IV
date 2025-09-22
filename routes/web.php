@@ -12,11 +12,15 @@ use App\Http\Controllers\MedioPagoController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\AtencionClienteController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Frontend\AuthController;
 
 use App\Models\Producto;
+
+// Incluir rutas de autenticación
+require __DIR__.'/auth.php';
 
 // Rutas públicas del catálogo (sin autenticación)
 Route::get('/', [CatalogoController::class, 'index'])->name('index');
@@ -59,8 +63,8 @@ Route::get('/marca/lenovo', function() {
 Route::get('/categoria/{categoria}', [CatalogoController::class, 'categoria'])->name('categoria');
 Route::get('/marca/{marca}', [CatalogoController::class, 'marca'])->name('marca');
 
-// Ruta autenticada del catálogo (requiere autenticación)
-Route::middleware(['auth'])->group(function () {
+// Ruta autenticada del catálogo (solo para clientes)
+Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->group(function () {
     Route::get('/catalogo-autenticado', [CatalogoController::class, 'catalogoAutenticado'])->name('catalogo.autenticado');
     Route::get('/buscar', [CatalogoController::class, 'buscar'])->name('buscar');
     
@@ -101,19 +105,26 @@ Route::middleware(['auth'])->group(function () {
     // Rutas genéricas autenticadas
     Route::get('/auth/categoria/{categoria}', [CatalogoController::class, 'categoriaAutenticada'])->name('auth.categoria');
     Route::get('/auth/marca/{marca}', [CatalogoController::class, 'marcaAutenticada'])->name('auth.marca');
+    
+    // Ruta para detalles del producto
+    Route::get('/producto/{id}/detalles', [CatalogoController::class, 'mostrarDetalles'])->name('producto.detalles');
 });
 
 // Rutas de login y registro frontend
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::get('/iniciosesion', [AuthController::class, 'showLoginForm'])->name('frontend.login');
 Route::post('/iniciosesion', [AuthController::class, 'login'])->name('frontend.login.submit');
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
 Route::get('/creacioncuenta', [AuthController::class, 'showRegisterForm'])->name('frontend.register');
 Route::post('/creacioncuenta', [AuthController::class, 'register'])->name('frontend.register.submit');
 
 // Ruta de logout (debe estar fuera de middleware para funcionar)
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Rutas de favoritos (requieren autenticación)
-Route::middleware(['auth'])->group(function () {
+// Rutas de favoritos (solo para clientes)
+Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->group(function () {
     Route::get('/favoritos', [FavoritoController::class, 'index'])->name('favoritos.index');
     Route::post('/favoritos/{productoId}/toggle', [FavoritoController::class, 'toggle'])->name('favoritos.toggle');
     Route::post('/favoritos/{productoId}/agregar', [FavoritoController::class, 'agregar'])->name('favoritos.agregar');
@@ -139,6 +150,27 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/medios-pago', [MedioPagoController::class, 'index'])->name('medios-pago.index');
     Route::post('/compras/procesar', [MedioPagoController::class, 'procesarPago'])->name('compras.procesar');
     
+    // Rutas de gestión de medios de pago del cliente
+    Route::get('/cliente/medios-pago', [\App\Http\Controllers\ClienteMediosPagoController::class, 'index'])->name('cliente.medios-pago.index');
+    Route::post('/cliente/medios-pago', [\App\Http\Controllers\ClienteMediosPagoController::class, 'store'])->name('cliente.medios-pago.store');
+    Route::delete('/cliente/medios-pago/{id}', [\App\Http\Controllers\ClienteMediosPagoController::class, 'destroy'])->name('cliente.medios-pago.destroy');
+    Route::post('/cliente/medios-pago/{id}/default', [\App\Http\Controllers\ClienteMediosPagoController::class, 'setDefault'])->name('cliente.medios-pago.default');
+    
+    // Rutas de gestión de compras del cliente
+    Route::get('/cliente/mis-compras', [\App\Http\Controllers\ClienteComprasController::class, 'index'])->name('cliente.mis-compras.index');
+    Route::get('/cliente/mis-compras/{id}', [\App\Http\Controllers\ClienteComprasController::class, 'show'])->name('cliente.mis-compras.show');
+    Route::get('/cliente/mis-compras/estadisticas', [\App\Http\Controllers\ClienteComprasController::class, 'estadisticas'])->name('cliente.mis-compras.estadisticas');
+    
+    // Ruta de compatibilidad para la URL antigua
+    Route::get('/mediopagos', function() {
+        return redirect()->route('cliente.medios-pago.index');
+    });
+    
+    // Ruta de compatibilidad para mis compras
+    Route::get('/miscompras', function() {
+        return redirect()->route('cliente.mis-compras.index');
+    });
+    
     // Rutas de compras
     Route::get('/compras', [CompraController::class, 'index'])->name('compras.index');
     Route::get('/compras/{id}', [CompraController::class, 'show'])->name('compras.show');
@@ -149,7 +181,10 @@ Route::middleware(['auth'])->group(function () {
         // Rutas de pedidos del cliente
         Route::get('/pedidoscli', [\App\Http\Controllers\PedidosClienteController::class, 'index'])->name('pedidoscli');
         Route::get('/pedidoscli/{id}', [\App\Http\Controllers\PedidosClienteController::class, 'show'])->name('pedidoscli.show');
+        Route::get('/pedidoscli/{id}/factura', [\App\Http\Controllers\PedidosClienteController::class, 'factura'])->name('pedidoscli.factura');
+        Route::get('/pedidoscli/{id}/factura/pdf', [\App\Http\Controllers\PedidosClienteController::class, 'facturaPDF'])->name('pedidoscli.factura.pdf');
         Route::post('/pedidoscli/{id}/cancelar', [\App\Http\Controllers\PedidosClienteController::class, 'cancelar'])->name('pedidoscli.cancelar');
+        Route::post('/pedidoscli/{id}/volver-a-pedir', [\App\Http\Controllers\PedidosClienteController::class, 'volverAPedir'])->name('pedidoscli.volver-a-pedir');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -169,8 +204,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    // Rutas para usuarios
+// Rutas solo para administradores
+Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(function () {
+    // Rutas para usuarios (solo admin)
     Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
     Route::get('/usuarios/create', [UserController::class, 'create'])->name('usuarios.create');
     Route::post('/usuarios', [UserController::class, 'store'])->name('usuarios.store');
@@ -178,7 +214,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/usuarios/{id}', [UserController::class, 'update'])->name('usuarios.update');
     Route::delete('/usuarios/{id}', [UserController::class, 'destroy'])->name('usuarios.destroy');
 
-    // Rutas para productos
+    // Rutas para productos (solo admin)
     Route::get('/productos', [\App\Http\Controllers\ProductoController::class, 'index'])->name('productos.index');
     Route::get('/productos/create', [\App\Http\Controllers\ProductoController::class, 'create'])->name('productos.create');
     Route::post('/productos', [\App\Http\Controllers\ProductoController::class, 'store'])->name('productos.store');
@@ -194,7 +230,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/proveedores/{id}', [ProveedorController::class, 'update'])->name('proveedores.update');
     Route::delete('/proveedores/{id}', [ProveedorController::class, 'destroy'])->name('proveedores.destroy');
 
-    // Rutas para reportes
+    // Rutas para reportes (solo admin)
     Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
     Route::get('/reportes/productos', [ReporteController::class, 'productos'])->name('reportes.productos');
     Route::get('/reportes/usuarios', [ReporteController::class, 'usuarios'])->name('reportes.usuarios');
@@ -208,41 +244,84 @@ Route::middleware(['auth', 'admin'])->group(function () {
     
 });
 
-
-Route::middleware(['auth', 'admin'])->group(function () {
-// Rutas para inventario
-Route::get('/inventario', [\App\Http\Controllers\InventarioController::class, 'index'])->name('inventario.index');
-Route::get('/inventarioempleados', [\App\Http\Controllers\InventarioController::class, 'empleados'])->name('inventario.empleados');
+// Rutas para empleados
+Route::middleware([\App\Http\Middleware\EmpleadoMiddleware::class])->group(function () {
+    Route::get('/empleado/inventario', [EmpleadoController::class, 'inventario'])->name('empleado.inventario');
+    Route::get('/empleado/usuarios-cliente', [EmpleadoController::class, 'usuariosCliente'])->name('empleado.usuarios.cliente');
+    Route::get('/inventarioempleados', [EmpleadoController::class, 'inventario'])->name('inventarioempleados');
 });
 
-// Rutas de perfiles por rol
-Route::middleware(['auth'])->group(function () {
-    Route::redirect('/perfil/admin', '/perfilad')->name('perfil.admin');
-    Route::redirect('/perfil/empleado', '/perfilemp')->name('perfil.empleado');
-    Route::redirect('/perfil/cliente', '/perfillcli')->name('perfil.cliente');
 
-    // Alias de rutas para compatibilidad con las antiguas páginas HTML
+// Rutas para clientes
+Route::middleware([\App\Http\Middleware\ClienteMiddleware::class])->group(function () {
+    // Rutas de gestión de medios de pago del cliente
+    Route::get('/cliente/medios-pago', [\App\Http\Controllers\ClienteMediosPagoController::class, 'index'])->name('cliente.medios-pago.index');
+    Route::post('/cliente/medios-pago', [\App\Http\Controllers\ClienteMediosPagoController::class, 'store'])->name('cliente.medios-pago.store');
+    Route::delete('/cliente/medios-pago/{id}', [\App\Http\Controllers\ClienteMediosPagoController::class, 'destroy'])->name('cliente.medios-pago.destroy');
+    Route::post('/cliente/medios-pago/{id}/default', [\App\Http\Controllers\ClienteMediosPagoController::class, 'setDefault'])->name('cliente.medios-pago.default');
+    
+    // Rutas de gestión de compras del cliente
+    Route::get('/cliente/mis-compras', [\App\Http\Controllers\ClienteComprasController::class, 'index'])->name('cliente.mis-compras.index');
+    Route::get('/cliente/mis-compras/{id}', [\App\Http\Controllers\ClienteComprasController::class, 'show'])->name('cliente.mis-compras.show');
+    Route::get('/cliente/mis-compras/estadisticas', [\App\Http\Controllers\ClienteComprasController::class, 'estadisticas'])->name('cliente.mis-compras.estadisticas');
+});
+
+// Rutas de perfiles específicas por rol
+Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(function () {
     Route::get('/perfilad', [UserController::class, 'perfilad'])->name('perfilad');
-    Route::view('/perfilep', 'frontend.perfilep')->name('perfilep');
-    Route::view('/perfilemp', 'frontend.perfilep')->name('perfilemp'); // alias por posible nombre previo
-    Route::view('/perfilcli', 'frontend.perfilcli')->name('perfilcli');
-    Route::view('/perfillcli', 'frontend.perfilcli')->name('perfillcli'); // alias exacto solicitado
+});
 
-    // Agregar ruta para perfil empleado real
+Route::middleware(['auth', \App\Http\Middleware\EmpleadoMiddleware::class])->group(function () {
     Route::get('/perfilemp', [\App\Http\Controllers\UserController::class, 'perfilEmpleado'])->name('perfilemp');
+    Route::view('/perfilep', 'frontend.perfilep')->name('perfilep');
+});
 
-    // Agregar ruta para perfil cliente real
-    Route::get('/perfillcli', [\App\Http\Controllers\UserController::class, 'perfilCliente'])->name('perfillcli');
+Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->group(function () {
+    Route::get('/perfillcli', [UserController::class, 'perfilCliente'])->name('perfillcli');
+});
+
+// Rutas de gestión de perfil (accesibles para todos los usuarios autenticados)
+Route::middleware(['auth'])->group(function () {
+    // Rutas para formularios de autenticación personalizados
+    Route::get('/registro', function() {
+        return view('frontend.registro');
+    })->name('frontend.registro');
 
     // Rutas para gestión de perfil
     Route::get('/perfil/edit', [PerfilController::class, 'edit'])->name('perfil.edit');
     Route::put('/perfil/update', [PerfilController::class, 'update'])->name('perfil.update');
     Route::get('/perfil/delete', [PerfilController::class, 'confirmDelete'])->name('perfil.delete');
     Route::delete('/perfil/destroy', [PerfilController::class, 'destroy'])->name('perfil.destroy');
-
-    // Rutas para empleados
-    Route::get('/empleado/inventario', [EmpleadoController::class, 'inventario'])->name('empleado.inventario');
-    Route::get('/empleado/usuarios-cliente', [EmpleadoController::class, 'usuariosCliente'])->name('empleado.usuarios.cliente');
-    Route::get('/inventarioempleados', [EmpleadoController::class, 'inventario'])->name('inventarioempleados');
-
 });
+
+// Rutas de inventario (solo para empleados)
+Route::middleware(['auth', \App\Http\Middleware\EmpleadoMiddleware::class])->group(function () {
+    Route::get('/inventario', [\App\Http\Controllers\InventarioController::class, 'index'])->name('inventario.index');
+});
+
+// Rutas de compatibilidad para URLs antiguas (solo para clientes)
+Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->group(function () {
+    // Ruta de compatibilidad para mis compras
+    Route::get('/miscompras', function() {
+        return redirect()->route('cliente.mis-compras.index');
+    });
+    
+    // Ruta de compatibilidad para la URL antigua
+    Route::get('/mediopagos', function() {
+        return redirect()->route('cliente.medios-pago.index');
+    });
+    
+    // Rutas de atención al cliente (solo para clientes)
+    Route::get('/atencion-cliente', [AtencionClienteController::class, 'index'])->name('atencion-cliente.index');
+    Route::post('/atencion-cliente', [AtencionClienteController::class, 'store'])->name('atencion-cliente.store');
+    Route::post('/atencion-cliente/{id}/responder', [AtencionClienteController::class, 'responder'])->name('atencion-cliente.responder');
+    
+    // Ruta de compatibilidad para la URL antigua
+    Route::get('/atencion', function() {
+        return redirect()->route('atencion-cliente.index');
+    });
+});
+
+// Ruta de atención al cliente accesible sin autenticación (con funcionalidad limitada)
+Route::get('/atencion-publica', [AtencionClienteController::class, 'indexPublico'])->name('atencion-cliente.publico');
+

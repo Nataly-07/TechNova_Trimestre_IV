@@ -48,7 +48,7 @@
         <div class="enlace"><a href="{{ route('perfilemp') }}"><i class="bx bx-user-circle"></i> Mi Perfil</a></div>
         <div class="enlace"><a href="{{ route('empleado.usuarios.cliente') }}"><i class="bx bx-user"></i> Usuarios</a></div>
         <div class="enlace"><a href="#"><i class="bx bx-message"></i> Mensajes</a></div>
-        <div class="enlace"><a href="{{ route('empleado.inventario') }}"><i class="bx bx-shopping-bag"></i> Inventario</a></div>
+        <div class="enlace"><a href="{{ route('empleado.inventario') }}"><i class="bx bx-shopping-bag"></i> Visualización Artículos</a></div>
         <div class="enlace"><a href="#"><i class="bx bx-cart"></i> Pedidos</a></div>
         <div class="enlace"><a href="#"><i class="bx bx-headphone"></i> Atención al Cliente</a></div>
         <div class="enlace"><a href="/logout"><i class="bx bx-log-out"></i> Cerrar Sesión</a></div>

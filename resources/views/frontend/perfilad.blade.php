@@ -113,14 +113,14 @@
             <i class='bx bx-chart'></i>
           </div>
           <div class="card-content">
-            <h3>Estadísticas</h3>
+            <h3>Reportes</h3>
             <p>Visualiza métricas del negocio</p>
             <div class="card-stats">
-              <span class="stat-number">-</span>
+              <span class="stat-number">{{ $reportesDisponibles }}</span>
               <span class="stat-label">reportes disponibles</span>
             </div>
-            <a href="{{ route('dashboard') }}" class="card-button">
-              <i class='bx bx-right-arrow-alt'></i> Ver Estadísticas
+            <a href="{{ route('reportes.index') }}" class="card-button">
+              <i class='bx bx-right-arrow-alt'></i> Ver Reportes
             </a>
           </div>
         </div>
@@ -133,7 +133,7 @@
             <h3>Proveedores</h3>
             <p>Gestiona proveedores y compras</p>
             <div class="card-stats">
-              <span class="stat-number">-</span>
+              <span class="stat-number">{{ count($proveedores) }}</span>
               <span class="stat-label">proveedores activos</span>
             </div>
             <a href="{{ route('proveedores.index') }}" class="card-button">
@@ -143,28 +143,6 @@
         </div>
       </div>
 
-      <!-- Quick Actions -->
-      <div class="quick-actions">
-        <h2>Acciones Rápidas</h2>
-        <div class="action-buttons">
-          <a href="{{ route('usuarios.create') }}" class="action-btn primary">
-            <i class='bx bx-user-plus'></i>
-            <span>Nuevo Usuario</span>
-          </a>
-          <a href="{{ route('productos.create') }}" class="action-btn secondary">
-            <i class='bx bx-plus'></i>
-            <span>Nuevo Producto</span>
-          </a>
-          <a href="#" class="action-btn tertiary">
-            <i class='bx bx-message'></i>
-            <span>Ver Mensajes</span>
-          </a>
-          <a href="#" class="action-btn quaternary">
-            <i class='bx bx-cart'></i>
-            <span>Ver Pedidos</span>
-          </a>
-        </div>
-      </div>
 
     </main><!-- /main-content -->
 

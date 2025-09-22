@@ -56,11 +56,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (id === "password") {
-      document.querySelector('[data-req="length"]').classList.toggle("valid", val.length >= 8);
-      document.querySelector('[data-req="upper"]').classList.toggle("valid", /[A-Z]/.test(val));
-      document.querySelector('[data-req="lower"]').classList.toggle("valid", /[a-z]/.test(val));
-      document.querySelector('[data-req="digit"]').classList.toggle("valid", /[0-9]/.test(val));
-      document.querySelector('[data-req="special"]').classList.toggle("valid", /[\W_]/.test(val));
+      const lengthValid = val.length >= 8;
+      const upperValid = /[A-Z]/.test(val);
+      const lowerValid = /[a-z]/.test(val);
+      const digitValid = /[0-9]/.test(val);
+      const specialValid = /[\W_]/.test(val);
+      
+      document.querySelector('[data-req="length"]').classList.toggle("valid", lengthValid);
+      document.querySelector('[data-req="upper"]').classList.toggle("valid", upperValid);
+      document.querySelector('[data-req="lower"]').classList.toggle("valid", lowerValid);
+      document.querySelector('[data-req="digit"]').classList.toggle("valid", digitValid);
+      document.querySelector('[data-req="special"]').classList.toggle("valid", specialValid);
+      
+      // Verificar si todos los requisitos están completos
+      const allComplete = lengthValid && upperValid && lowerValid && digitValid && specialValid;
+      const passwordRequisitos = document.querySelector('.password-requisitos');
+      
+      if (passwordRequisitos) {
+        if (allComplete) {
+          // Aplicar la clase de éxito y ocultar después de la animación
+          passwordRequisitos.classList.add('all-complete');
+          // Ocultar después de 1.5 segundos para que se vea la animación
+          setTimeout(() => {
+            passwordRequisitos.style.display = 'none';
+          }, 1500);
+        } else {
+          // Mostrar de nuevo si no están todos completos
+          passwordRequisitos.style.display = 'block';
+          passwordRequisitos.classList.remove('all-complete');
+        }
+      }
     }
 
     return esValido;

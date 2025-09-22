@@ -19,6 +19,7 @@
             </div>
 
             <!-- Settings Dropdown -->
+            @auth
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -51,6 +52,17 @@
                     </x-slot>
                 </x-dropdown>
             </div>
+            @else
+            <!-- Login/Register Links for unauthenticated users -->
+            <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <a href="/iniciosesion" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">
+                    Iniciar Sesión
+                </a>
+                <a href="/creacioncuenta" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">
+                    Registrarse
+                </a>
+            </div>
+            @endauth
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
@@ -73,6 +85,7 @@
         </div>
 
         <!-- Responsive Settings Options -->
+        @auth
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
@@ -96,5 +109,18 @@
                 </form>
             </div>
         </div>
+        @else
+        <!-- Responsive Login/Register for unauthenticated users -->
+        <div class="pt-4 pb-1 border-t border-gray-200">
+            <div class="mt-3 space-y-1">
+                <x-responsive-nav-link href="/iniciosesion">
+                    Iniciar Sesión
+                </x-responsive-nav-link>
+                <x-responsive-nav-link href="/creacioncuenta">
+                    Registrarse
+                </x-responsive-nav-link>
+            </div>
+        </div>
+        @endauth
     </div>
 </nav>

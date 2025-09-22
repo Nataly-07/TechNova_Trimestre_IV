@@ -69,7 +69,7 @@
             }
           @endphp
           <img src="{{ $imgSrc }}" alt="{{ $producto->Nombre }}">
-          <a href="#"><span class="detalles">Ver Más Detalles</span></a>
+          <a href="{{ route('producto.detalles', $producto->ID_Producto) }}"><span class="detalles">Ver Más Detalles</span></a>
           <h3>{{ $producto->Nombre }}</h3>
           <p>4.5 ⭐</p>
           <p class="precio-original">${{ number_format($producto->caracteristicas->Precio_Venta * 1.05, 0, ',', '.') }}</p>
@@ -111,7 +111,7 @@
               }
             @endphp
             <img src="{{ $imgSrc }}" alt="{{ $productos->first()->Nombre }}" style="width: 180px; height: auto; margin: 0 auto; display: block; border-radius: 10px;">
-            <a href="#" style="display: inline-block; margin: 15px 0; background: var(--gradient-secondary); color: white; padding: 8px 15px; border-radius: 12px; font-weight: bold; font-size: 1em; text-decoration: none;">Ver Más Detalles</a>
+            <a href="{{ route('producto.detalles', $productos->first()->ID_Producto) }}" style="display: inline-block; margin: 15px 0; background: var(--gradient-secondary); color: white; padding: 8px 15px; border-radius: 12px; font-weight: bold; font-size: 1em; text-decoration: none;">Ver Más Detalles</a>
             <h3 style="font-weight: bold; margin: 12px 0 8px; font-size: 1.2em;">{{ $productos->first()->Nombre }}</h3>
             <p style="margin: 8px 0; font-size: 1em;">4.9 ⭐</p>
             <p class="precio-original" style="text-decoration: line-through; color: gray; margin: 8px 0; font-size: 0.9em;">
@@ -144,7 +144,7 @@
                   }
                 @endphp
                 <img src="{{ $imgSrc }}" alt="{{ $producto->Nombre }}" style="width: 140px; height: auto; margin: 0 auto; display: block; border-radius: 10px;">
-                <a href="#" style="display: inline-block; margin: 12px 0; background: var(--gradient-secondary); color: white; padding: 6px 12px; border-radius: 12px; font-weight: bold; font-size: 0.9em; text-decoration: none;">Ver Más Detalles</a>
+                <a href="{{ route('producto.detalles', $producto->ID_Producto) }}" style="display: inline-block; margin: 12px 0; background: var(--gradient-secondary); color: white; padding: 6px 12px; border-radius: 12px; font-weight: bold; font-size: 0.9em; text-decoration: none;">Ver Más Detalles</a>
                 <h3 style="font-weight: bold; margin: 10px 0 6px; font-size: 1em;">{{ $producto->Nombre }}</h3>
                 <p style="margin: 6px 0; font-size: 0.9em;">4.9 ⭐</p>
                 <p class="precio-original" style="text-decoration: line-through; color: gray; margin: 6px 0; font-size: 0.8em;">

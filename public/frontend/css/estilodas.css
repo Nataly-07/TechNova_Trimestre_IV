@@ -211,6 +211,7 @@ body {
 
 .menu a {
     color: white;
+    text-decoration: none;
 }
 
 .menu .enlace:hover {

@@ -28,37 +28,7 @@
   </header>
 
   <div class="dashboard-wrapper">
-    <div class="menu-dashboard">
-      <!-- TOP MENU -->
-      <div class="top-menu">
-        <div class="logo">
-          <img src="{{ asset('frontend/imagenes/logo technova.png') }}" alt=""> 
-          <span>Dashboard Cliente</span>
-        </div>
-        <div class="toggle">
-          <i class='bx bx-menu'></i>
-        </div>
-      </div>
-
-      <!-- MENÚ -->
-      <div class="menu">
-        <div class="enlace"><a href="{{ route('perfillcli') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
-        <div class="enlace"><a href="{{ route('favoritos.index') }}"><i class='bx bx-heart'></i> Favoritos</a></div>
-        <div class="enlace"><a href="{{ url('mensajescli') }}"><i class='bx bx-message'></i> Mensajes</a></div>
-        <div class="enlace"><a href="{{ route('pedidoscli') }}"><i class='bx bx-cart'></i> Pedidos</a></div>
-        <div class="enlace"><a href="{{ route('medios-pago.index') }}"><i class='bx bx-credit-card'></i>Medios De  Pagos</a></div>
-        <div class="enlace"><a href="{{ route('compras.index') }}"><i class='bx bx-cart'></i> Mis Compras</a></div>
-        <div class="enlace"><a href="{{ url('atencion') }}"><i class='bx bx-headphone'></i> Atencion Al Cliente</a></div>
-         <div class="enlace">
-           <form method="POST" action="{{ route('logout') }}">
-             @csrf
-             <button type="submit" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;">
-               <i class='bx bx-log-out'></i> Cerrar Sesión
-             </button>
-           </form>
-         </div>
-       </div>
-    </div><!-- /.menu-dashboard -->
+    @include('frontend.layouts.sidebar-cliente')
 
     <!-- PRINCIPAL -->
     <main class="main-content">
@@ -71,10 +41,10 @@
       <div class="filters-section">
         <div class="search-filter">
           <i class='bx bx-search'></i>
-          <input type="text" placeholder="Buscar por ID de pedido o producto...">
+          <input type="text" id="buscador-pedidos" placeholder="Buscar por ID (ej: 12) o nombre de producto...">
         </div>
         <div class="status-filter">
-          <select>
+          <select id="filtro-estado">
             <option value="">Todos los estados</option>
             <option value="pendiente">Pendiente</option>
             <option value="preparacion">En preparación</option>
@@ -129,7 +99,7 @@
                     @endphp
                     <img src="{{ $imgSrc }}" alt="{{ $producto['nombre'] }}" class="producto-img">
                     <div class="producto-details">
-                      <h4>{{ $producto['nombre'] }}</h4>
+                      <h4 class="producto-nombre">{{ $producto['nombre'] }}</h4>
                       <p>Cantidad: {{ $producto['cantidad'] }}</p>
                       <p class="precio">${{ number_format($producto['precio'], 0, ',', '.') }}</p>
                       @if($producto['caracteristicas'])
@@ -174,9 +144,9 @@
               </div>
 
               <div class="pedido-actions">
-                <button class="btn-secondary">
+                <a href="{{ route('pedidoscli.factura', $pedido['id']) }}" class="btn-secondary">
                   <i class='bx bx-receipt'></i> Ver Factura
-                </button>
+                </a>
                 @if($pedido['estado'] != 'pendiente' && $pedido['estado'] != 'preparacion')
                   <button class="btn-primary">
                     <i class='bx bx-package'></i> Rastrear Envío
@@ -186,7 +156,7 @@
                     <i class='bx bx-package'></i> Rastrear Envío
                   </button>
                 @endif
-                <button class="btn-outline">
+                <button class="btn-outline" onclick="volverAPedir({{ $pedido['id'] }})">
                   <i class='bx bx-refresh'></i> Volver a Pedir
                 </button>
                 @if($pedido['estado'] == 'pendiente' || $pedido['estado'] == 'preparacion')
@@ -265,6 +235,110 @@
         });
       }
     }
+
+    function volverAPedir(pedidoId) {
+      if (confirm('¿Estás seguro de que quieres volver a pedir estos productos? Se agregarán a tu carrito y serás redirigido al proceso de pago.')) {
+        // Mostrar loading
+        const button = event.target.closest('button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Procesando...';
+        button.disabled = true;
+
+        // Enviar petición AJAX
+        fetch(`/pedidoscli/${pedidoId}/volver-a-pedir`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Mostrar mensaje de éxito con detalles
+            let mensaje = data.message;
+            
+            if (data.productos_no_disponibles && data.productos_no_disponibles.length > 0) {
+              mensaje += '\n\nProductos no disponibles:';
+              data.productos_no_disponibles.forEach(producto => {
+                mensaje += `\n- ${producto.nombre}: solicitado ${producto.solicitado}, disponible ${producto.disponible}`;
+              });
+            }
+            
+            alert(mensaje + '\n\nSerás redirigido al proceso de pago...');
+            
+            // Redirigir al checkout
+            if (data.redirect_url) {
+              window.location.href = data.redirect_url;
+            }
+          } else {
+            // Mostrar mensaje de error
+            alert('Error: ' + (data.message || 'Error desconocido'));
+            // Restaurar botón
+            button.innerHTML = originalText;
+            button.disabled = false;
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error al procesar la solicitud. Por favor, intenta de nuevo.');
+          // Restaurar botón
+          button.innerHTML = originalText;
+          button.disabled = false;
+        });
+      }
+    }
+  </script>
+
+  <script>
+    // Filtros de pedidos
+    document.addEventListener('DOMContentLoaded', function() {
+      const buscador = document.getElementById('buscador-pedidos');
+      const filtroEstado = document.getElementById('filtro-estado');
+      const pedidos = document.querySelectorAll('.pedido-card');
+      
+      function filtrarPedidos() {
+        const terminoBusqueda = buscador.value.toLowerCase().trim();
+        const estadoSeleccionado = filtroEstado.value;
+        
+        pedidos.forEach(function(pedido) {
+          const estadoBadge = pedido.querySelector('.estado-badge');
+          const estadoPedido = estadoBadge ? estadoBadge.className.split(' ')[1] : '';
+          
+          let coincideBusqueda = true;
+          
+          if (terminoBusqueda) {
+            // Obtener el ID del pedido
+            const pedidoIdElement = pedido.querySelector('h3');
+            const pedidoId = pedidoIdElement ? pedidoIdElement.textContent.match(/#(\d+)/) : null;
+            const idPedido = pedidoId ? pedidoId[1] : '';
+            
+            // Obtener nombres de productos
+            const productos = pedido.querySelectorAll('.producto-nombre');
+            const nombresProductos = Array.from(productos).map(p => p.textContent.toLowerCase());
+            
+            // Si el término de búsqueda es solo números, buscar por ID exacto
+            if (/^\d+$/.test(terminoBusqueda)) {
+              coincideBusqueda = idPedido === terminoBusqueda;
+            } else {
+              // Si contiene texto, buscar en nombres de productos
+              coincideBusqueda = nombresProductos.some(nombre => nombre.includes(terminoBusqueda));
+            }
+          }
+          
+          const coincideEstado = !estadoSeleccionado || estadoPedido === estadoSeleccionado;
+          
+          if (coincideBusqueda && coincideEstado) {
+            pedido.style.display = 'block';
+          } else {
+            pedido.style.display = 'none';
+          }
+        });
+      }
+      
+      if (buscador) buscador.addEventListener('input', filtrarPedidos);
+      if (filtroEstado) filtroEstado.addEventListener('change', filtrarPedidos);
+    });
   </script>
 
 </body>

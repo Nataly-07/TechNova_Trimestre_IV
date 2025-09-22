@@ -160,45 +160,55 @@
   </header>
 
   <div class="dashboard-wrapper">
-    <div class="menu-dashboard">
-      <!-- TOP MENU -->
-      <div class="top-menu">
-        <div class="logo">
-          <img src="{{ asset('frontend/imagenes/logo technova.png') }}" alt=""> 
-          <span>Panel Usuario</span>
+    @if(auth()->user()->role === 'cliente')
+      @include('frontend.layouts.sidebar-cliente')
+    @else
+      <div class="menu-dashboard">
+
+
+        <div class="top-menu">
+          <div class="logo">
+            <img src="{{ asset('frontend/imagenes/logo technova.png') }}" alt=""> 
+            <span>Panel Usuario</span>
+          </div>
+          <div class="toggle">
+            <i class='bx bx-menu'></i>
+          </div>
         </div>
-        <div class="toggle">
-          <i class='bx bx-menu'></i>
+
+
+
+        <div class="input-search">
+          <i class='bx bx-search'></i>
+          <input type="text" class="input" placeholder="Buscar">
+        </div>
+
+        <div class="menu">
+          @if(auth()->user()->role === 'admin')
+            <div class="enlace"><a href="{{ route('perfilad') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
+            <div class="enlace"><a href="{{ route('usuarios.index') }}"><i class='bx bx-user'></i> Usuarios</a></div>
+            <div class="enlace"><a href="{{ route('productos.index') }}"><i class='bx bx-shopping-bag'></i> Inventario</a></div>
+            <div class="enlace"><a href="{{ route('dashboard') }}"><i class='bx bx-chart'></i> Estadísticas</a></div>
+            <div class="enlace"><a href="{{ route('proveedores.index') }}"><i class='bx bx-user-circle'></i> Proveedores</a></div>
+          @elseif(auth()->user()->role === 'empleado')
+            <div class="enlace"><a href="{{ route('perfilemp') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
+            <div class="enlace"><a href="{{ route('empleado.inventario') }}"><i class='bx bx-shopping-bag'></i> Visualización Artículos</a></div>
+            <div class="enlace"><a href="{{ route('empleado.usuarios.cliente') }}"><i class='bx bx-user'></i> Usuarios Cliente</a></div>
+          @endif
+          <div class="enlace"><a href="{{ route('catalogo.autenticado') }}"><i class='bx bx-store'></i> Catálogo</a></div>
+          <div class="enlace"><a href="{{ route('favoritos.index') }}"><i class='bx bx-heart'></i> Favoritos</a></div>
+          <div class="enlace"><a href="{{ route('carrito.index') }}"><i class='bx bx-cart'></i> Carrito</a></div>
+          <div class="enlace">
+            <form method="POST" action="{{ route('logout') }}">
+              @csrf
+              <button type="submit" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;">
+                <i class='bx bx-log-out'></i> Cerrar Sesión
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-
-      <!-- INPUT SEARCH -->
-      <div class="input-search">
-        <i class='bx bx-search'></i>
-        <input type="text" class="input" placeholder="Buscar">
-      </div>
-
-      <div class="menu">
-        @if(auth()->user()->role === 'admin')
-          <div class="enlace"><a href="{{ route('perfilad') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
-          <div class="enlace"><a href="{{ route('usuarios.index') }}"><i class='bx bx-user'></i> Usuarios</a></div>
-          <div class="enlace"><a href="{{ route('productos.index') }}"><i class='bx bx-shopping-bag'></i> Inventario</a></div>
-          <div class="enlace"><a href="{{ route('dashboard') }}"><i class='bx bx-chart'></i> Estadísticas</a></div>
-          <div class="enlace"><a href="{{ route('proveedores.index') }}"><i class='bx bx-user-circle'></i> Proveedores</a></div>
-        @elseif(auth()->user()->role === 'empleado')
-          <div class="enlace"><a href="{{ route('perfilemp') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
-          <div class="enlace"><a href="{{ route('empleado.inventario') }}"><i class='bx bx-shopping-bag'></i> Inventario</a></div>
-          <div class="enlace"><a href="{{ route('empleado.usuarios.cliente') }}"><i class='bx bx-user'></i> Usuarios Cliente</a></div>
-        @else
-          <div class="enlace"><a href="{{ route('perfillcli') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
-        @endif
-        <div class="enlace"><a href="{{ route('catalogo.autenticado') }}"><i class='bx bx-store'></i> Catálogo</a></div>
-        <div class="enlace"><a href="{{ route('favoritos.index') }}"><i class='bx bx-heart'></i> Favoritos</a></div>
-        <div class="enlace"><a href="#"><i class='bx bx-cart'></i> Carrito</a></div>
-        <div class="enlace"><a href="{{ route('logout') }}"><i class='bx bx-log-out'></i> Cerrar Sesión</a></div>
-      </div>
-
-    </div><!-- /.menu-dashboard -->
+    @endif
 
     <!-- PRINCIPAL -->
     <main class="main-content">

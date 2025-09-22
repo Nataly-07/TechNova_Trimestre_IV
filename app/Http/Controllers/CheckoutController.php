@@ -58,7 +58,11 @@ class CheckoutController extends Controller
             return redirect()->route('checkout.direccion');
         }
 
-        $productos = $carrito->detalles()->with('producto.caracteristicas')->get();
+        // Obtener productos del carrito con sus detalles
+        $productos = $carrito->detalles()
+            ->with('producto.caracteristicas')
+            ->get();
+        
         $total = $this->calcularTotal($productos);
 
         return view('frontend.checkout.informacion', compact('user', 'productos', 'total'));
@@ -100,7 +104,11 @@ class CheckoutController extends Controller
             return redirect()->route('checkout.envio');
         }
 
-        $productos = $carrito->detalles()->with('producto.caracteristicas')->get();
+        // Obtener productos del carrito con sus detalles, excluyendo productos que no existen
+        $productos = $carrito->detalles()
+            ->with('producto.caracteristicas')
+            ->whereHas('producto') // Only products that exist
+            ->get();
         $total = $this->calcularTotal($productos);
         $direccionActual = session('checkout.direccion', []);
 
@@ -135,7 +143,11 @@ class CheckoutController extends Controller
             return redirect()->route('checkout.pago');
         }
 
-        $productos = $carrito->detalles()->with('producto.caracteristicas')->get();
+        // Obtener productos del carrito con sus detalles, excluyendo productos que no existen
+        $productos = $carrito->detalles()
+            ->with('producto.caracteristicas')
+            ->whereHas('producto') // Only products that exist
+            ->get();
         $total = $this->calcularTotal($productos);
         $direccion = session('checkout.direccion');
 
@@ -172,6 +184,16 @@ class CheckoutController extends Controller
                     ->first();
                 if (!$saved) {
                     return back()->with('error', 'Método de pago guardado inválido');
+                }
+                
+                // Determinar el método de pago basado en la tarjeta guardada
+                if ($saved->brand === 'Crédito') {
+                    $validated['metodo_pago'] = 'tarjeta_credito';
+                } elseif ($saved->brand === 'Débito') {
+                    $validated['metodo_pago'] = 'tarjeta_debito';
+                } else {
+                    // Para otros tipos como Nequi, PSE, etc.
+                    $validated['metodo_pago'] = strtolower(str_replace(' ', '_', $saved->brand));
                 }
             } else {
                 // Si el método es tarjeta y no eligió guardada, requerir campos básicos
@@ -218,7 +240,11 @@ class CheckoutController extends Controller
             return redirect()->route('checkout.revision');
         }
 
-        $productos = $carrito->detalles()->with('producto.caracteristicas')->get();
+        // Obtener productos del carrito con sus detalles, excluyendo productos que no existen
+        $productos = $carrito->detalles()
+            ->with('producto.caracteristicas')
+            ->whereHas('producto') // Only products that exist
+            ->get();
         $total = $this->calcularTotal($productos);
         $metodosDisponibles = MedioPago::getMetodosDisponibles();
         try {
@@ -245,7 +271,11 @@ class CheckoutController extends Controller
             return redirect()->route('carrito.index')->with('error', 'Tu carrito está vacío');
         }
 
-        $productos = $carrito->detalles()->with('producto.caracteristicas')->get();
+        // Obtener productos del carrito con sus detalles, excluyendo productos que no existen
+        $productos = $carrito->detalles()
+            ->with('producto.caracteristicas')
+            ->whereHas('producto') // Only products that exist
+            ->get();
         $total = $this->calcularTotal($productos);
         $checkout = session('checkout', []);
 
@@ -455,7 +485,16 @@ class CheckoutController extends Controller
     {
         $total = 0;
         foreach ($detalles as $detalle) {
-            $total += ($detalle->producto->caracteristicas->Precio_Venta ?? 0) * $detalle->Cantidad;
+            // Verificar que el producto existe
+            if (!$detalle->producto) {
+                continue;
+            }
+            
+            if ($detalle->producto->caracteristicas) {
+                $total += $detalle->producto->caracteristicas->Precio_Venta * $detalle->Cantidad;
+            } else {
+                $total += ($detalle->producto->Precio ?? 0) * $detalle->Cantidad;
+            }
         }
         return $total;
     }
