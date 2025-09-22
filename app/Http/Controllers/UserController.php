@@ -166,6 +166,29 @@ class UserController extends Controller
         $productos = \App\Models\Producto::with('caracteristicas')->get();
         $mediosPagoCount = \App\Models\UserPaymentMethod::where('user_id', auth()->id())->count();
         $comprasCount = \App\Models\Compra::where('ID_Usuario', auth()->id())->count();
-        return view('frontend.perfilcli', compact('productos', 'mediosPagoCount', 'comprasCount'));
+        
+        // Contar favoritos del usuario
+        $favoritosCount = \App\Models\Favorito::where('user_id', auth()->id())->count();
+        
+        // Contar productos en el carrito del usuario
+        $carritoCount = \App\Models\DetalleCarrito::whereHas('carrito', function($query) {
+            $query->where('ID_Usuario', auth()->id());
+        })->count();
+        
+        // Contar pedidos del usuario
+        $pedidosCount = \App\Models\Venta::where('ID_Usuario', auth()->id())->count();
+        
+        // Contar mensajes pendientes (asumiendo que hay un modelo Mensaje)
+        $mensajesCount = 0; // Por ahora 0, se puede implementar cuando exista el modelo
+        
+        return view('frontend.perfilcli', compact(
+            'productos', 
+            'mediosPagoCount', 
+            'comprasCount',
+            'favoritosCount',
+            'carritoCount',
+            'pedidosCount',
+            'mensajesCount'
+        ));
     }
 }
