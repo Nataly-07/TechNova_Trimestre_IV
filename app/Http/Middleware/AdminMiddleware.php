@@ -17,7 +17,12 @@ class AdminMiddleware
         
         // Verificar si el usuario es admin
         $user = Auth::user();
+        
+        // Log para debugging
+        \Log::info('AdminMiddleware ejecutado para usuario: ' . $user->email . ' con rol: ' . $user->role . ' en ruta: ' . $request->path());
+        
         if ($user->role !== 'admin') {
+            // Redirigir según el rol del usuario
             if ($user->role === 'cliente') {
                 return redirect()->route('perfillcli')->with('error', 'No tienes permisos de administrador para acceder a esta página.');
             } elseif ($user->role === 'empleado') {

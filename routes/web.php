@@ -63,8 +63,8 @@ Route::get('/marca/lenovo', function() {
 Route::get('/categoria/{categoria}', [CatalogoController::class, 'categoria'])->name('categoria');
 Route::get('/marca/{marca}', [CatalogoController::class, 'marca'])->name('marca');
 
-// Ruta autenticada del catálogo (requiere autenticación)
-Route::middleware(['auth'])->group(function () {
+// Ruta autenticada del catálogo (solo para clientes)
+Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->group(function () {
     Route::get('/catalogo-autenticado', [CatalogoController::class, 'catalogoAutenticado'])->name('catalogo.autenticado');
     Route::get('/buscar', [CatalogoController::class, 'buscar'])->name('buscar');
     
@@ -123,8 +123,8 @@ Route::post('/creacioncuenta', [AuthController::class, 'register'])->name('front
 // Ruta de logout (debe estar fuera de middleware para funcionar)
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Rutas de favoritos (requieren autenticación)
-Route::middleware(['auth'])->group(function () {
+// Rutas de favoritos (solo para clientes)
+Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->group(function () {
     Route::get('/favoritos', [FavoritoController::class, 'index'])->name('favoritos.index');
     Route::post('/favoritos/{productoId}/toggle', [FavoritoController::class, 'toggle'])->name('favoritos.toggle');
     Route::post('/favoritos/{productoId}/agregar', [FavoritoController::class, 'agregar'])->name('favoritos.agregar');
@@ -205,7 +205,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Rutas solo para administradores
-Route::middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(function () {
     // Rutas para usuarios (solo admin)
     Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
     Route::get('/usuarios/create', [UserController::class, 'create'])->name('usuarios.create');
@@ -266,20 +266,26 @@ Route::middleware([\App\Http\Middleware\ClienteMiddleware::class])->group(functi
     Route::get('/cliente/mis-compras/estadisticas', [\App\Http\Controllers\ClienteComprasController::class, 'estadisticas'])->name('cliente.mis-compras.estadisticas');
 });
 
-// Rutas de perfiles (accesibles según el rol del usuario)
-Route::middleware(['auth'])->group(function () {
-    // Alias de rutas para compatibilidad con las antiguas páginas HTML
+// Rutas de perfiles específicas por rol
+Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(function () {
     Route::get('/perfilad', [UserController::class, 'perfilad'])->name('perfilad');
+});
+
+Route::middleware(['auth', \App\Http\Middleware\EmpleadoMiddleware::class])->group(function () {
+    Route::get('/perfilemp', [\App\Http\Controllers\UserController::class, 'perfilEmpleado'])->name('perfilemp');
     Route::view('/perfilep', 'frontend.perfilep')->name('perfilep');
+});
+
+Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->group(function () {
     Route::get('/perfillcli', [UserController::class, 'perfilCliente'])->name('perfillcli');
-    
+});
+
+// Rutas de gestión de perfil (accesibles para todos los usuarios autenticados)
+Route::middleware(['auth'])->group(function () {
     // Rutas para formularios de autenticación personalizados
     Route::get('/registro', function() {
         return view('frontend.registro');
     })->name('frontend.registro');
-    
-    // Agregar ruta para perfil empleado real
-    Route::get('/perfilemp', [\App\Http\Controllers\UserController::class, 'perfilEmpleado'])->name('perfilemp');
 
     // Rutas para gestión de perfil
     Route::get('/perfil/edit', [PerfilController::class, 'edit'])->name('perfil.edit');
@@ -288,13 +294,13 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/perfil/destroy', [PerfilController::class, 'destroy'])->name('perfil.destroy');
 });
 
-// Rutas de inventario (accesibles según el rol)
-Route::middleware(['auth'])->group(function () {
+// Rutas de inventario (solo para empleados)
+Route::middleware(['auth', \App\Http\Middleware\EmpleadoMiddleware::class])->group(function () {
     Route::get('/inventario', [\App\Http\Controllers\InventarioController::class, 'index'])->name('inventario.index');
 });
 
-// Rutas de compatibilidad para URLs antiguas
-Route::middleware(['auth'])->group(function () {
+// Rutas de compatibilidad para URLs antiguas (solo para clientes)
+Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->group(function () {
     // Ruta de compatibilidad para mis compras
     Route::get('/miscompras', function() {
         return redirect()->route('cliente.mis-compras.index');
@@ -305,7 +311,7 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->route('cliente.medios-pago.index');
     });
     
-    // Rutas de atención al cliente
+    // Rutas de atención al cliente (solo para clientes)
     Route::get('/atencion-cliente', [AtencionClienteController::class, 'index'])->name('atencion-cliente.index');
     Route::post('/atencion-cliente', [AtencionClienteController::class, 'store'])->name('atencion-cliente.store');
     Route::post('/atencion-cliente/{id}/responder', [AtencionClienteController::class, 'responder'])->name('atencion-cliente.responder');
