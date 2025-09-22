@@ -594,7 +594,7 @@
       <tbody id="usuarios-body">
         @foreach($users as $user)
         <tr>
-          <td>{{ $user->name }}</td>
+          <td>{{ $user->first_name ?? 'Sin nombre' }} {{ $user->last_name ?? 'Sin apellido' }}</td>
           <td>{{ $user->email }}</td>
           <td>{{ $user->role }}</td>
           <td>
@@ -641,439 +641,406 @@
         &copy; {{ date('Y') }} Technova
     </footer>
 
-    <style>
-      /* Estilos para el modal personalizado */
-      .custom-modal {
-        display: none;
-        position: fixed;
-        z-index: 10000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(5px);
-        animation: fadeIn 0.3s ease;
-      }
-      
-      .modal-content {
-        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-        margin: 5% auto;
-        padding: 0;
-        border: none;
-        border-radius: 20px;
-        width: 90%;
-        max-width: 500px;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-        animation: slideInUp 0.4s ease;
-        overflow: hidden;
-      }
-      
-      .modal-header {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        color: white;
-        padding: 20px 25px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      
-      .modal-header i {
-        font-size: 24px;
-        animation: shake 0.5s ease-in-out;
-      }
-      
-      .modal-header h3 {
-        margin: 0;
-        font-size: 18px;
-        font-weight: 600;
-      }
-      
-      .modal-body {
-        padding: 25px;
-      }
-      
-      .modal-body p {
-        margin: 0 0 15px 0;
-        color: #374151;
-        font-size: 16px;
-        font-weight: 500;
-      }
-      
-      .error-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      
-      .error-list li {
-        background: #fef2f2;
-        border: 1px solid #fecaca;
-        border-radius: 8px;
-        padding: 12px 15px;
-        margin-bottom: 8px;
-        color: #dc2626;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.3s ease;
-      }
-      
-      .error-list li:hover {
-        background: #fee2e2;
-        transform: translateX(5px);
-      }
-      
-      .error-list li i {
-        color: #ef4444;
-        font-size: 16px;
-        flex-shrink: 0;
-      }
-      
-      .modal-footer {
-        padding: 20px 25px;
-        background: #f8fafc;
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-      }
-      
-      .modal-btn {
-        padding: 12px 24px;
-        border: none;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      
-      .modal-btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-      }
-      
-      .modal-btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-      }
-      
-      /* Animaciones */
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      
-      @keyframes slideInUp {
-        from {
-          opacity: 0;
-          transform: translateY(50px) scale(0.9);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-      }
-      
-      @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
-      }
-      
-      /* Responsive */
-      @media (max-width: 768px) {
-        .modal-content {
-          margin: 10% auto;
-          width: 95%;
-        }
-        
-        .modal-header,
-        .modal-body,
-        .modal-footer {
-          padding: 20px;
-        }
-        
-        .modal-footer {
-          flex-direction: column;
-        }
-        
-        .modal-btn {
-          width: 100%;
-          justify-content: center;
-        }
-      }
-    </style>
+<style>
+  .password-requirements {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #6b7280;
+  }
+  .password-requirements .requirement {
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .password-requirements .requirement.valid {
+    color: #16a34a;
+    font-weight: 600;
+  }
+  .password-requirements .requirement.invalid {
+    color: #dc2626;
+  }
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // Función para validar nombre y apellido (solo letras)
-        function validateName(value) {
-          return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value) && value.length >= 2;
-        }
-        
-        // Función para validar documento (solo números, mínimo 7)
-        function validateDocument(value) {
-          return /^\d+$/.test(value) && value.length >= 7;
-        }
-        
-        // Función para validar email
-        function validateEmail(value) {
-          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-        }
-        
-        // Función para validar teléfono (solo números, exactamente 10)
-        function validatePhone(value) {
-          return /^\d+$/.test(value) && value.length === 10;
-        }
-        
-        // Función para validar dirección (mínimo 8 caracteres)
-        function validateAddress(value) {
-          return value.length >= 8;
-        }
-        
-        // Función para validar contraseña
-        function validatePassword(password) {
-          const requirements = {
-            length: password.length >= 8,
-            upper: /[A-Z]/.test(password),
-            lower: /[a-z]/.test(password),
-            digit: /\d/.test(password),
-            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
-          };
-          return requirements;
-        }
-        
-        // Función para aplicar estilos de validación
-        function applyValidation(input, isValid) {
-          if (input.value.length > 0) {
-            input.classList.remove('valid', 'invalid');
-            input.classList.add(isValid ? 'valid' : 'invalid');
-          } else {
-            input.classList.remove('valid', 'invalid');
-          }
-        }
-        
-        // Función para actualizar requisitos de contraseña
-        function updatePasswordRequirements(password) {
-          const requirements = validatePassword(password);
-          let requirementsDiv = document.getElementById('password-requirements');
-          
-          if (!requirementsDiv) {
-            // Crear el div si no existe
-            const passwordField = document.getElementById('password');
-            requirementsDiv = document.createElement('div');
-            requirementsDiv.id = 'password-requirements';
-            requirementsDiv.className = 'password-requirements';
-            requirementsDiv.innerHTML = `
-              <div class="requirement" data-req="length">✗ Mínimo 8 caracteres</div>
-              <div class="requirement" data-req="upper">✗ Mayúscula</div>
-              <div class="requirement" data-req="lower">✗ Minúscula</div>
-              <div class="requirement" data-req="digit">✗ Número</div>
-              <div class="requirement" data-req="special">✗ Carácter especial</div>
-            `;
-            passwordField.parentNode.appendChild(requirementsDiv);
-          }
-          
-          const requirementElements = requirementsDiv.querySelectorAll('.requirement');
-          let allValid = true;
-          
-          requirementElements.forEach(element => {
-            const req = element.getAttribute('data-req');
-            const isValid = requirements[req];
-            
-            if (isValid) {
-              element.innerHTML = '✓ ' + element.textContent.substring(2);
-              element.classList.remove('invalid');
-              element.classList.add('valid');
-            } else {
-              element.innerHTML = '✗ ' + element.textContent.substring(2);
-              element.classList.remove('valid');
-              element.classList.add('invalid');
-              allValid = false;
-            }
-          });
-          
-          return allValid;
-        }
-        
-        // Event listeners para validación en tiempo real
-        document.getElementById('nombre').addEventListener('input', function() {
-          const isValid = validateName(this.value);
-          applyValidation(this, isValid);
-        });
-        
-        document.getElementById('apellido').addEventListener('input', function() {
-          const isValid = validateName(this.value);
-          applyValidation(this, isValid);
-        });
-        
-        document.getElementById('documento').addEventListener('input', function() {
-          const isValid = validateDocument(this.value);
-          applyValidation(this, isValid);
-        });
-        
-        document.getElementById('correo').addEventListener('input', function() {
-          const isValid = validateEmail(this.value);
-          applyValidation(this, isValid);
-        });
-        
-        document.getElementById('telefono').addEventListener('input', function() {
-          const isValid = validatePhone(this.value);
-          applyValidation(this, isValid);
-        });
-        
-        document.getElementById('direccion').addEventListener('input', function() {
-          const isValid = validateAddress(this.value);
-          applyValidation(this, isValid);
-        });
-        
-        document.getElementById('password').addEventListener('input', function() {
-          const isValid = updatePasswordRequirements(this.value);
-          applyValidation(this, isValid);
-        });
-        
-        document.getElementById('password_confirmation').addEventListener('input', function() {
-          const password = document.getElementById('password').value;
-          const isValid = this.value === password && password.length > 0;
-          applyValidation(this, isValid);
-        });
-        
-        document.getElementById('tipo-doc').addEventListener('change', function() {
-          const isValid = this.value !== '';
-          applyValidation(this, isValid);
-        });
-        
-        document.getElementById('role').addEventListener('change', function() {
-          const isValid = this.value !== '';
-          applyValidation(this, isValid);
-        });
-        
-        // Validación del formulario antes de enviar
-        document.querySelector('.form-nuevo-usuario form').addEventListener('submit', function(e) {
-          const nombre = document.getElementById('nombre');
-          const apellido = document.getElementById('apellido');
-          const documento = document.getElementById('documento');
-          const correo = document.getElementById('correo');
-          const telefono = document.getElementById('telefono');
-          const direccion = document.getElementById('direccion');
-          const password = document.getElementById('password');
-          const passwordConfirmation = document.getElementById('password_confirmation');
-          const tipoDoc = document.getElementById('tipo-doc');
-          const role = document.getElementById('role');
-          
-          let isValid = true;
-          let errorMessage = '';
-          
-          // Validar todos los campos
-          if (!validateName(nombre.value)) {
-            isValid = false;
-            errorMessage += '• El nombre debe contener solo letras y tener al menos 2 caracteres\n';
-          }
-          
-          if (!validateName(apellido.value)) {
-            isValid = false;
-            errorMessage += '• El apellido debe contener solo letras y tener al menos 2 caracteres\n';
-          }
-          
-          if (!validateDocument(documento.value)) {
-            isValid = false;
-            errorMessage += '• El documento debe contener solo números y tener al menos 7 dígitos\n';
-          }
-          
-          if (!validateEmail(correo.value)) {
-            isValid = false;
-            errorMessage += '• El correo debe tener un formato válido\n';
-          }
-          
-          if (!validatePhone(telefono.value)) {
-            isValid = false;
-            errorMessage += '• El teléfono debe contener solo números y tener exactamente 10 dígitos\n';
-          }
-          
-          if (!validateAddress(direccion.value)) {
-            isValid = false;
-            errorMessage += '• La dirección debe tener al menos 8 caracteres\n';
-          }
-          
-          const passwordRequirements = validatePassword(password.value);
-          const allPasswordValid = Object.values(passwordRequirements).every(v => v);
-          if (!allPasswordValid) {
-            isValid = false;
-            errorMessage += '• La contraseña debe cumplir todos los requisitos\n';
-          }
-          
-          if (password.value !== passwordConfirmation.value) {
-            isValid = false;
-            errorMessage += '• Las contraseñas no coinciden\n';
-          }
-          
-          if (tipoDoc.value === '') {
-            isValid = false;
-            errorMessage += '• Debe seleccionar un tipo de documento\n';
-          }
-          
-          if (role.value === '') {
-            isValid = false;
-            errorMessage += '• Debe seleccionar un rol\n';
-          }
-          
-          if (!isValid) {
-            e.preventDefault();
-            showErrorModal(errorMessage);
-            return false;
-          }
-        });
-      });
-      
-      // Función para mostrar el modal de errores
-      function showErrorModal(errorMessage) {
-        const modal = document.getElementById('errorModal');
-        const errorList = document.getElementById('errorList');
-        
-        // Limpiar lista anterior
-        errorList.innerHTML = '';
-        
-        // Dividir el mensaje en líneas y crear elementos de lista
-        const errors = errorMessage.split('\n').filter(error => error.trim() !== '');
-        
-        errors.forEach(error => {
-          const li = document.createElement('li');
-          li.innerHTML = `<i class='bx bx-x'></i>${error}`;
-          errorList.appendChild(li);
-        });
-        
-        // Mostrar el modal
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease;
+  }
+
+  .modal-content {
+    background: #fff;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideInUp 0.4s ease;
+    overflow: hidden;
+  }
+
+  .modal-header {
+    padding: 20px 25px;
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .modal-body {
+    padding: 25px;
+  }
+
+  .modal-body p {
+    margin: 0 0 15px 0;
+    color: #374151;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .error-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .error-list li {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    color: #dc2626;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .error-list li:hover {
+    background: #fee2e2;
+    transform: translateX(5px);
+  }
+
+  .error-list li i {
+    color: #ef4444;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .modal-footer {
+    padding: 20px 25px;
+    background: #f8fafc;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .modal-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .modal-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+
+  .modal-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  }
+
+  .modal-btn-secondary {
+    background: #e5e7eb;
+    color: #374151;
+  }
+
+  .modal-btn-secondary:hover {
+    background: #d1d5db;
+    transform: translateY(-1px);
+  }
+
+  /* Animaciones */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .modal-content {
+      margin: 10% auto;
+      width: 95%;
+    }
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+      padding: 20px;
+    }
+    .modal-footer {
+      flex-direction: column;
+    }
+    .modal-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Funciones de validación
+    function validateName(value) {
+      return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value) && value.length >= 2;
+    }
+    function validateDocument(value) {
+      return /^\d+$/.test(value) && value.length >= 7;
+    }
+    function validateEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+    function validatePhone(value) {
+      return /^\d+$/.test(value) && value.length === 10;
+    }
+    function validateAddress(value) {
+      return value.length >= 8;
+    }
+    function validatePassword(password) {
+      return {
+        length: password.length >= 8,
+        upper: /[A-Z]/.test(password),
+        lower: /[a-z]/.test(password),
+        digit: /\d/.test(password),
+        special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+      };
+    }
+
+    function applyValidation(input, isValid) {
+      if (input.value.length > 0) {
+        input.classList.remove('valid', 'invalid');
+        input.classList.add(isValid ? 'valid' : 'invalid');
+      } else {
+        input.classList.remove('valid', 'invalid');
       }
-      
-      // Función para cerrar el modal
-      function closeErrorModal() {
-        const modal = document.getElementById('errorModal');
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
+    }
+
+    function updatePasswordRequirements(password) {
+      const requirements = validatePassword(password);
+      let requirementsDiv = document.getElementById('password-requirements');
+
+      if (!requirementsDiv) {
+        const passwordField = document.getElementById('password');
+        const newDiv = document.createElement('div');
+        newDiv.id = 'password-requirements';
+        newDiv.className = 'password-requirements';
+        newDiv.innerHTML = `
+          <div class="requirement" data-req="length">✗ Mínimo 8 caracteres</div>
+          <div class="requirement" data-req="upper">✗ Mayúscula</div>
+          <div class="requirement" data-req="lower">✗ Minúscula</div>
+          <div class="requirement" data-req="digit">✗ Número</div>
+          <div class="requirement" data-req="special">✗ Carácter especial</div>
+        `;
+        passwordField.parentNode.appendChild(newDiv);
+        requirementsDiv = newDiv;
       }
-      
-      // Cerrar modal al hacer clic fuera de él
-      window.onclick = function(event) {
-        const modal = document.getElementById('errorModal');
-        if (event.target === modal) {
-          closeErrorModal();
-        }
-      }
-      
-      // Cerrar modal con tecla Escape
-      document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-          closeErrorModal();
+
+      const requirementElements = requirementsDiv.querySelectorAll('.requirement');
+      let allValid = true;
+
+      requirementElements.forEach(element => {
+        const req = element.getAttribute('data-req');
+        const isValid = requirements[req];
+        if (isValid) {
+          element.innerHTML = '✓ ' + element.textContent.substring(2);
+          element.classList.remove('invalid');
+          element.classList.add('valid');
+        } else {
+          element.innerHTML = '✗ ' + element.textContent.substring(2);
+          element.classList.remove('valid');
+          element.classList.add('invalid');
+          allValid = false;
         }
       });
-    </script>
+
+      return allValid;
+    }
+
+    // Listeners en tiempo real
+    document.getElementById('nombre').addEventListener('input', function() {
+      applyValidation(this, validateName(this.value));
+    });
+    document.getElementById('apellido').addEventListener('input', function() {
+      applyValidation(this, validateName(this.value));
+    });
+    document.getElementById('documento').addEventListener('input', function() {
+      applyValidation(this, validateDocument(this.value));
+    });
+    document.getElementById('correo').addEventListener('input', function() {
+      applyValidation(this, validateEmail(this.value));
+    });
+    document.getElementById('telefono').addEventListener('input', function() {
+      applyValidation(this, validatePhone(this.value));
+    });
+    document.getElementById('direccion').addEventListener('input', function() {
+      applyValidation(this, validateAddress(this.value));
+    });
+    document.getElementById('password').addEventListener('input', function() {
+      applyValidation(this, updatePasswordRequirements(this.value));
+    });
+    document.getElementById('password_confirmation').addEventListener('input', function() {
+      const password = document.getElementById('password').value;
+      applyValidation(this, this.value === password && password.length > 0);
+    });
+    document.getElementById('tipo-doc').addEventListener('change', function() {
+      applyValidation(this, this.value !== '');
+    });
+    document.getElementById('role').addEventListener('change', function() {
+      applyValidation(this, this.value !== '');
+    });
+
+    // Validación antes de enviar
+    document.querySelector('.form-nuevo-usuario form').addEventListener('submit', function(e) {
+      const nombre = document.getElementById('nombre');
+      const apellido = document.getElementById('apellido');
+      const documento = document.getElementById('documento');
+      const correo = document.getElementById('correo');
+      const telefono = document.getElementById('telefono');
+      const direccion = document.getElementById('direccion');
+      const password = document.getElementById('password');
+      const passwordConfirmation = document.getElementById('password_confirmation');
+      const tipoDoc = document.getElementById('tipo-doc');
+      const role = document.getElementById('role');
+
+      let isValid = true;
+      let errorMessage = '';
+
+      if (!validateName(nombre.value)) {
+        isValid = false;
+        errorMessage += '• El nombre debe contener solo letras y tener al menos 2 caracteres\n';
+      }
+      if (!validateName(apellido.value)) {
+        isValid = false;
+        errorMessage += '• El apellido debe contener solo letras y tener al menos 2 caracteres\n';
+      }
+      if (!validateDocument(documento.value)) {
+        isValid = false;
+        errorMessage += '• El documento debe contener solo números y tener al menos 7 dígitos\n';
+      }
+      if (!validateEmail(correo.value)) {
+        isValid = false;
+        errorMessage += '• El correo debe tener un formato válido\n';
+      }
+      if (!validatePhone(telefono.value)) {
+        isValid = false;
+        errorMessage += '• El teléfono debe contener solo números y tener exactamente 10 dígitos\n';
+      }
+      if (!validateAddress(direccion.value)) {
+        isValid = false;
+        errorMessage += '• La dirección debe tener al menos 8 caracteres\n';
+      }
+
+      const passwordRequirements = validatePassword(password.value);
+      if (!Object.values(passwordRequirements).every(v => v)) {
+        isValid = false;
+        errorMessage += '• La contraseña debe cumplir todos los requisitos\n';
+      }
+      if (password.value !== passwordConfirmation.value) {
+        isValid = false;
+        errorMessage += '• Las contraseñas no coinciden\n';
+      }
+      if (tipoDoc.value === '') {
+        isValid = false;
+        errorMessage += '• Debe seleccionar un tipo de documento\n';
+      }
+      if (role.value === '') {
+        isValid = false;
+        errorMessage += '• Debe seleccionar un rol\n';
+      }
+
+      if (!isValid) {
+        e.preventDefault();
+        showErrorModal(errorMessage);
+        return false;
+      }
+    });
+  });
+
+  // Modal de errores
+  function showErrorModal(errorMessage) {
+    const modal = document.getElementById('errorModal');
+    const errorList = document.getElementById('errorList');
+    errorList.innerHTML = '';
+
+    const errors = errorMessage.split('\n').filter(error => error.trim() !== '');
+    errors.forEach(error => {
+      const li = document.createElement('li');
+      li.innerHTML = `<i class='bx bx-x'></i>${error}`;
+      errorList.appendChild(li);
+    });
+
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeErrorModal() {
+    document.getElementById('errorModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+  window.onclick = function(event) {
+    const modal = document.getElementById('errorModal');
+    if (event.target === modal) {
+      closeErrorModal();
+    }
+  }
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      closeErrorModal();
+    }
+  });
+</script>
+
 
 </body>
 </html>

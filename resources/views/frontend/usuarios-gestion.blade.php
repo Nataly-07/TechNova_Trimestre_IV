@@ -91,34 +91,79 @@
         </div>
         <form action="{{ route('usuarios.store') }}" method="POST" class="form-nuevo-usuario">
           @csrf
+          
+          @if($errors->any())
+            <div class="alert alert-danger">
+              <ul>
+                @foreach($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+            </div>
+          @endif
+          
           <div class="form-row">
-            <input type="text" name="name" placeholder="Nombre completo" required />
-            <input type="email" name="email" placeholder="Correo electrónico" required />
+            <div class="form-group">
+              <label for="first_name">Primer Nombre</label>
+              <input type="text" id="first_name" name="first_name" value="{{ old('first_name') }}" placeholder="Primer nombre" required />
+            </div>
+            <div class="form-group">
+              <label for="last_name">Apellido</label>
+              <input type="text" id="last_name" name="last_name" value="{{ old('last_name') }}" placeholder="Apellido" required />
+            </div>
           </div>
-          <div class="form-row">
-            <input type="password" name="password" placeholder="Contraseña" required />
-            <input type="password" name="password_confirmation" placeholder="Confirmar contraseña" required />
-          </div>
-          <div class="form-row">
-            <input type="text" name="first_name" placeholder="Primer nombre" />
-            <input type="text" name="last_name" placeholder="Apellido" />
-          </div>
-          <div class="form-row">
-            <input type="text" name="document_type" placeholder="Tipo de documento" />
-            <input type="text" name="document_number" placeholder="Número de documento" />
-          </div>
-          <div class="form-row">
-            <input type="text" name="phone" placeholder="Teléfono" />
-            <input type="text" name="address" placeholder="Dirección" />
-          </div>
-          <div class="form-row">
-            <select name="role" required>
-              <option value="">Seleccionar Rol</option>
-              <option value="cliente">Cliente</option>
-              <option value="admin">Administrador</option>
-              <option value="empleado">Empleado</option>
+          
+          <div class="form-group">
+            <label for="document_type">Tipo de Documento</label>
+            <select id="document_type" name="document_type" required>
+              <option value="">Selecciona</option>
+              <option value="CC" {{ old('document_type') == 'CC' ? 'selected' : '' }}>Cédula de Ciudadanía</option>
+              <option value="TI" {{ old('document_type') == 'TI' ? 'selected' : '' }}>Tarjeta de Identidad</option>
+              <option value="CE" {{ old('document_type') == 'CE' ? 'selected' : '' }}>Cédula de Extranjería</option>
             </select>
           </div>
+          
+          <div class="form-group">
+            <label for="document_number">Número de Documento</label>
+            <input type="text" id="document_number" name="document_number" value="{{ old('document_number') }}" placeholder="Número de documento" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Correo Electrónico</label>
+            <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="correo@ejemplo.com" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="phone">Teléfono Celular</label>
+            <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Teléfono celular" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="address">Dirección de Residencia</label>
+            <input type="text" id="address" name="address" value="{{ old('address') }}" placeholder="Dirección completa" required />
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="password">Contraseña</label>
+              <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" required />
+            </div>
+            <div class="form-group">
+              <label for="password_confirmation">Confirmar Contraseña</label>
+              <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Repite tu contraseña" required />
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="role">Rol del Usuario</label>
+            <select id="role" name="role" required>
+              <option value="">Seleccionar Rol</option>
+              <option value="cliente" {{ old('role') == 'cliente' ? 'selected' : '' }}>Cliente</option>
+              <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrador</option>
+              <option value="empleado" {{ old('role') == 'empleado' ? 'selected' : '' }}>Empleado</option>
+            </select>
+          </div>
+          
           <button type="submit" class="btn-submit">
             <i class='bx bx-user-plus'></i> Agregar Usuario
           </button>
@@ -165,7 +210,7 @@
             <tbody id="usuarios-body">
               @foreach($users as $user)
               <tr>
-                <td>{{ $user->name ?? 'Sin nombre' }}</td>
+                <td>{{ $user->first_name ?? 'Sin nombre' }} {{ $user->last_name ?? 'Sin apellido' }}</td>
                 <td>{{ $user->email ?? 'Sin correo' }}</td>
                 <td>
                   <span class="rol-badge rol-{{ $user->role ?? 'cliente' }}">
@@ -200,6 +245,98 @@
   </footer>
 
   <script src="{{ asset('frontend/js/perfilad.js') }}"></script>
+  
+  <style>
+    .form-nuevo-usuario {
+      padding: 20px;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+      flex: 1;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #4a5568;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .form-nuevo-usuario input[type="text"],
+    .form-nuevo-usuario input[type="email"],
+    .form-nuevo-usuario input[type="tel"],
+    .form-nuevo-usuario input[type="password"],
+    .form-nuevo-usuario select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 5px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    .form-nuevo-usuario input:focus,
+    .form-nuevo-usuario select:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+    
+    .alert {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+    
+    .alert-danger {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+    }
+    
+    .alert-danger ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    
+    .btn-submit {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
 
 </body>
 </html>

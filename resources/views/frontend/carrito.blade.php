@@ -19,22 +19,22 @@
       padding: 20px;
     }
 
-    /* Estilos para modal de confirmación bonito */
+    /* Estilos para modal de confirmación moderno y atractivo */
     .confirmation-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(12px);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 10000;
       opacity: 0;
       visibility: hidden;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .confirmation-modal.show {
@@ -43,33 +43,50 @@
     }
 
     .confirmation-content {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      padding: 30px;
-      max-width: 450px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
+      backdrop-filter: blur(25px);
+      border-radius: 24px;
+      padding: 40px 35px;
+      max-width: 480px;
       width: 90%;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      box-shadow: 
+        0 25px 80px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      transform: scale(0.7) translateY(50px);
-      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transform: scale(0.6) translateY(80px) rotateX(15deg);
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .confirmation-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      border-radius: 24px 24px 0 0;
     }
 
     .confirmation-modal.show .confirmation-content {
-      transform: scale(1) translateY(0);
+      transform: scale(1) translateY(0) rotateX(0deg);
     }
 
     .confirmation-icon {
-      font-size: 60px;
-      margin-bottom: 20px;
+      font-size: 72px;
+      margin-bottom: 25px;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
       animation: bounce 0.6s ease-out;
     }
 
     @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      60% { transform: translateY(-5px); }
+      0% { transform: scale(0.3) rotate(-10deg); }
+      50% { transform: scale(1.1) rotate(5deg); }
+      100% { transform: scale(1) rotate(0deg); }
     }
 
     .confirmation-title {
@@ -77,30 +94,40 @@
       font-weight: 700;
       color: #2c3e50;
       margin-bottom: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .confirmation-message {
       font-size: 16px;
       color: #5a6c7d;
-      line-height: 1.5;
-      margin-bottom: 30px;
+      line-height: 1.6;
+      margin-bottom: 35px;
+      font-weight: 500;
     }
 
     .confirmation-buttons {
       display: flex;
       gap: 15px;
       justify-content: center;
+      flex-wrap: wrap;
     }
 
     .confirmation-btn {
-      padding: 12px 24px;
+      padding: 14px 28px;
       border: none;
       border-radius: 12px;
       font-weight: 600;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      min-width: 120px;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 140px;
+      justify-content: center;
       position: relative;
       overflow: hidden;
     }
@@ -121,25 +148,55 @@
     }
 
     .confirmation-btn.confirm {
-      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
     }
 
     .confirmation-btn.confirm:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
     }
 
     .confirmation-btn.cancel {
       background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
       color: white;
-      box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+      box-shadow: 0 8px 25px rgba(149, 165, 166, 0.3);
     }
 
     .confirmation-btn.cancel:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(149, 165, 166, 0.4);
+    }
+
+    .confirmation-btn i {
+      font-size: 18px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .confirmation-content {
+        padding: 30px 25px;
+        max-width: 95%;
+      }
+      
+      .confirmation-title {
+        font-size: 20px;
+      }
+      
+      .confirmation-message {
+        font-size: 14px;
+      }
+      
+      .confirmation-buttons {
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      .confirmation-btn {
+        width: 100%;
+        min-width: auto;
+      }
     }
 
     /* Estilos para notificaciones */
@@ -514,8 +571,17 @@
           <div class="enlace"><a href="{{ route('catalogo.autenticado') }}"><i class='bx bx-store'></i> Catálogo</a></div>
           <div class="enlace"><a href="{{ route('favoritos.index') }}"><i class='bx bx-heart'></i> Favoritos</a></div>
           <div class="enlace"><a href="{{ route('carrito.index') }}"><i class='bx bx-cart'></i> Carrito</a></div>
-          <div class="enlace"><a href="{{ route('compras.index') }}"><i class='bx bx-receipt'></i> Mis Compras</a></div>
-          <div class="enlace"><a href="{{ route('logout') }}"><i class='bx bx-log-out'></i> Cerrar Sesión</a></div>
+          
+<div class="enlace"><a href="{{ route('compras.index') }}"><i class='bx bx-receipt'></i> Mis Compras</a></div>
+<div class="enlace">
+  <form method="POST" action="{{ route('logout') }}">
+    @csrf
+    <button type="submit" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;">
+      <i class='bx bx-log-out'></i> Cerrar Sesión
+    </button>
+  </form>
+</div>
+
         </div>
       </div>
     @endif
@@ -651,7 +717,11 @@
     }
     
     function vaciarCarrito() {
-      if (confirm('¿Estás seguro de que quieres vaciar todo el carrito?')) {
+      showConfirmationModal(
+        '¿Estás seguro de que quieres vaciar todo el carrito?',
+        'Vaciar carrito',
+        '🗑️',
+        function() {
         fetch('/carrito/vaciar', {
           method: 'DELETE',
           headers: {
@@ -661,16 +731,18 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            location.reload();
+              showNotification('Carrito vaciado exitosamente', 'success', '✅');
+              setTimeout(() => location.reload(), 1000);
           } else {
-            alert(data.error || 'Error al vaciar el carrito');
+              showNotification(data.error || 'Error al vaciar el carrito', 'error', '❌');
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          alert('Error de conexión');
+            showNotification('Error de conexión', 'error', '❌');
         });
       }
+      );
     }
     
     function procederPago() {
