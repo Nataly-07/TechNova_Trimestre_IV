@@ -662,30 +662,46 @@
   }
 
   /* Modal */
-  .modal {
+  .custom-modal {
     display: none;
     position: fixed;
-    z-index: 1000;
-    padding-top: 60px;
+    z-index: 10000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background: rgba(0, 0, 0, 0.5);
-    animation: fadeIn 0.3s ease;
+    background: rgba(0, 0, 0, 0);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    backdrop-filter: blur(0px);
+  }
+  
+  .custom-modal.show {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
   }
 
   .modal-content {
     background: #fff;
-    margin: 5% auto;
+    margin: 10% auto;
     padding: 0;
     border-radius: 12px;
     width: 90%;
     max-width: 500px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    animation: slideInUp 0.4s ease;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     overflow: hidden;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%) scale(0.8);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .custom-modal.show .modal-content {
+    transform: translateY(-50%) scale(1);
+    opacity: 1;
   }
 
   .modal-header {
@@ -694,13 +710,18 @@
     color: white;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 10px;
   }
 
   .modal-header h3 {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
+  }
+  
+  .modal-header i {
+    font-size: 24px;
+    animation: pulse 2s infinite;
   }
 
   .modal-body {
@@ -731,8 +752,18 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: translateX(-20px);
+    opacity: 0;
+    animation: slideInError 0.5s ease forwards;
   }
+  
+  .error-list li:nth-child(1) { animation-delay: 0.1s; }
+  .error-list li:nth-child(2) { animation-delay: 0.2s; }
+  .error-list li:nth-child(3) { animation-delay: 0.3s; }
+  .error-list li:nth-child(4) { animation-delay: 0.4s; }
+  .error-list li:nth-child(5) { animation-delay: 0.5s; }
+  .error-list li:nth-child(n+6) { animation-delay: 0.6s; }
 
   .error-list li:hover {
     background: #fee2e2;
@@ -760,15 +791,34 @@
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: flex;
     align-items: center;
     gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .modal-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .modal-btn:hover::before {
+    left: 100%;
   }
 
   .modal-btn-primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
+    border: none;
+    outline: none;
   }
 
   .modal-btn-primary:hover {
@@ -802,6 +852,26 @@
       transform: translateY(0) scale(1);
     }
   }
+  
+  @keyframes slideInError {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
 
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
@@ -812,13 +882,21 @@
   /* Responsive */
   @media (max-width: 768px) {
     .modal-content {
-      margin: 10% auto;
+      margin: 5% auto;
       width: 95%;
+      max-width: none;
+      top: 20%;
+      transform: translateY(-10%) scale(0.9);
     }
+    
+    .custom-modal.show .modal-content {
+      transform: translateY(-10%) scale(1);
+    }
+    
     .modal-header,
     .modal-body,
     .modal-footer {
-      padding: 20px;
+      padding: 15px;
     }
     .modal-footer {
       flex-direction: column;
@@ -826,6 +904,10 @@
     .modal-btn {
       width: 100%;
       justify-content: center;
+    }
+    
+    .error-list li {
+      animation-duration: 0.3s;
     }
   }
 </style>
@@ -1023,10 +1105,23 @@
 
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
+    
+    // Forzar reflow para que las transiciones funcionen
+    modal.offsetHeight;
+    
+    // Activar las transiciones
+    setTimeout(() => {
+      modal.classList.add('show');
+    }, 10);
   }
   function closeErrorModal() {
-    document.getElementById('errorModal').style.display = 'none';
-    document.body.style.overflow = 'auto';
+    const modal = document.getElementById('errorModal');
+    modal.classList.remove('show');
+    
+    setTimeout(() => {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }, 400);
   }
   window.onclick = function(event) {
     const modal = document.getElementById('errorModal');

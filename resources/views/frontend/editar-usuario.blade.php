@@ -276,8 +276,12 @@
                     <h3><i class='bx bx-user'></i> Información del Usuario</h3>
                     <div class="info-grid">
                         <div class="info-item">
-                            <label>Nombre Completo:</label>
-                            <span>{{ $user->first_name ?? 'Sin nombre' }} {{ $user->last_name ?? 'Sin apellido' }}</span>
+                            <label>Nombre:</label>
+                            <span>{{ $user->first_name ?? 'Sin nombre' }}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Apellido:</label>
+                            <span>{{ $user->last_name ?? 'Sin apellido' }}</span>
                         </div>
                         <div class="info-item">
                             <label>Correo Electrónico:</label>
