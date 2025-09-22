@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Medios De Pago</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const formulario = document.querySelector(".form-metodo-pago form");
+
+  formulario.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const tipo = formulario.tipo.value.trim();
+    const numero = formulario.numero.value.trim();
+    const titular = formulario.titular.value.trim();
+
+    if (!tipo || !numero || !titular) {
+      alert("Por favor completa todos los campos.");
+      return;
+    }
+
+    // Simulamos guardar y mostramos mensaje
+    Swal.fire({
+      icon: "success",
+      title: "¡Método guardado!",
+      text: "Tu nuevo medio de pago ha sido registrado correctamente.",
+      confirmButtonColor: "#00d4ff"
+    });
+
+    formulario.reset();
+  });
+});
+</script>
+
+
+
+
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="estilodas.css">
+    <link rel="stylesheet" href="stilotech.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo">
+      <img src="imagenes/logo technova.png" alt="Logo">
+      <span>TECHNOVA</span>
+    </a>
+
+    <div class="search-bar">
+      <input type="text" placeholder="¿Qué estás buscando hoy?">
+      <button class="search-btn">&#128269;</button>
+    </div>
+
+    <div class="acciones-usuario">
+      <a href="perfilad.html" class="account"><i class='bx bx-user-circle'></i> <span>Perfil</span></a>
+      <a href="index.html" class="account"><i class='bx bx-log-out'></i> <span>Cerrar Sesion</span></a>
+      <a href="error500.html" class="cart"><i class='bx bx-cog'></i> <span>Configuracion</span></a>
+    </div>
+  </header>
+
+  <div class="dashboard-wrapper">
+    <div class="menu-dashboard">
+      <!-- TOP MENU -->
+      <div class="top-menu">
+        <div class="logo">
+          <img src="./imagenes/logo technova.png" alt=""> 
+          <span>Dashboard Cliente</span>
+        </div>
+        <div class="toggle">
+          <i class='bx bx-menu'></i>
+        </div>
+      </div>
+
+      <!-- INPUT SEARCH -->
+      <div class="input-search">
+        <i class='bx bx-search'></i>
+        <input type="text" class="input" placeholder="Buscar">
+      </div>
+
+        <!-- MENÚ -->
+      <div class="menu">
+        <div class="enlace"><a href="perfilcli.html"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
+        <div class="enlace"><a href="favoritos.html"><i class='bx bx-heart'></i> Favoritos</a></div>
+        <div class="enlace"><a href="mensajescli.html"><i class='bx bx-message'></i> Mensajes</a></div>
+        <div class="enlace"><a href="pedidoscli.html"><i class='bx bx-cart'></i> Pedidos</a></div>
+        <div class="enlace"><a href="mediopagos.html"><i class='bx bx-credit-card'></i>Medios De  Pagos</a></div>
+        <div class="enlace"><a href="miscompras.html"><i class='bx bx-cart'></i> Mis Compras</a></div>
+        <div class="enlace"><a href="atencion.html"><i class='bx bx-headphone'></i> Atencion Al Cliente</a></div>
+         <div class="enlace"><a href="index.html"><i class='bx bx-log-out'></i> Cerrar Sesion</a></div>
+      </div>
+    </div><!-- /.menu-dashboard --
+
+    /*PRINCIPAL -->
+    <main class="main-content">
+      <h1>Medios de Pago</h1>
+
+<div class="payments">
+  <h2>Tarjetas Asociadas</h2>
+  <ul>
+    <li><i class='bx bxs-credit-card'></i> Visa – **** 1234</li>
+    <li><i class='bx bxs-credit-card'></i> MasterCard – **** 5678</li>
+  </ul>
+
+  <h2>Métodos Alternativos</h2>
+  <ul>
+    <li><i class='bx bx-money'></i> Transferencia bancaria</li>
+    <li><i class='bx bx-mobile-alt'></i> Nequi / Daviplata</li>
+    <li><i class='bx bx-wallet'></i> Pago contra entrega</li>
+  </ul>
+
+ <div class="form-metodo-pago">
+  <h2>Agregar nuevo medio de pago</h2>
+  <form>
+    <label for="tipo">Tipo de método</label>
+    <select id="tipo" name="tipo">
+      <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+      <option value="transferencia">Transferencia Bancaria</option>
+      <option value="nequi">Nequi</option>
+      <option value="daviplata">Daviplata</option>
+      <option value="efectivo">Pago contra entrega</option>
+    </select>
+
+    <label for="numero">Número / Referencia</label>
+    <input type="text" id="numero" name="numero" placeholder="•••• •••• •••• 1234">
+
+    <label for="titular">Titular</label>
+    <input type="text" id="titular" name="titular" placeholder="Nombre del titular">
+
+    <button type="submit"><i class='bx bx-save'></i> Guardar método</button>
+  </form>
+</div>
+
+</div>
+
+        
+    </main><!-- /main-content -->
+
+  </div><!-- /dashboard-wrapper -->
+
+  <footer>
+    &copy; 2025 Technova
+  </footer>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/68632ae6db555c190ce714bb/1iv1lv5no';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+</body>
+</html>

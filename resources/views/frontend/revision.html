@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technova</title>
+  <link rel="stylesheet" href="comprainfo.css">
+  <link rel="stylesheet" href="stilotech.css">
+</head>
+<body>
+   <header class="header">
+ 
+
+  <a href="index.html" class="logo">
+    <img src="imagenes/logo technova.png" alt="Logo">
+    <span>TECHNOVA</span>
+  </a>
+
+  <div class="search-bar">
+    <input type="text" placeholder="¿Qué estás buscando hoy?">
+    <button class="search-btn">&#128269;</button>
+  </div>
+
+  <div class="acciones-usuario">
+    <a href="iniciosesion.html" class="account">
+      <span>Iniciar Sesión</span>
+    </a>
+    <a href="creacioncuenta.html" class="account">
+      <span>Crear Cuenta</span>
+    </a>
+    <a href="error500.html" class="cart">
+      <span class="cart-icon">&#128722;</span>
+      <span>Mi Carrito</span>
+    </a>
+  </div>
+</header>
+    <body>
+    <div class="container">
+        <div class="steps">
+            <div class="step ">Informacion</div>
+            <div class="step">Direccion</div>
+            <div class="step">Metodo de Pago</div>
+            <div class="step active">Revision</div>
+        </div>
+
+        <div class="content">
+            <div class="form-section">
+                <h2 class="section-title">Tus datos</h2>
+                <div class="form-group"><label>Nombre:</label> <input type="text" value="Eddy Santiago"></div>
+                <div class="form-group"><label>Apellido:</label> <input type="text" value="Giraldo Diaz"></div>
+                <div class="form-group"><label>Correo:</label> <input type="email" value="eddysantiagogiraldodiaz335@gm..."></div>
+                <div class="form-group"><label>Telefono:</label> <input type="text" value="3244635727"></div>
+                   <div class="form-group">
+          <select>
+            <option>Tipo | CC</option>
+          </select>
+          <input type="text" value="1024472841" />
+        </div>
+<div class="form-group">
+          <select>
+            <option></option>
+            <option>Daviplata</option>
+            <option>Nequi</option>
+            <option>Tarjeta Credito **********8952</option>
+            <option>Tarjeta Debito ***********8298</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <select>
+            <option>Bogotá D.C</option>
+          </select>
+          <select>
+            <option>Bogotá D.C</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <input type="text" value="CL 58 Sur #37-27" />
+        </div>
+
+        <div class="form-group full">
+          <input type="text" value="La Estancia" />
+        </div>
+
+        <a href="mensajeconf.html" class="account">
+      <span>Finalizar Compra</span>
+    </a>
+            </div>
+            
+
+            <div class="cart-section">
+  <h2 class="cart-title">Mi Carrito</h2>
+  <div class="cart-summary" id="cart-summary"></div>
+  <div class="cart-products" id="cart-products"></div>
+</div>
+        </div>
+        
+
+        <div class="footer-msg">
+            ¡ No te preocupes ¡ Tu compra es 100% segura
+        </div>
+    </div>
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const productosCatalogo = {
+    "iPhone 16 Pro Max 256 GB": {
+      precioOriginal: 6969010,
+      precioFinal: 6699010,
+      imagen: "imagenes/iphonre16promaxgris.webp",
+      link: "iphone16promax.html"
+    },
+    "Motorola Edge 50 Ultra 512 GB": {
+      precioOriginal: 4999900,
+      precioFinal: 3999900,
+      imagen: "imagenes/motoedge50ult.webp",
+      link: "edge50ultra.html"
+    },
+    "Samsung Galaxy S24 FE 256 GB": {
+      precioOriginal: 3999900,
+      precioFinal: 2499900,
+      imagen: "imagenes/samsunggalaxys24fe.webp",
+      link: "galaxys24fe.html"
+    },
+    "Redmi Note 14 Pro 256 GB": {
+      precioOriginal: 2199010,
+      precioFinal: 1449010,
+      imagen: "imagenes/redminote14pro.webp",
+      link: "redminote14pro.html"
+    },
+    "Motorola Razr 50 Ultra 512 GB": {
+      precioOriginal: 5999900,
+      precioFinal: 4999900,
+      imagen: "imagenes/motorarz50ult.png",
+      link: "razr50ultra.html"
+    },
+    "OPPO A80 256 GB": {
+      precioOriginal: 1999900,
+      precioFinal: 1094900,
+      imagen: "imagenes/OPPO A80.webp",
+      link: "oppoa80.html"
+    },
+    "Lenovo IdeaPad Slim 3": {
+      precioOriginal: 3899000,
+      precioFinal: 2399000,
+      imagen: "imagenes/LENOVO IdeaPad.webp",
+      link: "lenovoslim3.html"
+    }
+  };
+
+  const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  const resumen = document.getElementById("cart-summary");
+  const productosContenedor = document.getElementById("cart-products");
+
+  if (carrito.length === 0) {
+    resumen.innerHTML = "<p>Tu carrito está vacío.</p>";
+    return;
+  }
+
+  let subtotal = 0;
+  let totalDescuento = 0;
+
+  carrito.forEach(item => {
+    const info = productosCatalogo[item.nombre];
+    if (!info) return;
+
+    subtotal += info.precioFinal;
+    totalDescuento += (info.precioOriginal - info.precioFinal);
+
+    const producto = document.createElement("div");
+    producto.classList.add("cart-product");
+    producto.innerHTML = `
+      <img src="${info.imagen}" alt="${item.nombre}">
+      <div class="product-details">
+        <p><strong>${item.nombre}</strong></p>
+        <p>Cantidad: 1</p>
+        <p>Antes: <s>$${info.precioOriginal.toLocaleString()}</s></p>
+        <p>Valor: $${info.precioFinal.toLocaleString()}</p>
+        <a href="${info.link}">Ver producto</a>
+      </div>
+    `;
+    productosContenedor.appendChild(producto);
+  });
+
+  resumen.innerHTML = `
+    <p><strong>Subtotal:</strong> $${subtotal.toLocaleString()}</p>
+    <p><strong>Envío gratis:</strong> $0</p>
+    <p><strong>Total descuentos:</strong> -$${totalDescuento.toLocaleString()}</p>
+    <p><strong>Total:</strong> $${subtotal.toLocaleString()}</p>
+  `;
+});
+</script>
+
+</body>
+</html>
