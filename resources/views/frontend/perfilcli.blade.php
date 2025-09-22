@@ -11,6 +11,138 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/stilotech.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/css/color-palette.css') }}">
     <script src="{{ asset('frontend/js/app.js') }}" defer></script>
+    
+    <style>
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .card-icon i {
+            font-size: 24px;
+            color: white;
+        }
+        
+        .card-content h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0 0 6px 0;
+        }
+        
+        .card-content p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin: 0 0 15px 0;
+            line-height: 1.4;
+        }
+        
+        .card-stats {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 18px;
+        }
+        
+        .stat-number {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #7f8c8d;
+            text-transform: lowercase;
+        }
+        
+        .card-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .card-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .card {
+                padding: 18px;
+            }
+            
+            .card-icon {
+                width: 45px;
+                height: 45px;
+                margin-bottom: 12px;
+            }
+            
+            .card-icon i {
+                font-size: 20px;
+            }
+            
+            .card-content h3 {
+                font-size: 1.2rem;
+            }
+            
+            .card-content p {
+                font-size: 0.85rem;
+            }
+            
+            .stat-number {
+                font-size: 1.4rem;
+            }
+            
+            .card-button {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
   <header class="header">
@@ -27,40 +159,7 @@
   </header>
 
   <div class="dashboard-wrapper">
-    <div class="menu-dashboard">
-      <div class="top-menu">
-        <div class="logo">
-          <img src="{{ asset('frontend/imagenes/logo technova.png') }}" alt=""> 
-          <span>Dashboard Cliente</span>
-        </div>
-        <div class="toggle">
-          <i class='bx bx-menu'></i>
-        </div>
-      </div>
-
-
-      <div class="menu">
-        <div class="enlace"><a href="{{ route('perfillcli') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
-        @if(auth()->user() && auth()->user()->role === 'admin')
-        <div class="enlace"><a href="{{ route('usuarios.index') }}"><i class='bx bx-user'></i> Usuarios</a></div>
-        <div class="enlace"><a href="{{ route('productos.index') }}"><i class='bx bx-package'></i> Inventario Productos</a></div>
-        @endif
-        <div class="enlace"><a href="{{ url('favoritos') }}"><i class='bx bx-heart'></i> Favoritos</a></div>
-        <div class="enlace"><a href="{{ url('mensajescli') }}"><i class='bx bx-message'></i> Mensajes</a></div>
-        <div class="enlace"><a href="{{ route('pedidoscli') }}"><i class='bx bx-cart'></i> Pedidos</a></div>
-        <div class="enlace"><a href="{{ url('mediopagos') }}"><i class='bx bx-credit-card'></i>Medios De<br>Pagos</a></div>
-        <div class="enlace"><a href="{{ url('miscompras') }}"><i class='bx bx-shopping-bag'></i> Mis Compras</a></div>
-        <div class="enlace"><a href="{{ url('atencion') }}"><i class='bx bx-headphone'></i> Atencion Al Cliente</a></div>
-        <div class="enlace">
-          <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;">
-              <i class='bx bx-log-out'></i> Cerrar Sesión
-            </button>
-          </form>
-        </div>
-      </div>
-    </div><!-- /.menu-dashboard -->
+    @include('frontend.layouts.sidebar-cliente')
 
     <main class="main-content">
       <div class="welcome-section">
@@ -88,10 +187,10 @@
             <h3>Mis Favoritos</h3>
             <p>Productos que te gustan</p>
             <div class="card-stats">
-              <span class="stat-number">-</span>
+              <span class="stat-number">{{ $favoritosCount ?? 0 }}</span>
               <span class="stat-label">productos favoritos</span>
             </div>
-            <a href="{{ url('favoritos') }}" class="card-button">
+            <a href="{{ route('favoritos.index') }}" class="card-button">
               <i class='bx bx-right-arrow-alt'></i> Ver Favoritos
             </a>
           </div>
@@ -102,10 +201,27 @@
             <i class='bx bx-cart'></i>
           </div>
           <div class="card-content">
+            <h3>Mi Carrito</h3>
+            <p>Productos en tu carrito</p>
+            <div class="card-stats">
+              <span class="stat-number">{{ $carritoCount ?? 0 }}</span>
+              <span class="stat-label">productos en carrito</span>
+            </div>
+            <a href="{{ route('carrito.index') }}" class="card-button">
+              <i class='bx bx-right-arrow-alt'></i> Ver Carrito
+            </a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <i class='bx bx-package'></i>
+          </div>
+          <div class="card-content">
             <h3>Mis Pedidos</h3>
             <p>Historial de compras</p>
             <div class="card-stats">
-              <span class="stat-number">-</span>
+              <span class="stat-number">{{ $pedidosCount ?? 0 }}</span>
               <span class="stat-label">pedidos realizados</span>
             </div>
             <a href="{{ route('pedidoscli') }}" class="card-button">
@@ -122,7 +238,7 @@
             <h3>Mensajes</h3>
             <p>Comunicación con soporte</p>
             <div class="card-stats">
-              <span class="stat-number">-</span>
+              <span class="stat-number">{{ $mensajesCount ?? 0 }}</span>
               <span class="stat-label">mensajes pendientes</span>
             </div>
             <a href="{{ url('mensajescli') }}" class="card-button">
@@ -139,7 +255,7 @@
             <h3>Medios de Pago</h3>
             <p>Gestiona tus métodos de pago</p>
             <div class="card-stats">
-              <span class="stat-number">{{ $mediosPagoCount }}</span>
+              <span class="stat-number">{{ $mediosPagoCount ?? 0 }}</span>
               <span class="stat-label">métodos configurados</span>
             </div>
             <a href="{{ route('cliente.medios-pago.index') }}" class="card-button">

@@ -28,37 +28,7 @@
   </header>
 
   <div class="dashboard-wrapper">
-    <div class="menu-dashboard">
-      <!-- TOP MENU -->
-      <div class="top-menu">
-        <div class="logo">
-          <img src="{{ asset('frontend/imagenes/logo technova.png') }}" alt=""> 
-          <span>Dashboard Cliente</span>
-        </div>
-        <div class="toggle">
-          <i class='bx bx-menu'></i>
-        </div>
-      </div>
-
-      <!-- MENÚ -->
-      <div class="menu">
-        <div class="enlace"><a href="{{ route('perfillcli') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
-        <div class="enlace"><a href="{{ route('favoritos.index') }}"><i class='bx bx-heart'></i> Favoritos</a></div>
-        <div class="enlace"><a href="{{ url('mensajescli') }}"><i class='bx bx-message'></i> Mensajes</a></div>
-        <div class="enlace"><a href="{{ route('pedidoscli') }}"><i class='bx bx-cart'></i> Pedidos</a></div>
-        <div class="enlace"><a href="{{ url('mediopagos') }}"><i class='bx bx-credit-card'></i>Medios De<br>Pagos</a></div>
-        <div class="enlace"><a href="{{ url('miscompras') }}"><i class='bx bx-shopping-bag'></i> Mis Compras</a></div>
-        <div class="enlace"><a href="{{ url('atencion') }}"><i class='bx bx-headphone'></i> Atencion Al Cliente</a></div>
-         <div class="enlace">
-           <form method="POST" action="{{ route('logout') }}">
-             @csrf
-             <button type="submit" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;">
-               <i class='bx bx-log-out'></i> Cerrar Sesión
-             </button>
-           </form>
-         </div>
-       </div>
-    </div><!-- /.menu-dashboard -->
+    @include('frontend.layouts.sidebar-cliente')
 
     <!-- PRINCIPAL -->
     <main class="main-content">
