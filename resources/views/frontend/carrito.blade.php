@@ -571,14 +571,17 @@
           <div class="enlace"><a href="{{ route('catalogo.autenticado') }}"><i class='bx bx-store'></i> Catálogo</a></div>
           <div class="enlace"><a href="{{ route('favoritos.index') }}"><i class='bx bx-heart'></i> Favoritos</a></div>
           <div class="enlace"><a href="{{ route('carrito.index') }}"><i class='bx bx-cart'></i> Carrito</a></div>
-          <div class="enlace">
-            <form method="POST" action="{{ route('logout') }}">
-              @csrf
-              <button type="submit" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;">
-                <i class='bx bx-log-out'></i> Cerrar Sesión
-              </button>
-            </form>
-          </div>
+          
+<div class="enlace"><a href="{{ route('compras.index') }}"><i class='bx bx-receipt'></i> Mis Compras</a></div>
+<div class="enlace">
+  <form method="POST" action="{{ route('logout') }}">
+    @csrf
+    <button type="submit" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;">
+      <i class='bx bx-log-out'></i> Cerrar Sesión
+    </button>
+  </form>
+</div>
+
         </div>
       </div>
     @endif

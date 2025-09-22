@@ -164,7 +164,8 @@
       @include('frontend.layouts.sidebar-cliente')
     @else
       <div class="menu-dashboard">
-        <!-- TOP MENU -->
+
+
         <div class="top-menu">
           <div class="logo">
             <img src="{{ asset('frontend/imagenes/logo technova.png') }}" alt=""> 
@@ -175,7 +176,8 @@
           </div>
         </div>
 
-        <!-- INPUT SEARCH -->
+
+
         <div class="input-search">
           <i class='bx bx-search'></i>
           <input type="text" class="input" placeholder="Buscar">

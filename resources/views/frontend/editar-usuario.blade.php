@@ -23,25 +23,61 @@
             margin-bottom: 20px;
             text-align: center;
         }
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            flex: 1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
         .form-editar-usuario input[type="text"],
         .form-editar-usuario input[type="email"],
+        .form-editar-usuario input[type="tel"],
         .form-editar-usuario input[type="password"],
         .form-editar-usuario select {
             width: 100%;
             padding: 12px;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s;
+        }
+        
+        .error-message {
+            color: #e53e3e;
+            font-size: 14px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .form-editar-usuario input:focus,
         .form-editar-usuario select:focus {
             outline: none;
             border-color: #007acc;
         }
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
         .btn-guardar {
-            background: var(--gradient-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 12px 30px;
             border: none;
@@ -49,11 +85,16 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
-            width: 100%;
+            transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .btn-guardar:hover {
-            background: #00a844;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
         .btn-cancelar {
             background: #ff4d4d;
@@ -64,12 +105,85 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
-            width: 100%;
-            margin-top: 10px;
+            transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
         }
         .btn-cancelar:hover {
             background: #d90000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 77, 77, 0.4);
+        }
+        
+        .user-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .user-info h3 {
+            color: #007acc;
+            margin-bottom: 20px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .info-item label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+        }
+        
+        .info-item span {
+            color: #2d3748;
+            font-size: 16px;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .current-role {
+            background: #e6fffa !important;
+            color: #234e52 !important;
+            font-weight: 600;
+            border-color: #81e6d9 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn-guardar,
+            .btn-cancelar {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -153,45 +267,41 @@
                 </div>
             @endif
 
-            <!-- Formulario para editar usuario -->
+            <!-- Información del usuario (solo lectura) -->
             <div class="form-editar-usuario">
-                <h2><i class='bx bx-user-edit'></i> Editar Rol del Usuario</h2>
+                <h2><i class='bx bx-user-edit'></i> Editar Rol de Usuario</h2>
                 
-                <!-- Información del usuario (solo lectura) -->
-                <div class="user-info-readonly" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                    <h3 style="color: #333; margin-bottom: 15px;">Información del Usuario</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div>
-                            <label style="font-weight: bold; color: #666;">Nombre Completo:</label>
-                            <p style="margin: 5px 0; color: #333;">{{ $user->name }}</p>
+                <!-- Información del usuario -->
+                <div class="user-info">
+                    <h3><i class='bx bx-user'></i> Información del Usuario</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Nombre Completo:</label>
+                            <span>{{ $user->first_name ?? 'Sin nombre' }} {{ $user->last_name ?? 'Sin apellido' }}</span>
                         </div>
-                        <div>
-                            <label style="font-weight: bold; color: #666;">Correo Electrónico:</label>
-                            <p style="margin: 5px 0; color: #333;">{{ $user->email }}</p>
+                        <div class="info-item">
+                            <label>Correo Electrónico:</label>
+                            <span>{{ $user->email }}</span>
                         </div>
-                        <div>
-                            <label style="font-weight: bold; color: #666;">Primer Nombre:</label>
-                            <p style="margin: 5px 0; color: #333;">{{ $user->first_name ?? 'No especificado' }}</p>
+                        <div class="info-item">
+                            <label>Tipo de Documento:</label>
+                            <span>{{ $user->document_type ?? 'No especificado' }}</span>
                         </div>
-                        <div>
-                            <label style="font-weight: bold; color: #666;">Apellido:</label>
-                            <p style="margin: 5px 0; color: #333;">{{ $user->last_name ?? 'No especificado' }}</p>
+                        <div class="info-item">
+                            <label>Número de Documento:</label>
+                            <span>{{ $user->document_number ?? 'No especificado' }}</span>
                         </div>
-                        <div>
-                            <label style="font-weight: bold; color: #666;">Tipo de Documento:</label>
-                            <p style="margin: 5px 0; color: #333;">{{ $user->document_type ?? 'No especificado' }}</p>
+                        <div class="info-item">
+                            <label>Teléfono:</label>
+                            <span>{{ $user->phone ?? 'No especificado' }}</span>
                         </div>
-                        <div>
-                            <label style="font-weight: bold; color: #666;">Número de Documento:</label>
-                            <p style="margin: 5px 0; color: #333;">{{ $user->document_number ?? 'No especificado' }}</p>
+                        <div class="info-item">
+                            <label>Dirección:</label>
+                            <span>{{ $user->address ?? 'No especificada' }}</span>
                         </div>
-                        <div>
-                            <label style="font-weight: bold; color: #666;">Teléfono:</label>
-                            <p style="margin: 5px 0; color: #333;">{{ $user->phone ?? 'No especificado' }}</p>
-                        </div>
-                        <div>
-                            <label style="font-weight: bold; color: #666;">Dirección:</label>
-                            <p style="margin: 5px 0; color: #333;">{{ $user->address ?? 'No especificado' }}</p>
+                        <div class="info-item">
+                            <label>Rol Actual:</label>
+                            <span class="current-role">{{ ucfirst($user->role) }}</span>
                         </div>
                     </div>
                 </div>
@@ -201,29 +311,28 @@
                     @csrf
                     @method('PUT')
                     
-                    <div style="background: #fff; padding: 20px; border-radius: 8px; border: 2px solid #e9ecef;">
-                        <h3 style="color: #333; margin-bottom: 15px;">Cambiar Rol del Usuario</h3>
-                        <p style="color: #666; margin-bottom: 20px;">Solo puedes modificar el rol del usuario. Los demás datos no se pueden cambiar desde aquí.</p>
-                        
-                        <select name="role" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px;">
+                    <div class="form-group">
+                        <label for="role">Cambiar Rol del Usuario</label>
+                        <select id="role" name="role" required>
                             <option value="">Seleccionar Nuevo Rol</option>
                             <option value="cliente" {{ old('role', $user->role) == 'cliente' ? 'selected' : '' }}>Cliente</option>
                             <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Administrador</option>
                             <option value="empleado" {{ old('role', $user->role) == 'empleado' ? 'selected' : '' }}>Empleado</option>
                         </select>
-                        
                         @error('role')
-                            <div style="color: #dc3545; margin-top: 5px; font-size: 14px;">{{ $message }}</div>
+                            <div class="error-message">{{ $message }}</div>
                         @enderror
                     </div>
                     
-                    <button type="submit" class="btn-guardar" style="margin-top: 20px;">
-                        <i class='bx bx-save'></i> Actualizar Rol
-                    </button>
-                    
-                    <a href="{{ route('usuarios.index') }}" class="btn-cancelar" style="text-decoration: none; display: block; text-align: center; margin-top: 10px;">
-                        <i class='bx bx-x'></i> Cancelar
-                    </a>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn-guardar">
+                            <i class='bx bx-save'></i> Actualizar Rol
+                        </button>
+                        
+                        <a href="{{ route('usuarios.index') }}" class="btn-cancelar">
+                            <i class='bx bx-x'></i> Cancelar
+                        </a>
+                    </div>
                 </form>
             </div>
         </main><!-- /main-content -->
