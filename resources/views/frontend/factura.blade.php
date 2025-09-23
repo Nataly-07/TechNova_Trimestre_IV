@@ -436,8 +436,16 @@
                             <div class="producto-cantidad">Cantidad: {{ $producto['cantidad'] }}</div>
                         </div>
                         <div class="producto-precio">
-                            <div class="precio-unitario">${{ number_format($producto['precio'], 0, ',', '.') }} c/u</div>
-                            <div class="precio-subtotal">${{ number_format($producto['subtotal'], 0, ',', '.') }}</div>
+                            <div class="precio-original" style="text-decoration: line-through; color: #999; font-size: 0.9rem; margin-bottom: 4px;">
+                                Antes: ${{ number_format($producto['precio'] * 1.05, 0, ',', '.') }} c/u
+                            </div>
+                            <div class="precio-unitario" style="color: #27ae60; font-weight: bold;">
+                                ${{ number_format($producto['precio'], 0, ',', '.') }} c/u
+                                <span class="descuento" style="background-color: #cce5cc; color: #006600; padding: 2px 6px; border-radius: 6px; font-size: 0.8rem; margin-left: 6px;">-5%</span>
+                            </div>
+                            <div class="precio-subtotal" style="color: #27ae60; font-weight: bold; margin-top: 4px;">
+                                Subtotal: ${{ number_format($producto['subtotal'], 0, ',', '.') }}
+                            </div>
                         </div>
                     </div>
                 @endforeach

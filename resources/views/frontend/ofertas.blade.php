@@ -38,7 +38,13 @@
             @endif
             <h3>{{ $producto->Nombre }}</h3>
             <p>{{ $producto->caracteristicas->Descripcion ?? '' }}</p>
-            <p>Precio: ${{ $producto->caracteristicas->Precio_Venta ?? '' }}</p>
+            <p class="precio-original" style="text-decoration: line-through; color: gray; margin: 8px 0; font-size: 0.9em;">
+              ${{ number_format($producto->caracteristicas->Precio_Venta * 1.05, 0, ',', '.') }}
+            </p>
+            <p class="precio-descuento" style="color: #006600; font-weight: bold; margin: 8px 0; font-size: 1.1em;">
+              ${{ number_format($producto->caracteristicas->Precio_Venta, 0, ',', '.') }}
+              <span class="descuento" style="background-color: #cce5cc; color: #006600; padding: 2px 6px; border-radius: 6px; font-size: 0.8em; margin-left: 6px;">-5%</span>
+            </p>
             <p>Stock: {{ $producto->Stock }}</p>
           </div>
         @endforeach

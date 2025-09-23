@@ -112,7 +112,15 @@
                   </div>
                   <div class="detail-row">
                     <span><i class='bx bx-money'></i> Precio Unitario:</span>
-                    <span class="price">${{ number_format($detalle->Precio, 0, ',', '.') }}</span>
+                    <div class="price-container">
+                      <div class="precio-original" style="text-decoration: line-through; color: #999; font-size: 0.9rem; margin-bottom: 4px;">
+                        Antes: ${{ number_format($detalle->Precio * 1.05, 0, ',', '.') }}
+                      </div>
+                      <span class="price" style="color: #27ae60; font-weight: bold;">
+                        ${{ number_format($detalle->Precio, 0, ',', '.') }}
+                        <span class="descuento" style="background-color: #cce5cc; color: #006600; padding: 2px 6px; border-radius: 6px; font-size: 0.8rem; margin-left: 6px;">-5%</span>
+                      </span>
+                    </div>
                   </div>
                   <div class="detail-row total">
                     <span><i class='bx bx-calculator'></i> Subtotal:</span>

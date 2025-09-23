@@ -612,7 +612,13 @@
                   
                   <div class="producto-info">
                     <div class="producto-nombre">{{ $detalle->producto->Nombre }}</div>
-                    <div class="producto-precio">${{ number_format($detalle->producto->caracteristicas->Precio_Venta, 0, ',', '.') }}</div>
+                    <div class="producto-precio-original" style="text-decoration: line-through; color: #999; font-size: 0.9rem; margin-bottom: 4px;">
+                      ${{ number_format($detalle->producto->caracteristicas->Precio_Venta * 1.05, 0, ',', '.') }}
+                    </div>
+                    <div class="producto-precio" style="color: #27ae60; font-weight: bold; font-size: 1.1rem;">
+                      ${{ number_format($detalle->producto->caracteristicas->Precio_Venta, 0, ',', '.') }}
+                      <span class="descuento" style="background-color: #cce5cc; color: #006600; padding: 2px 6px; border-radius: 6px; font-size: 0.8rem; margin-left: 6px;">-5%</span>
+                    </div>
                   </div>
                   
                   <div class="cantidad-controls">
