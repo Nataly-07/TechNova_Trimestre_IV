@@ -82,7 +82,15 @@
                       <div class="item">
                         <span class="item-name">{{ $detalle->producto->Nombre ?? 'Producto no disponible' }}</span>
                         <span class="item-quantity">x{{ $detalle->Cantidad }}</span>
-                        <span class="item-price">${{ number_format($detalle->Precio, 0, ',', '.') }}</span>
+                        <div class="item-price-container">
+                          <div class="precio-original" style="text-decoration: line-through; color: #999; font-size: 0.8rem;">
+                            ${{ number_format($detalle->Precio * 1.05, 0, ',', '.') }}
+                          </div>
+                          <span class="item-price" style="color: #27ae60; font-weight: bold;">
+                            ${{ number_format($detalle->Precio, 0, ',', '.') }}
+                            <span class="descuento" style="background-color: #cce5cc; color: #006600; padding: 2px 6px; border-radius: 6px; font-size: 0.7rem; margin-left: 6px;">-5%</span>
+                          </span>
+                        </div>
                       </div>
                     @endforeach
                   </div>

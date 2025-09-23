@@ -63,7 +63,13 @@
               <div class="product-details">
                 <p><strong>{{ $detalle->producto->Nombre }}</strong></p>
                 <p>Cantidad: {{ $detalle->Cantidad }}</p>
-                <p>Valor: ${{ number_format($detalle->producto->caracteristicas->Precio_Venta ?? 0, 0, ',', '.') }}</p>
+                <p class="precio-original" style="text-decoration: line-through; color: #999; font-size: 0.9rem; margin: 4px 0;">
+                  Antes: ${{ number_format(($detalle->producto->caracteristicas->Precio_Venta ?? 0) * 1.05, 0, ',', '.') }}
+                </p>
+                <p class="precio-descuento" style="color: #27ae60; font-weight: bold; font-size: 1rem; margin: 4px 0;">
+                  Valor: ${{ number_format($detalle->producto->caracteristicas->Precio_Venta ?? 0, 0, ',', '.') }}
+                  <span class="descuento" style="background-color: #cce5cc; color: #006600; padding: 2px 6px; border-radius: 6px; font-size: 0.8rem; margin-left: 6px;">-5%</span>
+                </p>
               </div>
             </div>
             @endif
