@@ -512,7 +512,7 @@
 <div class="ofertas-container" style="background: var(--gradient-light); padding: 20px 25px; border-radius: 10px; overflow: hidden; max-width: 100%; box-sizing: border-box; display: flex; gap: 25px; justify-content: center; flex-wrap: nowrap;">
     <div class="bloque" style="margin-bottom: 40px; overflow: hidden; flex: 0 0 300px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
         <span class="vendido1" style="background: var(--gradient-secondary); color: white; padding: 6px 15px; border-radius: 15px; font-weight: bold; font-size: 1em; align-self: flex-start;">Oferta del dia</span>
-        <div class="producto-card" style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 15px 15px 70px 15px; width: 240px; text-align: center; position: relative; margin-top: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <div class="producto-card" style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 15px 15px 80px 15px; width: 240px; text-align: center; position: relative; margin-top: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;">
             @if($productos->count() > 0)
             @php
               $imgSrc = $productos->first()->Imagen;
@@ -529,9 +529,12 @@
             <p class="precio-actual" style="color: #006600; font-weight: bold; margin: 8px 0; font-size: 1.1em;">
               ${{ number_format($productos->first()->caracteristicas->Precio_Venta, 0, ',', '.') }}
             </p>
-            <button class="carrito-btn" style="background: var(--gradient-primary); border: none; border-radius: 50%; width: 48px; height: 48px; color: white; font-size: 24px; cursor: pointer; position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); transition: all 0.3s ease;">
-              &#128722;
-            </button>
+            <div style="display: flex; gap: 15px; justify-content: center; align-items: center; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
+              <button class="favorito-btn" data-producto-id="{{ $productos->first()->ID_Producto }}" style="background-color: #ff6b6b; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 20px; cursor: pointer; color: white;">❤️</button>
+              <button class="carrito-btn" data-producto-id="{{ $productos->first()->ID_Producto }}" style="background: var(--gradient-primary); border: none; border-radius: 50%; width: 45px; height: 45px; color: white; font-size: 20px; cursor: pointer; transition: all 0.3s ease;">
+                &#128722;
+              </button>
+            </div>
             @endif
         </div>
     </div>
@@ -542,7 +545,7 @@
         </div>
         <div class="productos-grid" style="display: flex; gap: 20px; overflow: hidden; flex-wrap: nowrap; justify-content: flex-start;">
             @foreach($productos->take(3) as $producto)
-            <div class="producto-card" style="background: white; border-radius: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 15px 15px 70px 15px; width: 200px; text-align: center; position: relative;">
+            <div class="producto-card" style="background: white; border-radius: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 15px 15px 80px 15px; width: 200px; text-align: center; position: relative;">
                 @php
                   $imgSrc = $producto->Imagen;
                   if (!$imgSrc) {
@@ -558,9 +561,12 @@
                 <p class="precio-actual" style="color: #006600; font-weight: bold; margin: 6px 0; font-size: 1em;">
                   ${{ number_format($producto->caracteristicas->Precio_Venta, 0, ',', '.') }}
                 </p>
-                <button class="carrito-btn" data-producto-id="{{ $producto->ID_Producto }}" style="background: var(--gradient-primary); border: none; border-radius: 50%; width: 40px; height: 40px; color: white; font-size: 20px; cursor: pointer; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); transition: all 0.3s ease;">
-                  &#128722;
-                </button>
+                <div style="display: flex; gap: 8px; justify-content: center; align-items: center; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);">
+                  <button class="favorito-btn" data-producto-id="{{ $producto->ID_Producto }}" style="background-color: #ff6b6b; border: none; border-radius: 50%; width: 35px; height: 35px; font-size: 16px; cursor: pointer; color: white;">❤️</button>
+                  <button class="carrito-btn" data-producto-id="{{ $producto->ID_Producto }}" style="background: var(--gradient-primary); border: none; border-radius: 50%; width: 35px; height: 35px; color: white; font-size: 16px; cursor: pointer; transition: all 0.3s ease;">
+                    &#128722;
+                  </button>
+                </div>
             </div>
             @endforeach
         </div>
