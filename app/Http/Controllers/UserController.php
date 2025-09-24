@@ -166,7 +166,6 @@ class UserController extends Controller
     {
         $productos = \App\Models\Producto::with('caracteristicas')->get();
         $userId = Auth::id();
-        $mediosPagoCount = \App\Models\UserPaymentMethod::where('user_id', $userId)->count();
         $comprasCount = \App\Models\Compra::where('ID_Usuario', $userId)->count();
         
         // Contar favoritos del usuario
@@ -187,7 +186,6 @@ class UserController extends Controller
         
         return view('frontend.perfilcli', compact(
             'productos', 
-            'mediosPagoCount', 
             'comprasCount',
             'favoritosCount',
             'carritoCount',

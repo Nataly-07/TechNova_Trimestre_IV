@@ -7,17 +7,6 @@
     @if(session('error'))
       <div class="info-box" style="background:#ffecec;color:#b00020;margin-bottom:10px;">{{ session('error') }}</div>
     @endif
-    @if(($savedPaymentMethods ?? null) && $savedPaymentMethods->count())
-      <div class="form-group">
-        <label>Tarjetas guardadas</label>
-        <select name="saved_payment_method_id" id="saved_payment_method_id">
-          <option value="">Usar nueva tarjeta</option>
-          @foreach($savedPaymentMethods as $pm)
-            <option value="{{ $pm->id }}">{{ $pm->brand }} **** {{ $pm->last4 }}</option>
-          @endforeach
-        </select>
-      </div>
-    @endif
     <div class="form-group" id="metodo_pago_group">
       <label>Método de pago</label>
       <select name="metodo_pago" id="metodo_pago">
@@ -42,43 +31,25 @@
         <option value="12">12 cuotas</option>
       </select>
     </div>
-    <div class="form-group">
-      <label style="display:flex;align-items:center;gap:8px;">
-        <input type="checkbox" name="guardar_tarjeta" value="1" /> Guardar tarjeta en mi perfil
-      </label>
-    </div>
     <button type="submit" class="account">Continuar</button>
   </form>
   <script>
     document.addEventListener('DOMContentLoaded', function(){
       var selector = document.getElementById('metodo_pago');
       var tarjetaCampos = document.getElementById('tarjeta_campos');
-      var metodoPagoGroup = document.getElementById('metodo_pago_group');
-      var savedSelect = document.getElementById('saved_payment_method_id');
       
       function toggle(){
         var v = selector.value;
         var usingCard = (v === 'tarjeta_credito' || v === 'tarjeta_debito');
-        var usingSaved = savedSelect && savedSelect.value;
         
-        // Si se selecciona una tarjeta guardada, ocultar el selector de métodos de pago
-        if(usingSaved){
-          metodoPagoGroup.style.display = 'none';
-          tarjetaCampos.style.display = 'none';
+        if(usingCard){
+          tarjetaCampos.style.display = '';
         } else {
-          metodoPagoGroup.style.display = '';
-          if(usingCard){
-            tarjetaCampos.style.display = '';
-          } else {
-            tarjetaCampos.style.display = 'none';
-          }
+          tarjetaCampos.style.display = 'none';
         }
       }
       
       selector.addEventListener('change', toggle);
-      if(savedSelect){ 
-        savedSelect.addEventListener('change', toggle); 
-      }
       toggle();
     });
   </script>

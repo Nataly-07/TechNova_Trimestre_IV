@@ -49,6 +49,7 @@ class MedioPago extends Model
     {
         return [
             'nequi' => 'Nequi',
+            'daviplata' => 'DaviPlata',
             'pse' => 'PSE',
             'tarjeta_credito' => 'Tarjeta de Crédito',
             'tarjeta_debito' => 'Tarjeta de Débito',

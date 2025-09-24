@@ -44,10 +44,10 @@
       </a>
     </div>
     
-    <!-- Medios de Pago -->
-    <div class="enlace {{ request()->routeIs('cliente.medios-pago.*') || request()->routeIs('mediopagos') ? 'active' : '' }}">
-      <a href="{{ route('cliente.medios-pago.index') }}">
-        <i class='bx bx-credit-card'></i> Medios De<br>Pagos
+    <!-- Sección Temporal (Desactivada) -->
+    <div class="enlace disabled">
+      <a href="#" onclick="return false;" style="opacity: 0.5; cursor: not-allowed;">
+        <i class='bx bx-lock-alt'></i> Sección<br>Temporal
       </a>
     </div>
     
