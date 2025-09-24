@@ -264,6 +264,25 @@ Route::middleware([\App\Http\Middleware\ClienteMiddleware::class])->group(functi
 Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(function () {
     Route::get('/perfilad', [UserController::class, 'perfilad'])->name('perfilad');
     
+    // Dashboard del administrador
+    Route::get('/admin/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/dashboard/stats', [\App\Http\Controllers\AdminDashboardController::class, 'getStatsData'])->name('admin.dashboard.stats');
+    
+    // Gestión de pedidos
+    Route::get('/admin/orders', [\App\Http\Controllers\AdminOrdersController::class, 'index'])->name('admin.orders.index');
+    Route::get('/admin/orders/{id}', [\App\Http\Controllers\AdminOrdersController::class, 'show'])->name('admin.orders.show');
+    Route::put('/admin/orders/{id}/status', [\App\Http\Controllers\AdminOrdersController::class, 'updateStatus'])->name('admin.orders.update-status');
+    Route::delete('/admin/orders/{id}', [\App\Http\Controllers\AdminOrdersController::class, 'destroy'])->name('admin.orders.destroy');
+    Route::get('/admin/orders/stats', [\App\Http\Controllers\AdminOrdersController::class, 'getOrdersStats'])->name('admin.orders.stats');
+    
+    // Gestión de pagos
+    Route::get('/admin/payments', [\App\Http\Controllers\AdminPaymentsController::class, 'index'])->name('admin.payments.index');
+    Route::get('/admin/payments/{id}', [\App\Http\Controllers\AdminPaymentsController::class, 'show'])->name('admin.payments.show');
+    Route::put('/admin/payments/{id}/status', [\App\Http\Controllers\AdminPaymentsController::class, 'updateStatus'])->name('admin.payments.update-status');
+    Route::delete('/admin/payments/{id}', [\App\Http\Controllers\AdminPaymentsController::class, 'destroy'])->name('admin.payments.destroy');
+    Route::get('/admin/payments/stats', [\App\Http\Controllers\AdminPaymentsController::class, 'getPaymentsStats'])->name('admin.payments.stats');
+    Route::get('/admin/payments/monthly', [\App\Http\Controllers\AdminPaymentsController::class, 'getMonthlyPayments'])->name('admin.payments.monthly');
+    
     // Rutas de mensajes del administrador
     Route::get('/admin/mensajes', [\App\Http\Controllers\MensajeAdministradorController::class, 'index'])->name('admin.mensajes.index');
     Route::get('/admin/mensajes/{id}', [\App\Http\Controllers\MensajeAdministradorController::class, 'show'])->name('admin.mensajes.show');
