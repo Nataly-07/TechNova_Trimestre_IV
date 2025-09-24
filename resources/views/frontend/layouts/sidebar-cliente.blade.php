@@ -9,10 +9,6 @@
     </div>
   </div>
 
-  <div class="input-search">
-    <i class='bx bx-search'></i>
-    <input type="text" class="input" placeholder="Buscar">
-  </div>
 
   <div class="menu">
     <div class="enlace {{ request()->routeIs('perfillcli') ? 'active' : '' }}">

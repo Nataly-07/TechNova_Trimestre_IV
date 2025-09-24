@@ -1220,7 +1220,7 @@
     <div class="form-wrapper">
       <div class="form-header">
         <div class="logo">
-          <i class='bx bx-laptop'></i>
+          <img src="{{ asset('frontend/imagenes/logo technova.png') }}" alt="Logo Technova" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
         <h1 class="form-title">Iniciar Sesión</h1>
         <p class="form-subtitle">Bienvenido de vuelta a TechNova</p>

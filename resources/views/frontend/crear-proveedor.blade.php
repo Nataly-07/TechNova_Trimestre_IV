@@ -118,10 +118,6 @@
             <img src="{{ asset('frontend/imagenes/logo technova.png') }}" alt="Logo">
             <span>TECHNOVA</span>
         </a>
-        <div class="search-bar">
-            <input type="text" placeholder="¿Qué estás buscando hoy?">
-            <button class="search-btn">&#128269;</button>
-        </div>
         <div class="acciones-usuario">
             <a href="{{ route('perfilad') }}" class="account"><i class='bx bx-user-circle'></i> <span>Perfil</span></a>
             <form method="POST" action="{{ route('logout') }}">
@@ -145,11 +141,6 @@
                 </div>
             </div>
 
-            <!-- INPUT SEARCH -->
-            <div class="input-search">
-                <i class='bx bx-search'></i>
-                <input type="text" class="input" placeholder="Buscar">
-            </div>
 
             <div class="menu">
                 <div class="enlace"><a href="{{ route('perfilad') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
@@ -201,6 +192,8 @@
                     <input type="text" name="Identificacion" value="{{ old('Identificacion') }}" placeholder="Identificación (CC, NIT, etc.)" required />
                     
                     <input type="text" name="Nombre" value="{{ old('Nombre') }}" placeholder="Nombre completo del proveedor" required />
+                    
+                    <input type="text" name="Empresa" value="{{ old('Empresa') }}" placeholder="Nombre de la empresa" required />
                     
                     <input type="text" name="Telefono" value="{{ old('Telefono') }}" placeholder="Teléfono" required />
                     

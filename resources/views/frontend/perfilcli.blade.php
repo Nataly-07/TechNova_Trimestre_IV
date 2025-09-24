@@ -280,6 +280,23 @@
             </a>
           </div>
         </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <i class='bx bx-headphone'></i>
+          </div>
+          <div class="card-content">
+            <h3>Atención al Cliente</h3>
+            <p>Soporte y ayuda personalizada</p>
+            <div class="card-stats">
+              <span class="stat-number">24/7</span>
+              <span class="stat-label">disponible</span>
+            </div>
+            <a href="{{ route('atencion-cliente.index') }}" class="card-button">
+              <i class='bx bx-right-arrow-alt'></i> Contactar Soporte
+            </a>
+          </div>
+        </div>
       </div>
 
 

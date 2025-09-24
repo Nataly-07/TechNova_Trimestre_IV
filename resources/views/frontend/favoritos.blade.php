@@ -141,10 +141,6 @@
       </div>
     @endif
 
-    <div class="search-bar">
-      <input type="text" placeholder="¿Qué estás buscando hoy?">
-      <button class="search-btn">&#128269;</button>
-    </div>
 
     <div class="acciones-usuario">
       @if(auth()->user()->role === 'admin')
@@ -236,7 +232,7 @@
               
               <div class="favorito-actions">
                 <button class="btn-favorito favorito-btn" data-producto-id="{{ $producto->ID_Producto }}">❤️</button>
-                <button class="btn-carrito">&#128722;</button>
+                <button class="btn-carrito carrito-btn" data-producto-id="{{ $producto->ID_Producto }}">&#128722;</button>
               </div>
             </div>
           @endforeach
@@ -323,6 +319,52 @@
                 messageDiv.remove();
             }, 3000);
         }
+
+        // JavaScript para botones del carrito
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('carrito-btn') || e.target.closest('.carrito-btn')) {
+                e.preventDefault();
+                const button = e.target.classList.contains('carrito-btn') ? e.target : e.target.closest('.carrito-btn');
+                const productoId = button.getAttribute('data-producto-id');
+                
+                if (productoId) {
+                    console.log('Agregando producto al carrito:', productoId);
+                    
+                    // Mostrar loading en el botón
+                    const originalContent = button.innerHTML;
+                    button.innerHTML = '⏳';
+                    button.disabled = true;
+                    
+                    // Hacer petición al servidor
+                    fetch(`/carrito/agregar/${productoId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Respuesta del servidor:', data);
+                        
+                        if (data.success) {
+                            showMessage('Producto agregado al carrito exitosamente', 'success');
+                        } else {
+                            showMessage('Error: ' + (data.message || 'No se pudo agregar el producto al carrito'), 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showMessage('Error al agregar el producto al carrito', 'error');
+                    })
+                    .finally(() => {
+                        // Restaurar botón
+                        button.innerHTML = originalContent;
+                        button.disabled = false;
+                    });
+                }
+            }
+        });
     });
   </script>
 

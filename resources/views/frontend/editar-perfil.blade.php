@@ -152,7 +152,11 @@
 
             <div class="form-group">
                 <label for="nombre">Nombre *</label>
-                <input type="text" id="nombre" name="nombre" value="{{ old('nombre', $user->first_name) }}" required>
+                <input type="text" id="nombre" name="nombre" value="{{ old('nombre', $user->first_name) }}" 
+                       @if($user->role === 'empleado' || $user->role === 'admin') disabled style="background-color: #f5f5f5; color: #666; cursor: not-allowed;" @endif required>
+                @if($user->role === 'empleado' || $user->role === 'admin')
+                    <input type="hidden" name="nombre" value="{{ $user->first_name }}">
+                @endif
                 @error('nombre')
                     <div class="error">{{ $message }}</div>
                 @enderror
@@ -160,7 +164,11 @@
 
             <div class="form-group">
                 <label for="apellido">Apellido *</label>
-                <input type="text" id="apellido" name="apellido" value="{{ old('apellido', $user->last_name) }}" required>
+                <input type="text" id="apellido" name="apellido" value="{{ old('apellido', $user->last_name) }}" 
+                       @if($user->role === 'empleado' || $user->role === 'admin') disabled style="background-color: #f5f5f5; color: #666; cursor: not-allowed;" @endif required>
+                @if($user->role === 'empleado' || $user->role === 'admin')
+                    <input type="hidden" name="apellido" value="{{ $user->last_name }}">
+                @endif
                 @error('apellido')
                     <div class="error">{{ $message }}</div>
                 @enderror
@@ -168,12 +176,13 @@
 
             <div class="form-group">
                 <label for="tipo_doc">Tipo de Documento *</label>
-                <select id="tipo_doc" name="tipo_doc" required>
+                <select id="tipo_doc" name="tipo_doc" disabled style="background-color: #f5f5f5; color: #666; cursor: not-allowed;">
                     <option value="">Selecciona un tipo</option>
                     <option value="CC" {{ old('tipo_doc', $user->document_type) == 'CC' ? 'selected' : '' }}>Cédula de Ciudadanía</option>
                     <option value="TI" {{ old('tipo_doc', $user->document_type) == 'TI' ? 'selected' : '' }}>Tarjeta de Identidad</option>
                     <option value="CE" {{ old('tipo_doc', $user->document_type) == 'CE' ? 'selected' : '' }}>Cédula de Extranjería</option>
                 </select>
+                <input type="hidden" name="tipo_doc" value="{{ $user->document_type }}">
                 @error('tipo_doc')
                     <div class="error">{{ $message }}</div>
                 @enderror
@@ -181,7 +190,8 @@
 
             <div class="form-group">
                 <label for="documento">Número de Documento *</label>
-                <input type="text" id="documento" name="documento" value="{{ old('documento', $user->document_number) }}" required>
+                <input type="text" id="documento" name="documento" value="{{ old('documento', $user->document_number) }}" disabled style="background-color: #f5f5f5; color: #666; cursor: not-allowed;" required>
+                <input type="hidden" name="documento" value="{{ $user->document_number }}">
                 @error('documento')
                     <div class="error">{{ $message }}</div>
                 @enderror
@@ -189,7 +199,11 @@
 
             <div class="form-group">
                 <label for="correo">Correo Electrónico *</label>
-                <input type="email" id="correo" name="correo" value="{{ old('correo', $user->email) }}" required>
+                <input type="email" id="correo" name="correo" value="{{ old('correo', $user->email) }}" 
+                       @if($user->role === 'empleado' || $user->role === 'admin') disabled style="background-color: #f5f5f5; color: #666; cursor: not-allowed;" @endif required>
+                @if($user->role === 'empleado' || $user->role === 'admin')
+                    <input type="hidden" name="correo" value="{{ $user->email }}">
+                @endif
                 @error('correo')
                     <div class="error">{{ $message }}</div>
                 @enderror

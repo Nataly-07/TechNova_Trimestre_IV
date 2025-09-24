@@ -141,6 +141,57 @@
             </a>
           </div>
         </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <i class='bx bx-message'></i>
+          </div>
+          <div class="card-content">
+            <h3>Mensajes</h3>
+            <p>Gestiona comunicación del sistema</p>
+            <div class="card-stats">
+              <span class="stat-number">-</span>
+              <span class="stat-label">mensajes pendientes</span>
+            </div>
+            <a href="#" class="card-button">
+              <i class='bx bx-right-arrow-alt'></i> Ver Mensajes
+            </a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <i class='bx bx-cart'></i>
+          </div>
+          <div class="card-content">
+            <h3>Pedidos</h3>
+            <p>Gestiona pedidos y ventas</p>
+            <div class="card-stats">
+              <span class="stat-number">-</span>
+              <span class="stat-label">pedidos procesados</span>
+            </div>
+            <a href="#" class="card-button">
+              <i class='bx bx-right-arrow-alt'></i> Ver Pedidos
+            </a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <i class='bx bx-credit-card'></i>
+          </div>
+          <div class="card-content">
+            <h3>Pagos</h3>
+            <p>Gestiona transacciones y pagos</p>
+            <div class="card-stats">
+              <span class="stat-number">-</span>
+              <span class="stat-label">transacciones procesadas</span>
+            </div>
+            <a href="#" class="card-button">
+              <i class='bx bx-right-arrow-alt'></i> Ver Pagos
+            </a>
+          </div>
+        </div>
       </div>
 
 

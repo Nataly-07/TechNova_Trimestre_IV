@@ -400,10 +400,6 @@
             <span>TECHNOVA</span>
         </div>
 
-        <div class="search-bar">
-            <input type="text" placeholder="¿Qué estás buscando hoy?">
-            <button class="search-btn">&#128269;</button>
-        </div>
 
         <div class="acciones-usuario">
             <a href="{{ route('perfilad') }}" class="account">
@@ -430,11 +426,6 @@
         </div>
       </div>
 
-      <!-- INPUT SEARCH -->
-      <div class="input-search">
-        <i class='bx bx-search'></i>
-                <input type="text" class="input" placeholder="Buscar">
-      </div>
 
       <div class="menu">
                 <div class="enlace"><a href="{{ route('perfilad') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
@@ -445,7 +436,6 @@
                 <div class="enlace"><a href="#"><i class='bx bx-message'></i> Mensajes</a></div>
                 <div class="enlace"><a href="#"><i class='bx bx-cart'></i> Pedidos</a></div>
                 <div class="enlace"><a href="#"><i class='bx bx-credit-card'></i> Pagos</a></div>
-                <div class="enlace"><a href="#"><i class='bx bx-cog'></i> Configuraciones</a></div>
                 <div class="enlace"><a href="{{ route('logout') }}"><i class='bx bx-log-out'></i> Cerrar Sesión</a></div>
       </div>
     </div><!-- /.menu-dashboard -->
@@ -478,6 +468,7 @@
                             <th><i class='bx bx-hash'></i> ID</th>
                             <th><i class='bx bx-id-card'></i> Identificación</th>
                             <th><i class='bx bx-user'></i> Nombre</th>
+                            <th><i class='bx bx-buildings'></i> Empresa</th>
                             <th><i class='bx bx-phone'></i> Teléfono</th>
                             <th><i class='bx bx-envelope'></i> Correo</th>
                             <th><i class='bx bx-package'></i> ID Producto</th>
@@ -490,6 +481,7 @@
             <td>{{ $proveedor->ID_Proveedor }}</td>
             <td>{{ $proveedor->Identificacion }}</td>
             <td>{{ $proveedor->Nombre }}</td>
+            <td>{{ $proveedor->Empresa ?? 'N/A' }}</td>
             <td>{{ $proveedor->Telefono }}</td>
             <td>{{ $proveedor->Correo }}</td>
                             <td>{{ $proveedor->ID_producto ?? 'N/A' }}</td>

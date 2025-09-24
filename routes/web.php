@@ -120,6 +120,11 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.su
 Route::get('/creacioncuenta', [AuthController::class, 'showRegisterForm'])->name('frontend.register');
 Route::post('/creacioncuenta', [AuthController::class, 'register'])->name('frontend.register.submit');
 
+// Ruta de prueba para la búsqueda
+Route::get('/test-search', function () {
+    return view('frontend.test-search');
+});
+
 // Ruta de logout (debe estar fuera de middleware para funcionar)
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
