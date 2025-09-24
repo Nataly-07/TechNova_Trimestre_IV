@@ -7,6 +7,7 @@ use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -164,22 +165,25 @@ class UserController extends Controller
     public function perfilCliente()
     {
         $productos = \App\Models\Producto::with('caracteristicas')->get();
-        $mediosPagoCount = \App\Models\UserPaymentMethod::where('user_id', auth()->id())->count();
-        $comprasCount = \App\Models\Compra::where('ID_Usuario', auth()->id())->count();
+        $userId = Auth::id();
+        $mediosPagoCount = \App\Models\UserPaymentMethod::where('user_id', $userId)->count();
+        $comprasCount = \App\Models\Compra::where('ID_Usuario', $userId)->count();
         
         // Contar favoritos del usuario
-        $favoritosCount = \App\Models\Favorito::where('user_id', auth()->id())->count();
+        $favoritosCount = \App\Models\Favorito::where('user_id', $userId)->count();
         
         // Contar productos en el carrito del usuario
-        $carritoCount = \App\Models\DetalleCarrito::whereHas('carrito', function($query) {
-            $query->where('ID_Usuario', auth()->id());
+        $carritoCount = \App\Models\DetalleCarrito::whereHas('carrito', function($query) use ($userId) {
+            $query->where('ID_Usuario', $userId);
         })->count();
         
         // Contar pedidos del usuario
-        $pedidosCount = \App\Models\Venta::where('ID_Usuario', auth()->id())->count();
+        $pedidosCount = \App\Models\Venta::where('ID_Usuario', $userId)->count();
         
-        // Contar mensajes pendientes (asumiendo que hay un modelo Mensaje)
-        $mensajesCount = 0; // Por ahora 0, se puede implementar cuando exista el modelo
+            // Contar notificaciones pendientes reales
+            $notificacionesCount = \App\Models\Notificacion::where('user_id', $userId)
+                ->where('leida', false)
+                ->count();
         
         return view('frontend.perfilcli', compact(
             'productos', 
@@ -188,7 +192,7 @@ class UserController extends Controller
             'favoritosCount',
             'carritoCount',
             'pedidosCount',
-            'mensajesCount'
+            'notificacionesCount'
         ));
     }
 }

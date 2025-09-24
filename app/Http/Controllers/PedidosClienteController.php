@@ -23,7 +23,7 @@ class PedidosClienteController extends Controller
         
         // Obtener las compras del cliente autenticado
         $compras = Compra::where('ID_Usuario', $user->id)
-            ->with(['detalles.producto.caracteristica'])
+            ->with(['detalles.producto.caracteristicas'])
             ->orderBy('Fecha_Compra', 'desc')
             ->get();
 
@@ -50,7 +50,7 @@ class PedidosClienteController extends Controller
                         'cantidad' => $detalle->Cantidad,
                         'precio' => $detalle->Precio,
                         'imagen' => $detalle->producto->Imagen,
-                        'caracteristicas' => $detalle->producto->caracteristica,
+                        'caracteristicas' => $detalle->producto->caracteristicas,
                     ];
                 }
             }
@@ -123,7 +123,7 @@ class PedidosClienteController extends Controller
         
         $compra = Compra::where('ID_Compras', $id)
             ->where('ID_Usuario', $user->id)
-            ->with(['detalles.producto.caracteristica'])
+            ->with(['detalles.producto.caracteristicas'])
             ->firstOrFail();
 
         return view('frontend.pedido-detalle', compact('compra'));
@@ -135,7 +135,7 @@ class PedidosClienteController extends Controller
         
         $compra = Compra::where('ID_Compras', $id)
             ->where('ID_Usuario', $user->id)
-            ->with(['detalles.producto.caracteristica'])
+            ->with(['detalles.producto.caracteristicas'])
             ->firstOrFail();
 
         // Procesar los datos para la factura
@@ -166,7 +166,7 @@ class PedidosClienteController extends Controller
                     'precio' => $detalle->Precio,
                     'subtotal' => $detalle->Cantidad * $detalle->Precio,
                     'imagen' => $detalle->producto->Imagen,
-                    'caracteristicas' => $detalle->producto->caracteristica,
+                    'caracteristicas' => $detalle->producto->caracteristicas,
                 ];
             }
         }
@@ -180,7 +180,7 @@ class PedidosClienteController extends Controller
         
         $compra = Compra::where('ID_Compras', $id)
             ->where('ID_Usuario', $user->id)
-            ->with(['detalles.producto.caracteristica'])
+            ->with(['detalles.producto.caracteristicas'])
             ->firstOrFail();
 
         // Procesar los datos para la factura
@@ -211,7 +211,7 @@ class PedidosClienteController extends Controller
                     'precio' => $detalle->Precio,
                     'subtotal' => $detalle->Cantidad * $detalle->Precio,
                     'imagen' => $detalle->producto->Imagen,
-                    'caracteristicas' => $detalle->producto->caracteristica,
+                    'caracteristicas' => $detalle->producto->caracteristicas,
                 ];
             }
         }

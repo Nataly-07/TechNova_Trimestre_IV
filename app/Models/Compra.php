@@ -43,4 +43,12 @@ class Compra extends Model
     {
         return $this->hasMany(DetalleCompra::class, 'ID_Compras', 'ID_Compras');
     }
+
+    /**
+     * Relación con las notificaciones
+     */
+    public function notificaciones()
+    {
+        return $this->hasMany(Notificacion::class, 'data_adicional->compra_id', 'ID_Compras');
+    }
 }

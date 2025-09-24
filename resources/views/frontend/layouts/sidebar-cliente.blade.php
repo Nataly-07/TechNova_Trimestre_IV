@@ -23,10 +23,10 @@
       </a>
     </div>
 
-    <!-- Mensajes (rama de Tania) -->
-    <div class="enlace {{ request()->routeIs('mensajescli') ? 'active' : '' }}">
-      <a href="{{ url('mensajescli') }}">
-        <i class='bx bx-message'></i> Mensajes
+    <!-- Notificaciones -->
+    <div class="enlace {{ request()->routeIs('notificaciones.*') ? 'active' : '' }}">
+      <a href="{{ route('notificaciones.index') }}">
+        <i class='bx bx-bell'></i> Notificaciones
       </a>
     </div>
     

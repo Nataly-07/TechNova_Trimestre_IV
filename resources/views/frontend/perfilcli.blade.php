@@ -232,17 +232,17 @@
 
         <div class="card">
           <div class="card-icon">
-            <i class='bx bx-message'></i>
+            <i class='bx bx-bell'></i>
           </div>
           <div class="card-content">
-            <h3>Mensajes</h3>
-            <p>Comunicación con soporte</p>
+            <h3>Notificaciones</h3>
+            <p>Mantente informado de las novedades</p>
             <div class="card-stats">
-              <span class="stat-number">{{ $mensajesCount ?? 0 }}</span>
-              <span class="stat-label">mensajes pendientes</span>
+              <span class="stat-number">{{ $notificacionesCount ?? 0 }}</span>
+              <span class="stat-label">notificaciones pendientes</span>
             </div>
-            <a href="{{ url('mensajescli') }}" class="card-button">
-              <i class='bx bx-right-arrow-alt'></i> Ver Mensajes
+            <a href="{{ route('notificaciones.index') }}" class="card-button">
+              <i class='bx bx-right-arrow-alt'></i> Ver Notificaciones
             </a>
           </div>
         </div>

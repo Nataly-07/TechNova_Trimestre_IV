@@ -70,7 +70,7 @@
             <a href="{{ route('catalogo.autenticado') }}" class="btn btn-primary">
               <i class='bx bx-store'></i> Continuar Comprando
             </a>
-            <a href="{{ route('compras.index') }}" class="btn btn-secondary">
+            <a href="{{ route('cliente.mis-compras.index') }}" class="btn btn-secondary">
               <i class='bx bx-receipt'></i> Ver Mis Compras
             </a>
           </div>

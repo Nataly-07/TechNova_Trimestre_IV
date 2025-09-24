@@ -27,6 +27,14 @@ class Venta extends Model
      */
     public function usuario()
     {
-        return $this->belongsTo(Usuario::class, 'ID_Usuario', 'ID_Usuario');
+        return $this->belongsTo(User::class, 'ID_Usuario', 'id');
+    }
+
+    /**
+     * Relación con las notificaciones
+     */
+    public function notificaciones()
+    {
+        return $this->hasMany(Notificacion::class, 'data_adicional->venta_id', 'ID_Ventas');
     }
 }

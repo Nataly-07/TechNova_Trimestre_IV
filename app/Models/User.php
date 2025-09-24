@@ -109,4 +109,44 @@ class User extends Authenticatable
     {
         return $this->hasMany(Compra::class, 'ID_Usuario', 'id');
     }
+
+    /**
+     * Relación con las notificaciones
+     */
+    public function notificaciones()
+    {
+        return $this->hasMany(Notificacion::class);
+    }
+
+    /**
+     * Relación con los mensajes directos enviados
+     */
+    public function mensajesDirectos()
+    {
+        return $this->hasMany(MensajeDirecto::class, 'user_id');
+    }
+
+    /**
+     * Relación con los mensajes directos asignados como empleado
+     */
+    public function mensajesAsignados()
+    {
+        return $this->hasMany(MensajeDirecto::class, 'empleado_id');
+    }
+
+    /**
+     * Relación con los mensajes recibidos como empleado
+     */
+    public function mensajesRecibidos()
+    {
+        return $this->hasMany(MensajeEmpleado::class, 'empleado_id');
+    }
+
+    /**
+     * Relación con los mensajes enviados como remitente
+     */
+    public function mensajesEnviados()
+    {
+        return $this->hasMany(MensajeEmpleado::class, 'remitente_id');
+    }
 }

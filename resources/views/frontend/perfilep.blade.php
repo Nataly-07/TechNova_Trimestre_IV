@@ -42,7 +42,7 @@
       <div class="menu">
         <div class="enlace"><a href="{{ route('perfilemp') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
         <div class="enlace"><a href="{{ route('empleado.usuarios.cliente') }}"><i class='bx bx-user'></i> Usuarios</a></div>
-        <div class="enlace"><a href="#"><i class='bx bx-message'></i> Mensajes</a></div>
+        <div class="enlace"><a href="{{ route('empleado.mensajes.index') }}"><i class='bx bx-message'></i> Mensajes</a></div>
         <div class="enlace"><a href="{{ route('empleado.inventario') }}"><i class='bx bx-shopping-bag'></i> Visualización Artículos</a></div>
         <div class="enlace"><a href="#"><i class='bx bx-cart'></i> Pedidos</a></div>
         <div class="enlace"><a href="{{ url('atencion') }}"><i class='bx bx-headphone'></i> Atencion Al Cliente</a></div>
@@ -120,7 +120,7 @@
               <span class="stat-number">-</span>
               <span class="stat-label">mensajes pendientes</span>
             </div>
-            <a href="#" class="card-button">
+            <a href="{{ route('empleado.mensajes.index') }}" class="card-button">
               <i class='bx bx-right-arrow-alt'></i> Ver Mensajes
             </a>
           </div>
