@@ -18,10 +18,6 @@
       <span>TECHNOVA</span>
     </div>
 
-    <div class="search-bar">
-      <input type="text" id="buscarCliente" placeholder="Buscar cliente..." />
-      <button class="search-btn">&#128269;</button>
-    </div>
 
     <div class="acciones-usuario">
       <a href="{{ route('perfilemp') }}" class="account"><i class="bx bx-user-circle"></i> <span>Perfil</span></a>
@@ -39,10 +35,6 @@
         <div class="toggle"><i class="bx bx-menu"></i></div>
       </div>
 
-      <div class="input-search">
-        <i class="bx bx-search"></i>
-        <input type="text" class="input" placeholder="Buscar">
-      </div>
 
       <div class="menu">
         <div class="enlace"><a href="{{ route('perfilemp') }}"><i class="bx bx-user-circle"></i> Mi Perfil</a></div>
@@ -90,22 +82,5 @@
     &copy; 2025 Technova
   </footer>
 
-  <script>
-    // Función para buscar clientes
-    document.getElementById('buscarCliente').addEventListener('input', function() {
-      const searchTerm = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#clientesBody tr');
-      
-      rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        if (text.includes(searchTerm)) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
-        }
-      });
-    });
-
-  </script>
 </body>
 </html>

@@ -1229,8 +1229,8 @@
     <div class="form-wrapper">
       <div class="form-header">
         <div class="logo">
-          <i class='bx bx-laptop'></i>
-    </div>
+          <img src="{{ asset('frontend/imagenes/logo technova.png') }}" alt="Logo Technova" style="width: 100%; height: 100%; object-fit: contain;">
+        </div>
         <h1 class="form-title">Crear Cuenta</h1>
         <p class="form-subtitle">Únete a la comunidad TechNova</p>
     </div>

@@ -15,10 +15,6 @@
       <img src="{{ asset('frontend/imagenes/logo technova.png') }}" alt="Logo" />
       <span>TECHNOVA</span>
     </a>
-    <div class="search-bar">
-      <input type="text" placeholder="Buscar producto..." id="buscarProducto" />
-      <button class="search-btn">&#128269;</button>
-    </div>
     <div class="acciones-usuario">
       <a href="{{ route('perfilemp') }}" class="account"><i class='bx bx-user-circle'></i> <span>Perfil</span></a>
       <a href="{{ route('index') }}" class="account"><i class='bx bx-log-out'></i> <span>Salir</span></a>
@@ -38,11 +34,6 @@
         </div>
       </div>
 
-      <!-- INPUT SEARCH -->
-      <div class="input-search">
-        <i class='bx bx-search'></i>
-        <input type="text" class="input" placeholder="Buscar">
-      </div>
 
       <!-- MENÚ -->
      <div class="menu">

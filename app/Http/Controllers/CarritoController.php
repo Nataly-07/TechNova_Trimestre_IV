@@ -89,9 +89,11 @@ class CarritoController extends Controller
                                          ->first();
 
         if ($detalleExistente) {
+            // Si el producto ya existe, sumar la cantidad nueva
             $detalleExistente->Cantidad += $cantidad;
             $detalleExistente->save();
         } else {
+            // Crear nuevo detalle
             DetalleCarrito::create([
                 'ID_Carrito' => $carrito->ID_Carrito,
                 'ID_Producto' => $productoId,
@@ -99,13 +101,9 @@ class CarritoController extends Controller
             ]);
         }
 
-        // Calcular el contador actualizado del carrito
-        $cartCount = $carrito->detalles()->sum('Cantidad');
-
         return response()->json([
             'success' => true,
-            'message' => 'Producto agregado al carrito',
-            'cartCount' => $cartCount
+            'message' => 'Producto agregado al carrito exitosamente'
         ]);
     }
 
@@ -184,7 +182,7 @@ class CarritoController extends Controller
     }
 
     /**
-     * Vaciar carrito
+     * Vaciar todo el carrito del usuario
      */
     public function vaciar()
     {
@@ -196,13 +194,16 @@ class CarritoController extends Controller
 
         $carrito = $user->carrito;
         if ($carrito) {
+            // Eliminar todos los detalles del carrito
             $carrito->detalles()->delete();
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'Carrito vaciado',
+            'message' => 'Carrito vaciado exitosamente',
             'cartCount' => 0
         ]);
     }
+
+
 }

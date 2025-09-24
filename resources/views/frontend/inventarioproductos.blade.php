@@ -20,10 +20,6 @@
             <span>TECHNOVA</span>
         </div>
 
-        <div class="search-bar">
-            <input type="text" id="buscador-productos" placeholder="¿Qué estás buscando hoy?">
-            <button class="search-btn">&#128269;</button>
-        </div>
 
         <div class="acciones-usuario">
             <a href="{{ route('perfilad') }}" class="account">
@@ -50,11 +46,6 @@
                 </div>
             </div>
 
-            <!-- INPUT SEARCH -->
-            <div class="input-search">
-                <i class='bx bx-search'></i>
-                <input type="text" class="input" placeholder="Buscar">
-            </div>
 
             <div class="menu">
                 <div class="enlace"><a href="{{ route('perfilad') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>

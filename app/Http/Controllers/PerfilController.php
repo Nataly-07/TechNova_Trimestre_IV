@@ -26,27 +26,46 @@ class PerfilController extends Controller
     {
         $user = Auth::user();
         
-        $request->validate([
-            'nombre' => ['required', 'string', 'max:255'],
-            'apellido' => ['required', 'string', 'max:255'],
-            'tipo_doc' => ['required', 'string', 'in:CC,TI,CE'],
-            'documento' => ['required', 'string', 'max:20', 'unique:users,document_number,' . $user->id],
-            'correo' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+        // Validación condicional según el rol del usuario
+        $validationRules = [
             'telefono' => ['required', 'string', 'max:20'],
             'direccion' => ['required', 'string', 'max:255'],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-        ]);
+        ];
 
-        $user->update([
-            'name' => $request->nombre . ' ' . $request->apellido,
-            'first_name' => $request->nombre,
-            'last_name' => $request->apellido,
-            'document_type' => $request->tipo_doc,
-            'document_number' => $request->documento,
-            'email' => $request->correo,
+        // Solo validar campos editables según el rol
+        if ($user->role !== 'empleado') {
+            $validationRules['nombre'] = ['required', 'string', 'max:255'];
+            $validationRules['apellido'] = ['required', 'string', 'max:255'];
+            $validationRules['correo'] = ['required', 'email', 'max:255', 'unique:users,email,' . $user->id];
+        } else {
+            // Para empleados, estos campos son opcionales ya que no se pueden editar
+            $validationRules['nombre'] = ['nullable', 'string', 'max:255'];
+            $validationRules['apellido'] = ['nullable', 'string', 'max:255'];
+            $validationRules['correo'] = ['nullable', 'email', 'max:255'];
+        }
+
+        // Campos de documento siempre no editables
+        $validationRules['tipo_doc'] = ['nullable', 'string', 'in:CC,TI,CE'];
+        $validationRules['documento'] = ['nullable', 'string', 'max:20'];
+
+        $request->validate($validationRules);
+
+        // Actualizar solo los campos editables según el rol
+        $updateData = [
             'phone' => $request->telefono,
             'address' => $request->direccion,
-        ]);
+        ];
+
+        // Solo actualizar campos editables para clientes y administradores
+        if ($user->role !== 'empleado') {
+            $updateData['name'] = $request->nombre . ' ' . $request->apellido;
+            $updateData['first_name'] = $request->nombre;
+            $updateData['last_name'] = $request->apellido;
+            $updateData['email'] = $request->correo;
+        }
+
+        $user->update($updateData);
 
         // Actualizar contraseña solo si se proporciona
         if ($request->filled('password')) {

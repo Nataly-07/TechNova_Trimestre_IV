@@ -19,12 +19,6 @@
       <span>TECHNOVA</span>
     </div>
 
-    <div class="search-bar">
-      <form action="{{ route('buscar') }}" method="GET" class="search-form">
-        <input type="text" name="q" placeholder="¿Qué estás buscando hoy?" class="search-input" value="{{ request('q') }}">
-        <button type="submit" class="search-btn">&#128269;</button>
-      </form>
-    </div>
 
     <div class="acciones-usuario">
       <a href="{{ route('perfilemp') }}" class="account"><i class='bx bx-user-circle'></i> <span>Perfil</span></a>
@@ -44,10 +38,6 @@
         </div>
       </div>
 
-      <div class="input-search">
-        <i class='bx bx-search'></i>
-        <input type="text" class="input" id="buscador-menu" placeholder="Buscar">
-      </div>
 
       <div class="menu">
         <div class="enlace"><a href="{{ route('perfilemp') }}"><i class='bx bx-user-circle'></i> Mi Perfil</a></div>
@@ -149,6 +139,23 @@
             </div>
             <a href="#" class="card-button">
               <i class='bx bx-right-arrow-alt'></i> Ver Pedidos
+            </a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <i class='bx bx-headphone'></i>
+          </div>
+          <div class="card-content">
+            <h3>Atención al Cliente</h3>
+            <p>Gestiona consultas y soporte</p>
+            <div class="card-stats">
+              <span class="stat-number">-</span>
+              <span class="stat-label">consultas pendientes</span>
+            </div>
+            <a href="{{ route('atencion-cliente.index') }}" class="card-button">
+              <i class='bx bx-right-arrow-alt'></i> Gestionar Consultas
             </a>
           </div>
         </div>

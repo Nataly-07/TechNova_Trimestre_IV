@@ -517,10 +517,6 @@
       </div>
     @endif
     
-    <div class="search-bar">
-      <input type="text" placeholder="¿Qué estás buscando hoy?" />
-      <button class="search-btn">&#128269;</button>
-    </div>
     
     <div class="acciones-usuario">
       @if(auth()->user()->role === 'admin')
