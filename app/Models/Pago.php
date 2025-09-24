@@ -24,6 +24,14 @@ class Pago extends Model
     {
         return $this->hasMany(MedioPago::class, 'ID_Pagos', 'ID_Pagos');
     }
+
+    /**
+     * Relación con las notificaciones
+     */
+    public function notificaciones()
+    {
+        return $this->hasMany(Notificacion::class, 'data_adicional->pago_id', 'ID_Pagos');
+    }
 }
 
 

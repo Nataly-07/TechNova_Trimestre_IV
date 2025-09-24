@@ -37,6 +37,14 @@ class DetalleVenta extends Model
      */
     public function productos()
     {
-        return $this->belongsTo(Productos::class, 'ID_Producto', 'ID_Producto');
+        return $this->belongsTo(Producto::class, 'ID_Producto', 'ID_Producto');
+    }
+
+    /**
+     * Relación con los medios de pago
+     */
+    public function mediosPago()
+    {
+        return $this->hasMany(MedioPago::class, 'ID_DetalleVentas', 'ID_DetalleVentas');
     }
 }

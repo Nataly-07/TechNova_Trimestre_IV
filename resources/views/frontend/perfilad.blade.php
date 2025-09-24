@@ -47,7 +47,7 @@
         <div class="enlace"><a href="{{ route('productos.index') }}"><i class='bx bx-shopping-bag'></i> Movimiento de Artículos</a></div>
         <div class="enlace"><a href="{{ route('reportes.index') }}"><i class='bx bx-file-blank'></i> Reportes</a></div>
         <div class="enlace"><a href="{{ route('proveedores.index') }}"><i class='bx bx-user-circle'></i> Proveedores</a></div>
-        <div class="enlace"><a href="#"><i class='bx bx-message'></i> Mensajes</a></div>
+        <div class="enlace"><a href="{{ route('admin.mensajes.index') }}"><i class='bx bx-message'></i> Mensajes</a></div>
         <div class="enlace"><a href="#"><i class='bx bx-cart'></i> Pedidos</a></div>
         <div class="enlace"><a href="#"><i class='bx bx-credit-card'></i> Pagos</a></div>
         <div class="enlace"><a href="{{ route('logout') }}"><i class='bx bx-log-out'></i> Cerrar Sesión</a></div>

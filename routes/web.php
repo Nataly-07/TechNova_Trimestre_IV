@@ -274,6 +274,16 @@ Route::middleware([\App\Http\Middleware\ClienteMiddleware::class])->group(functi
 // Rutas de perfiles específicas por rol
 Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(function () {
     Route::get('/perfilad', [UserController::class, 'perfilad'])->name('perfilad');
+    
+    // Rutas de mensajes del administrador
+    Route::get('/admin/mensajes', [\App\Http\Controllers\MensajeAdministradorController::class, 'index'])->name('admin.mensajes.index');
+    Route::get('/admin/mensajes/{id}', [\App\Http\Controllers\MensajeAdministradorController::class, 'show'])->name('admin.mensajes.show');
+    Route::post('/admin/mensajes/{id}/marcar-leido', [\App\Http\Controllers\MensajeAdministradorController::class, 'marcarComoLeido'])->name('admin.mensajes.marcar-leido');
+    Route::post('/admin/mensajes/marcar-todos-leidos', [\App\Http\Controllers\MensajeAdministradorController::class, 'marcarTodosComoLeidos'])->name('admin.mensajes.marcar-todos-leidos');
+    Route::post('/admin/mensajes/enviar', [\App\Http\Controllers\MensajeAdministradorController::class, 'enviar'])->name('admin.mensajes.enviar');
+    Route::post('/admin/mensajes/{id}/responder', [\App\Http\Controllers\MensajeAdministradorController::class, 'responder'])->name('admin.mensajes.responder');
+    Route::get('/admin/mensajes-filtrar', [\App\Http\Controllers\MensajeAdministradorController::class, 'filtrar'])->name('admin.mensajes.filtrar');
+    Route::get('/admin/conversaciones-empleados', [\App\Http\Controllers\MensajeAdministradorController::class, 'conversacionesEmpleados'])->name('admin.conversaciones.empleados');
 });
 
 Route::middleware(['auth', \App\Http\Middleware\EmpleadoMiddleware::class])->group(function () {
@@ -299,9 +309,17 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/perfil/destroy', [PerfilController::class, 'destroy'])->name('perfil.destroy');
 });
 
-// Rutas de inventario (solo para empleados)
+// Rutas de empleados
 Route::middleware(['auth', \App\Http\Middleware\EmpleadoMiddleware::class])->group(function () {
     Route::get('/inventario', [\App\Http\Controllers\InventarioController::class, 'index'])->name('inventario.index');
+    
+    // Rutas de mensajes de empleados
+    Route::get('/empleado/mensajes', [\App\Http\Controllers\MensajeEmpleadoController::class, 'index'])->name('empleado.mensajes.index');
+    Route::get('/empleado/mensajes/{id}', [\App\Http\Controllers\MensajeEmpleadoController::class, 'show'])->name('empleado.mensajes.show');
+    Route::post('/empleado/mensajes/{id}/marcar-leido', [\App\Http\Controllers\MensajeEmpleadoController::class, 'marcarComoLeido'])->name('empleado.mensajes.marcar-leido');
+    Route::post('/empleado/mensajes/marcar-todos-leidos', [\App\Http\Controllers\MensajeEmpleadoController::class, 'marcarTodosComoLeidos'])->name('empleado.mensajes.marcar-todos-leidos');
+    Route::post('/empleado/mensajes/{id}/responder', [\App\Http\Controllers\MensajeEmpleadoController::class, 'responder'])->name('empleado.mensajes.responder');
+    Route::get('/empleado/mensajes-filtrar', [\App\Http\Controllers\MensajeEmpleadoController::class, 'filtrar'])->name('empleado.mensajes.filtrar');
 });
 
 // Rutas de compatibilidad para URLs antiguas (solo para clientes)
@@ -320,6 +338,17 @@ Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->grou
     Route::get('/atencion-cliente', [AtencionClienteController::class, 'index'])->name('atencion-cliente.index');
     Route::post('/atencion-cliente', [AtencionClienteController::class, 'store'])->name('atencion-cliente.store');
     Route::post('/atencion-cliente/{id}/responder', [AtencionClienteController::class, 'responder'])->name('atencion-cliente.responder');
+    
+    // Rutas de mensajes directos integradas en atención al cliente
+    Route::post('/atencion-cliente/mensajes', [AtencionClienteController::class, 'storeMensaje'])->name('atencion-cliente.mensajes.store');
+    Route::get('/atencion-cliente/mensajes/{id}', [AtencionClienteController::class, 'showMensaje'])->name('atencion-cliente.mensajes.show');
+    
+        // Rutas de notificaciones (solo para clientes)
+        Route::get('/notificaciones', [\App\Http\Controllers\NotificacionesController::class, 'index'])->name('notificaciones.index');
+        Route::post('/notificaciones/{id}/marcar-leida', [\App\Http\Controllers\NotificacionesController::class, 'marcarComoLeida'])->name('notificaciones.marcar-leida');
+        Route::post('/notificaciones/{id}/marcar-no-leida', [\App\Http\Controllers\NotificacionesController::class, 'marcarComoNoLeida'])->name('notificaciones.marcar-no-leida');
+        Route::post('/notificaciones/marcar-todas-leidas', [\App\Http\Controllers\NotificacionesController::class, 'marcarTodasComoLeidas'])->name('notificaciones.marcar-todas-leidas');
+        Route::get('/notificaciones-filtrar', [\App\Http\Controllers\NotificacionesController::class, 'filtrar'])->name('notificaciones.filtrar');
     
     // Ruta de compatibilidad para la URL antigua
     Route::get('/atencion', function() {

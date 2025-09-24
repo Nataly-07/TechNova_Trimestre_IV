@@ -23,7 +23,7 @@ class Caracteristica extends Model
      */
     public function productos()
     {
-        return $this->hasMany(Productos::class, 'ID_Caracteristicas', 'ID_Caracteristicas');
+        return $this->hasMany(Producto::class, 'ID_Caracteristicas', 'ID_Caracteristicas');
     }
 }
 
