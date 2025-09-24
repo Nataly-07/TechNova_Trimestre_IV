@@ -45,7 +45,7 @@
         <div class="enlace"><a href="{{ route('empleado.mensajes.index') }}"><i class='bx bx-message'></i> Mensajes</a></div>
         <div class="enlace"><a href="{{ route('empleado.inventario') }}"><i class='bx bx-shopping-bag'></i> Visualización Artículos</a></div>
         <div class="enlace"><a href="#"><i class='bx bx-cart'></i> Pedidos</a></div>
-        <div class="enlace"><a href="{{ url('atencion') }}"><i class='bx bx-headphone'></i> Atencion Al Cliente</a></div>
+        <div class="enlace"><a href="{{ route('empleado.atencion-cliente.index') }}"><i class='bx bx-headphone'></i> Atención al Cliente</a></div>
         <div class="enlace">
           <form method="POST" action="{{ route('logout') }}">
             @csrf

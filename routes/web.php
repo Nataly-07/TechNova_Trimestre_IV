@@ -155,11 +155,6 @@ Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->grou
     Route::get('/medios-pago', [MedioPagoController::class, 'index'])->name('medios-pago.index');
     Route::post('/compras/procesar', [MedioPagoController::class, 'procesarPago'])->name('compras.procesar');
     
-    // Rutas de gestión de medios de pago del cliente
-    Route::get('/cliente/medios-pago', [\App\Http\Controllers\ClienteMediosPagoController::class, 'index'])->name('cliente.medios-pago.index');
-    Route::post('/cliente/medios-pago', [\App\Http\Controllers\ClienteMediosPagoController::class, 'store'])->name('cliente.medios-pago.store');
-    Route::delete('/cliente/medios-pago/{id}', [\App\Http\Controllers\ClienteMediosPagoController::class, 'destroy'])->name('cliente.medios-pago.destroy');
-    Route::post('/cliente/medios-pago/{id}/default', [\App\Http\Controllers\ClienteMediosPagoController::class, 'setDefault'])->name('cliente.medios-pago.default');
     
     // Rutas de gestión de compras del cliente
     Route::get('/cliente/mis-compras', [\App\Http\Controllers\ClienteComprasController::class, 'index'])->name('cliente.mis-compras.index');
@@ -259,12 +254,6 @@ Route::middleware([\App\Http\Middleware\EmpleadoMiddleware::class])->group(funct
 
 // Rutas para clientes
 Route::middleware([\App\Http\Middleware\ClienteMiddleware::class])->group(function () {
-    // Rutas de gestión de medios de pago del cliente
-    Route::get('/cliente/medios-pago', [\App\Http\Controllers\ClienteMediosPagoController::class, 'index'])->name('cliente.medios-pago.index');
-    Route::post('/cliente/medios-pago', [\App\Http\Controllers\ClienteMediosPagoController::class, 'store'])->name('cliente.medios-pago.store');
-    Route::delete('/cliente/medios-pago/{id}', [\App\Http\Controllers\ClienteMediosPagoController::class, 'destroy'])->name('cliente.medios-pago.destroy');
-    Route::post('/cliente/medios-pago/{id}/default', [\App\Http\Controllers\ClienteMediosPagoController::class, 'setDefault'])->name('cliente.medios-pago.default');
-    
     // Rutas de gestión de compras del cliente
     Route::get('/cliente/mis-compras', [\App\Http\Controllers\ClienteComprasController::class, 'index'])->name('cliente.mis-compras.index');
     Route::get('/cliente/mis-compras/{id}', [\App\Http\Controllers\ClienteComprasController::class, 'show'])->name('cliente.mis-compras.show');
@@ -289,6 +278,18 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(
 Route::middleware(['auth', \App\Http\Middleware\EmpleadoMiddleware::class])->group(function () {
     Route::get('/perfilemp', [\App\Http\Controllers\UserController::class, 'perfilEmpleado'])->name('perfilemp');
     Route::view('/perfilep', 'frontend.perfilep')->name('perfilep');
+    
+    // Rutas de atención al cliente para empleados
+    Route::get('/empleado/atencion-cliente', [\App\Http\Controllers\AtencionClienteEmpleadoController::class, 'index'])->name('empleado.atencion-cliente.index');
+    Route::get('/empleado/atencion-cliente/consultas/{id}', [\App\Http\Controllers\AtencionClienteEmpleadoController::class, 'showConsulta'])->name('empleado.atencion-cliente.consultas.show');
+    Route::post('/empleado/atencion-cliente/consultas/{id}/responder', [\App\Http\Controllers\AtencionClienteEmpleadoController::class, 'responderConsulta'])->name('empleado.atencion-cliente.consultas.responder');
+    Route::post('/empleado/atencion-cliente/consultas/{id}/estado', [\App\Http\Controllers\AtencionClienteEmpleadoController::class, 'actualizarEstadoConsulta'])->name('empleado.atencion-cliente.consultas.estado');
+            Route::get('/empleado/atencion-cliente/mensajes/{id}', [\App\Http\Controllers\AtencionClienteEmpleadoController::class, 'showMensaje'])->name('empleado.atencion-cliente.mensajes.show');
+            Route::post('/empleado/atencion-cliente/mensajes/{id}/responder', [\App\Http\Controllers\AtencionClienteEmpleadoController::class, 'responderMensaje'])->name('empleado.atencion-cliente.mensajes.responder');
+            Route::get('/empleado/atencion-cliente/filtrar-consultas', [\App\Http\Controllers\AtencionClienteEmpleadoController::class, 'filtrarConsultas'])->name('empleado.atencion-cliente.filtrar-consultas');
+            Route::get('/empleado/atencion-cliente/filtrar-mensajes', [\App\Http\Controllers\AtencionClienteEmpleadoController::class, 'filtrarMensajes'])->name('empleado.atencion-cliente.filtrar-mensajes');
+            Route::get('/empleado/atencion-cliente/conversacion/{conversationId}', [\App\Http\Controllers\AtencionClienteEmpleadoController::class, 'getConversation'])->name('empleado.atencion-cliente.conversacion');
+            Route::post('/empleado/atencion-cliente/mensajes/{id}/responder-conversacion', [\App\Http\Controllers\AtencionClienteEmpleadoController::class, 'replyToMessage'])->name('empleado.atencion-cliente.mensajes.responder-conversacion');
 });
 
 Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->group(function () {
@@ -342,6 +343,19 @@ Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->grou
     // Rutas de mensajes directos integradas en atención al cliente
     Route::post('/atencion-cliente/mensajes', [AtencionClienteController::class, 'storeMensaje'])->name('atencion-cliente.mensajes.store');
     Route::get('/atencion-cliente/mensajes/{id}', [AtencionClienteController::class, 'showMensaje'])->name('atencion-cliente.mensajes.show');
+    Route::get('/atencion-cliente/conversacion/{conversationId}', [AtencionClienteController::class, 'getConversation'])->name('atencion-cliente.conversacion');
+    Route::post('/atencion-cliente/mensajes/{id}/responder', [AtencionClienteController::class, 'replyToMessage'])->name('atencion-cliente.mensajes.responder');
+    
+    // Ruta de prueba para verificar autenticación
+    Route::get('/atencion-cliente/debug', function() {
+        $user = Auth::user();
+        $mensajes = \App\Models\MensajeDirecto::where('user_id', $user->id)->get();
+        return response()->json([
+            'user' => $user ? $user->toArray() : null,
+            'mensajes_count' => $mensajes->count(),
+            'mensajes' => $mensajes->toArray()
+        ]);
+    })->name('atencion-cliente.debug');
     
         // Rutas de notificaciones (solo para clientes)
         Route::get('/notificaciones', [\App\Http\Controllers\NotificacionesController::class, 'index'])->name('notificaciones.index');

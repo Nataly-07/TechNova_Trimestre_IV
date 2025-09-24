@@ -169,71 +169,29 @@ class CheckoutController extends Controller
 
         if ($request->isMethod('post')) {
             $validated = $request->validate([
-                'metodo_pago' => 'required|string|in:tarjeta_credito,tarjeta_debito,pse,nequi,transferencia_bancaria,efectivo',
+                'metodo_pago' => 'required|string|in:tarjeta_credito,tarjeta_debito,pse,nequi,daviplata,transferencia_bancaria,efectivo',
                 'datos_pago' => 'nullable|array',
-                'guardar_tarjeta' => 'nullable|boolean',
-                'saved_payment_method_id' => 'nullable|integer',
             ]);
 
-            // Si selecciona una tarjeta guardada, no se requieren nuevos datos de tarjeta
-            if (!empty($validated['saved_payment_method_id'])) {
-                $saved = UserPaymentMethod::where('user_id', $user->id)
-                    ->where('id', $validated['saved_payment_method_id'])
-                    ->first();
-                if (!$saved) {
-                    return back()->with('error', 'Método de pago guardado inválido');
-                }
-                
-                // Determinar el método de pago basado en la tarjeta guardada
-                if ($saved->brand === 'Crédito') {
-                    $validated['metodo_pago'] = 'tarjeta_credito';
-                } elseif ($saved->brand === 'Débito') {
-                    $validated['metodo_pago'] = 'tarjeta_debito';
-                } else {
-                    // Para otros tipos como Nequi, PSE, etc.
-                    $validated['metodo_pago'] = strtolower(str_replace(' ', '_', $saved->brand));
-                }
-            } else {
-                // Si el método es tarjeta y no eligió guardada, requerir campos básicos
-                if (in_array($validated['metodo_pago'], ['tarjeta_credito', 'tarjeta_debito'])) {
-                    $request->validate([
-                        'datos_pago.numero' => 'required|string|min:12',
-                        'datos_pago.nombre' => 'required|string',
-                        'datos_pago.apellido' => 'required|string',
-                        'datos_pago.exp_mes' => 'required|digits_between:1,2',
-                        'datos_pago.exp_anio' => 'required|digits:4',
-                        'datos_pago.cvc' => 'required|digits_between:3,4',
-                        'datos_pago.email' => 'required|email',
-                        'datos_pago.telefono' => 'required|string',
-                        'datos_pago.cuotas' => 'required|integer|in:1,3,6,12',
-                    ]);
-                }
+            // Validar datos de pago según el método seleccionado
+            if (in_array($validated['metodo_pago'], ['tarjeta_credito', 'tarjeta_debito'])) {
+                $request->validate([
+                    'datos_pago.numero' => 'required|string|min:12',
+                    'datos_pago.nombre' => 'required|string',
+                    'datos_pago.apellido' => 'required|string',
+                    'datos_pago.exp_mes' => 'required|digits_between:1,2',
+                    'datos_pago.exp_anio' => 'required|digits:4',
+                    'datos_pago.cvc' => 'required|digits_between:3,4',
+                    'datos_pago.email' => 'required|email',
+                    'datos_pago.telefono' => 'required|string',
+                    'datos_pago.cuotas' => 'required|integer|in:1,3,6,12',
+                ]);
             }
 
             $checkout = session('checkout', []);
             $checkout['pago'] = $validated;
             session(['checkout' => $checkout]);
 
-            // Guardar tarjeta en perfil si aplica (simulación básica sin pasarela real)
-            if (empty($validated['saved_payment_method_id'])
-                && in_array($validated['metodo_pago'], ['tarjeta_credito', 'tarjeta_debito'])
-                && ($validated['guardar_tarjeta'] ?? false)
-                && isset($validated['datos_pago']['numero'])) {
-                $numero = preg_replace('/\D+/', '', $validated['datos_pago']['numero']);
-                $last4 = substr($numero, -4);
-                UserPaymentMethod::create([
-                    'user_id' => $user->id,
-                    'brand' => $validated['metodo_pago'] === 'tarjeta_credito' ? 'Crédito' : 'Débito',
-                    'last4' => $last4,
-                    'holder_name' => $validated['datos_pago']['nombre'] ?? null,
-                    'token' => null,
-                    'exp_month' => $validated['datos_pago']['exp_mes'] ?? null,
-                    'exp_year' => $validated['datos_pago']['exp_anio'] ?? null,
-                    'email' => $validated['datos_pago']['email'] ?? null,
-                    'phone' => $validated['datos_pago']['telefono'] ?? null,
-                    'installments' => isset($validated['datos_pago']['cuotas']) ? (int)$validated['datos_pago']['cuotas'] : null,
-                ]);
-            }
 
             return redirect()->route('checkout.revision');
         }
@@ -245,13 +203,8 @@ class CheckoutController extends Controller
             ->get();
         $total = $this->calcularTotal($productos);
         $metodosDisponibles = MedioPago::getMetodosDisponibles();
-        try {
-            $savedPaymentMethods = UserPaymentMethod::where('user_id', $user->id)->get();
-        } catch (\Throwable $e) {
-            $savedPaymentMethods = collect();
-        }
 
-        return view('frontend.checkout.pago', compact('productos', 'total', 'metodosDisponibles', 'savedPaymentMethods'));
+        return view('frontend.checkout.pago', compact('productos', 'total', 'metodosDisponibles'));
     }
 
     /**
@@ -277,19 +230,11 @@ class CheckoutController extends Controller
         $total = $this->calcularTotal($productos);
         $checkout = session('checkout', []);
 
-        // Preparar resumen de pago (tarjeta enmascarada si aplica)
+        // Preparar resumen de pago
         $pagoResumen = null;
         if (!empty($checkout['pago']['metodo_pago'])) {
             $metodo = $checkout['pago']['metodo_pago'];
-            if (!empty($checkout['pago']['saved_payment_method_id'])) {
-                $pm = UserPaymentMethod::where('user_id', $user->id)
-                    ->where('id', $checkout['pago']['saved_payment_method_id'])
-                    ->first();
-                if ($pm) {
-                    $pagoResumen = ($metodo === 'tarjeta_credito' ? 'Tarjeta de Crédito' : ($metodo === 'tarjeta_debito' ? 'Tarjeta de Débito' : ucfirst(str_replace('_',' ',$metodo))))
-                        . ' **** ' . $pm->last4;
-                }
-            } elseif (in_array($metodo, ['tarjeta_credito','tarjeta_debito']) && !empty($checkout['pago']['datos_pago']['numero'])) {
+            if (in_array($metodo, ['tarjeta_credito','tarjeta_debito']) && !empty($checkout['pago']['datos_pago']['numero'])) {
                 $numero = preg_replace('/\D+/', '', $checkout['pago']['datos_pago']['numero']);
                 $last4 = substr($numero, -4);
                 $pagoResumen = ($metodo === 'tarjeta_credito' ? 'Tarjeta de Crédito' : 'Tarjeta de Débito') . ' **** ' . $last4;
