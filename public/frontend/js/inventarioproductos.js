@@ -83,5 +83,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // La confirmación de eliminación ahora se maneja con el modal personalizado en el HTML
 
+    // Cálculo automático del precio de venta
+    const precioCompraInput = document.getElementById('precio_compra');
+    const porcentajeGananciaInput = document.getElementById('porcentaje_ganancia');
+    const precioVentaInput = document.getElementById('precio_venta');
+
+    function calcularPrecioVenta() {
+        const precioCompra = parseFloat(precioCompraInput.value) || 0;
+        const porcentajeGanancia = parseFloat(porcentajeGananciaInput.value) || 0;
+        
+        if (precioCompra > 0 && porcentajeGanancia >= 0) {
+            const ganancia = (precioCompra * porcentajeGanancia) / 100;
+            const precioVenta = precioCompra + ganancia;
+            precioVentaInput.value = precioVenta.toFixed(2);
+        } else {
+            precioVentaInput.value = '';
+        }
+    }
+
+    // Agregar event listeners para el cálculo automático
+    if (precioCompraInput && porcentajeGananciaInput && precioVentaInput) {
+        precioCompraInput.addEventListener('input', calcularPrecioVenta);
+        porcentajeGananciaInput.addEventListener('input', calcularPrecioVenta);
+        
+        // Calcular al cargar la página si ya hay valores
+        calcularPrecioVenta();
+    }
+
     console.log("JavaScript de inventario cargado correctamente");
 });

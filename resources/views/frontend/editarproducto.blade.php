@@ -131,6 +131,65 @@
         .btn-cancelar:hover {
             background: #d90000;
         }
+        
+        /* Estilo para la sección de información del sistema */
+        .info-sistema {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 2px solid #e1f5fe;
+            box-shadow: 0 2px 10px rgba(33, 150, 243, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-sistema::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #2196f3 0%, #9c27b0 100%);
+        }
+        
+        .info-sistema h4 {
+            margin: 0 0 15px 0;
+            color: #1976d2;
+            font-size: 1.1em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-sistema p {
+            margin: 0;
+            color: #424242;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        
+        .info-sistema strong {
+            color: #1976d2;
+            font-weight: 600;
+        }
+        
+        /* Estilo para campos deshabilitados */
+        input[disabled] {
+            background-color: #f5f5f5 !important;
+            color: #666 !important;
+            cursor: not-allowed !important;
+            border-color: #ddd !important;
+            opacity: 0.7;
+        }
+        
+        input[disabled]:focus {
+            outline: none !important;
+            border-color: #ddd !important;
+            box-shadow: none !important;
+        }
     </style>
 </head>
 <body>
@@ -142,9 +201,9 @@
             <div class="form-editar-producto">
         <h2>Editar Movimiento de Artículo</h2>
         
-        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #2196f3;">
-            <h4 style="margin: 0 0 10px 0; color: #1976d2;"><i class='bx bx-info-circle'></i> Información del Sistema</h4>
-            <p style="margin: 0; color: #333; font-size: 0.9em;">
+        <div class="info-sistema">
+            <h4><i class='bx bx-info-circle'></i> Información del Sistema</h4>
+            <p>
                 <strong>Ingreso:</strong> Solo el administrador puede modificar productos que ingresan al inventario.<br>
                 <strong>Salida:</strong> Se actualiza automáticamente cuando los clientes realizan compras.<br>
                 <strong>Stock:</strong> Se calcula automáticamente como Ingreso - Salida.
@@ -186,8 +245,9 @@
 </select>
             <input type="text" name="Color" value="{{ $producto->caracteristicas->Color ?? '' }}" required placeholder="Color" />
             <textarea name="Descripcion" placeholder="Descripción">{{ $producto->caracteristicas->Descripcion ?? '' }}</textarea>
-            <input type="number" name="Precio_Compra" value="{{ $producto->caracteristicas->Precio_Compra ?? '' }}" required placeholder="Precio de compra" />
-            <input type="number" name="Precio_Venta" value="{{ $producto->caracteristicas->Precio_Venta ?? '' }}" required placeholder="Precio de venta" />
+            <input type="number" name="Precio_Compra" id="precio_compra_edit" value="{{ $producto->caracteristicas->Precio_Compra ?? '' }}" required placeholder="Precio de compra" />
+            <input type="number" name="Porcentaje_Ganancia" id="porcentaje_ganancia_edit" value="{{ $producto->caracteristicas->Porcentaje_Ganancia ?? '' }}" required placeholder="Porcentaje de Ganancia (%)" min="0" max="1000" step="0.01" />
+            <input type="number" name="Precio_Venta" id="precio_venta_edit" value="{{ $producto->caracteristicas->Precio_Venta ?? '' }}" required placeholder="Precio de venta" readonly disabled />
 <select name="Marca" required>
     <option value="">Selecciona una marca</option>
     <option value="Apple" {{ ($producto->caracteristicas->Marca ?? '') == 'Apple' ? 'selected' : '' }}> Apple</option>
@@ -291,6 +351,33 @@
             
             // Calcular stock inicial
             calcularStock();
+        }
+
+        // Cálculo automático del precio de venta
+        const precioCompraInput = document.getElementById('precio_compra_edit');
+        const porcentajeGananciaInput = document.getElementById('porcentaje_ganancia_edit');
+        const precioVentaInput = document.getElementById('precio_venta_edit');
+
+        function calcularPrecioVenta() {
+            const precioCompra = parseFloat(precioCompraInput.value) || 0;
+            const porcentajeGanancia = parseFloat(porcentajeGananciaInput.value) || 0;
+            
+            if (precioCompra > 0 && porcentajeGanancia >= 0) {
+                const ganancia = (precioCompra * porcentajeGanancia) / 100;
+                const precioVenta = precioCompra + ganancia;
+                precioVentaInput.value = precioVenta.toFixed(2);
+            } else {
+                precioVentaInput.value = '';
+            }
+        }
+
+        // Agregar event listeners para el cálculo automático
+        if (precioCompraInput && porcentajeGananciaInput && precioVentaInput) {
+            precioCompraInput.addEventListener('input', calcularPrecioVenta);
+            porcentajeGananciaInput.addEventListener('input', calcularPrecioVenta);
+            
+            // Calcular al cargar la página si ya hay valores
+            calcularPrecioVenta();
         }
     });
 </script>
