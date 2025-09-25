@@ -19,7 +19,8 @@ class Proveedor extends Model
         'Empresa',
         'Telefono',
         'Correo',
-        'ID_producto'
+        'ID_producto',
+        'estado'
     ];
 
     protected $casts = [

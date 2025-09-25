@@ -283,7 +283,7 @@
                     
                     <div class="filtro-group">
                         <label for="Salida">Salida de Artículos</label>
-                        <input type="number" name="Salida" id="Salida" placeholder="Cantidad de productos que salen" value="0" />
+                        <input type="number" name="Salida" id="Salida" placeholder="Cantidad de productos que salen" value="0" readonly />
                         <small>Artículos que salen por compras (se actualizará automáticamente)</small>
                     </div>
                     
@@ -294,6 +294,65 @@
                     </div>
                     <button type="submit">Registrar Movimiento</button>
                 </form>
+            </div>
+
+            <!-- Filtros de búsqueda -->
+            <div class="filtros-container" style="margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                <h3 style="margin: 0 0 15px 0; color: #333;">🔍 Filtros de Búsqueda</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                    <!-- Filtro por Marca -->
+                    <div>
+                        <label for="filtroMarca" style="display: block; margin-bottom: 5px; font-weight: 600; color: #555;">Marca:</label>
+                        <select id="filtroMarca" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="">Todas las marcas</option>
+                            <option value="Apple">🍎 Apple</option>
+                            <option value="Samsung">📱 Samsung</option>
+                            <option value="Motorola">📞 Motorola</option>
+                            <option value="Xiaomi">🧡 Xiaomi</option>
+                            <option value="OPPO">📲 OPPO</option>
+                            <option value="Lenovo">💻 Lenovo</option>
+                        </select>
+                    </div>
+
+                    <!-- Filtro por Categoría -->
+                    <div>
+                        <label for="filtroCategoria" style="display: block; margin-bottom: 5px; font-weight: 600; color: #555;">Categoría:</label>
+                        <select id="filtroCategoria" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="">Todas las categorías</option>
+                            <option value="Celulares">📱 Celulares</option>
+                            <option value="Portátiles">💻 Portátiles</option>
+                        </select>
+                    </div>
+
+                    <!-- Filtro por Stock -->
+                    <div>
+                        <label for="filtroStock" style="display: block; margin-bottom: 5px; font-weight: 600; color: #555;">Stock:</label>
+                        <select id="filtroStock" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="">Todos</option>
+                            <option value="disponible">✅ Disponible (Stock > 0)</option>
+                            <option value="agotado">❌ Agotado (Stock = 0)</option>
+                            <option value="bajo">⚠️ Stock Bajo (Stock < 5)</option>
+                        </select>
+                    </div>
+
+                    <!-- Búsqueda por texto -->
+                    <div>
+                        <label for="buscarProducto" style="display: block; margin-bottom: 5px; font-weight: 600; color: #555;">Buscar:</label>
+                        <input type="text" id="buscarProducto" placeholder="Código, nombre, descripción..." style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button id="aplicarFiltros" style="background: var(--gradient-primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        🔍 Aplicar Filtros
+                    </button>
+                    <button id="limpiarFiltros" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        🗑️ Limpiar
+                    </button>
+                    <span id="contadorResultados" style="color: #666; font-size: 14px; margin-left: 10px;"></span>
+                </div>
             </div>
 
             <div class="tabla-responsive">
@@ -572,25 +631,134 @@
     </footer>
 
     <script>
-        // Filtro de búsqueda para productos
+        // Sistema de filtros para productos
         document.addEventListener('DOMContentLoaded', function() {
-            const buscador = document.getElementById('buscador-productos');
-            const productos = document.querySelectorAll('.producto-item, .producto-card, tr[data-producto]');
+            const tabla = document.querySelector('.table-inventario tbody');
+            const filas = tabla ? Array.from(tabla.querySelectorAll('tr')) : [];
+            const contador = document.getElementById('contadorResultados');
             
-            if (buscador && productos.length > 0) {
-                buscador.addEventListener('input', function() {
-                    const valor = this.value.toLowerCase();
-                    
-                    productos.forEach(function(producto) {
-                        const contenido = producto.textContent.toLowerCase();
-                        if (contenido.includes(valor)) {
-                            producto.style.display = '';
-                        } else {
-                            producto.style.display = 'none';
+            // Elementos de filtro
+            const filtroMarca = document.getElementById('filtroMarca');
+            const filtroCategoria = document.getElementById('filtroCategoria');
+            const filtroStock = document.getElementById('filtroStock');
+            const buscarProducto = document.getElementById('buscarProducto');
+            const aplicarFiltros = document.getElementById('aplicarFiltros');
+            const limpiarFiltros = document.getElementById('limpiarFiltros');
+
+            function aplicarFiltrosProductos() {
+                const marcaSeleccionada = filtroMarca.value;
+                const categoriaSeleccionada = filtroCategoria.value;
+                const stockSeleccionado = filtroStock.value;
+                const textoBusqueda = buscarProducto.value.toLowerCase();
+
+                let productosVisibles = 0;
+
+                filas.forEach(fila => {
+                    const celdas = fila.querySelectorAll('td');
+                    if (celdas.length < 12) return; // Verificar que tenga todas las columnas
+
+                    const codigo = celdas[0].textContent.toLowerCase();
+                    const nombre = celdas[1].textContent.toLowerCase();
+                    const categoria = celdas[3].textContent.toLowerCase();
+                    const descripcion = celdas[5].textContent.toLowerCase();
+                    const marca = celdas[8].textContent.toLowerCase();
+                    const stock = parseInt(celdas[11].textContent) || 0;
+
+                    let mostrar = true;
+
+                    // Filtro por marca
+                    if (marcaSeleccionada && marca !== marcaSeleccionada.toLowerCase()) {
+                        mostrar = false;
+                    }
+
+                    // Filtro por categoría
+                    if (categoriaSeleccionada && categoria !== categoriaSeleccionada.toLowerCase()) {
+                        mostrar = false;
+                    }
+
+                    // Filtro por stock
+                    if (stockSeleccionado) {
+                        switch(stockSeleccionado) {
+                            case 'disponible':
+                                if (stock <= 0) mostrar = false;
+                                break;
+                            case 'agotado':
+                                if (stock !== 0) mostrar = false;
+                                break;
+                            case 'bajo':
+                                if (stock >= 5) mostrar = false;
+                                break;
                         }
-                    });
+                    }
+
+                    // Filtro por texto de búsqueda
+                    if (textoBusqueda) {
+                        const textoCompleto = `${codigo} ${nombre} ${descripcion}`.toLowerCase();
+                        if (!textoCompleto.includes(textoBusqueda)) {
+                            mostrar = false;
+                        }
+                    }
+
+                    // Mostrar/ocultar fila
+                    fila.style.display = mostrar ? '' : 'none';
+                    if (mostrar) productosVisibles++;
                 });
+
+                // Actualizar contador
+                if (contador) {
+                    contador.textContent = `Mostrando ${productosVisibles} de ${filas.length} productos`;
+                }
             }
+
+            function limpiarFiltrosProductos() {
+                filtroMarca.value = '';
+                filtroCategoria.value = '';
+                filtroStock.value = '';
+                buscarProducto.value = '';
+                
+                // Mostrar todas las filas
+                filas.forEach(fila => {
+                    fila.style.display = '';
+                });
+
+                if (contador) {
+                    contador.textContent = `Mostrando ${filas.length} productos`;
+                }
+            }
+
+            // Event listeners
+            if (aplicarFiltros) {
+                aplicarFiltros.addEventListener('click', aplicarFiltrosProductos);
+            }
+
+            if (limpiarFiltros) {
+                limpiarFiltros.addEventListener('click', limpiarFiltrosProductos);
+            }
+
+            // Búsqueda en tiempo real
+            if (buscarProducto) {
+                buscarProducto.addEventListener('input', aplicarFiltrosProductos);
+            }
+
+            // Filtros automáticos al cambiar
+            if (filtroMarca) {
+                filtroMarca.addEventListener('change', aplicarFiltrosProductos);
+            }
+
+            if (filtroCategoria) {
+                filtroCategoria.addEventListener('change', aplicarFiltrosProductos);
+            }
+
+            if (filtroStock) {
+                filtroStock.addEventListener('change', aplicarFiltrosProductos);
+            }
+
+            // Inicializar contador
+            if (contador && filas.length > 0) {
+                contador.textContent = `Mostrando ${filas.length} productos`;
+            }
+
+            console.log('Sistema de filtros cargado correctamente');
         });
     </script>
 

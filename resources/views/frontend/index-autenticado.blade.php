@@ -609,8 +609,8 @@
         <a href="{{ route('producto.detalles', $producto->ID_Producto) }}"><span class="detalles">Ver Más Detalles</span></a>
         <h3>{{ $producto->Nombre }}</h3>
         <p>4.5 ⭐</p>
-        <p class="precio-original">${{ number_format($producto->caracteristicas->Precio_Venta * 1.05, 0, ',', '.') }}</p>
-        <p class="precio-descuento">${{ number_format($producto->caracteristicas->Precio_Venta, 0, ',', '.') }} <span class="descuento">-5%</span></p>
+        <p class="precio-original">${{ number_format(($producto->caracteristicas->Precio_Venta ?? 0) * 1.05, 0, ',', '.') }}</p>
+        <p class="precio-descuento">${{ number_format($producto->caracteristicas->Precio_Venta ?? 0, 0, ',', '.') }} <span class="descuento">-5%</span></p>
          <div style="display: flex; gap: 10px; justify-content: center; align-items: center;">
            <button class="favorito-btn" data-producto-id="{{ $producto->ID_Producto }}" style="background-color: #ff6b6b; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; color: white;">❤️</button>
            <button class="carrito-btn" data-producto-id="{{ $producto->ID_Producto }}" style="background: var(--gradient-primary); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; color: white; transition: all 0.3s ease;">&#128722;</button>
@@ -656,10 +656,10 @@
             <h3 style="font-weight: bold; margin: 10px 0 8px; font-size: 1.2em;">{{ $productos->first()->Nombre }}</h3>
             <p style="margin: 8px 0; font-size: 1em;">4.9 ⭐</p>
             <p class="precio-original" style="text-decoration: line-through; color: gray; margin: 8px 0; font-size: 0.9em;">
-              ${{ number_format($productos->first()->caracteristicas->Precio_Venta * 1.05, 0, ',', '.') }}
+              ${{ number_format(($productos->first()->caracteristicas->Precio_Venta ?? 0) * 1.05, 0, ',', '.') }}
             </p>
             <p class="precio-descuento" style="color: #006600; font-weight: bold; margin: 8px 0; font-size: 1.1em;">
-              ${{ number_format($productos->first()->caracteristicas->Precio_Venta, 0, ',', '.') }}
+              ${{ number_format($productos->first()->caracteristicas->Precio_Venta ?? 0, 0, ',', '.') }}
               <span class="descuento" style="background-color: #cce5cc; color: #006600; padding: 2px 6px; border-radius: 6px; font-size: 0.8em; margin-left: 6px;">-5%</span>
             </p>
             <div style="display: flex; gap: 15px; justify-content: center; align-items: center; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
@@ -693,10 +693,10 @@
                 <h3 style="font-weight: bold; margin: 10px 0 8px; font-size: 1.2em;">{{ $producto->Nombre }}</h3>
                 <p style="margin: 8px 0; font-size: 1em;">4.5 ⭐</p>
                 <p class="precio-original" style="text-decoration: line-through; color: gray; margin: 8px 0; font-size: 0.9em;">
-                  ${{ number_format($producto->caracteristicas->Precio_Venta * 1.05, 0, ',', '.') }}
+                  ${{ number_format(($producto->caracteristicas->Precio_Venta ?? 0) * 1.05, 0, ',', '.') }}
                 </p>
                 <p class="precio-descuento" style="color: #006600; font-weight: bold; margin: 8px 0; font-size: 1.1em;">
-                  ${{ number_format($producto->caracteristicas->Precio_Venta, 0, ',', '.') }}
+                  ${{ number_format($producto->caracteristicas->Precio_Venta ?? 0, 0, ',', '.') }}
                   <span class="descuento" style="background-color: #cce5cc; color: #006600; padding: 2px 6px; border-radius: 6px; font-size: 0.8em; margin-left: 6px;">-5%</span>
                 </p>
                 <div style="display: flex; gap: 15px; justify-content: center; align-items: center; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">

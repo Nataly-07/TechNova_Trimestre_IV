@@ -61,6 +61,10 @@ class ReporteController extends Controller
             $query->where('Stock', '>=', $request->stock_min);
         }
 
+        if ($request->filled('proveedor')) {
+            $query->where('Proveedor', 'like', '%' . $request->proveedor . '%');
+        }
+
         $productos = $query->get();
 
         // Generar PDF usando Laravel DomPDF
@@ -98,6 +102,10 @@ class ReporteController extends Controller
             });
         }
 
+        if ($request->filled('tipo_documento')) {
+            $query->where('document_type', $request->tipo_documento);
+        }
+
         $usuarios = $query->get();
 
         // Generar PDF usando Laravel DomPDF
@@ -114,18 +122,37 @@ class ReporteController extends Controller
     {
         try {
             // Obtener categorías y marcas desde la tabla características
-            $categorias = Caracteristicas::distinct()->pluck('Categoria')->filter();
-            $marcas = Caracteristicas::distinct()->pluck('Marca')->filter();
-            $roles = User::distinct()->pluck('role')->filter();
+            $categorias = Caracteristicas::distinct()->pluck('Categoria')->filter()->values();
+            $marcas = Caracteristicas::distinct()->pluck('Marca')->filter()->values();
+            $roles = User::distinct()->pluck('role')->filter()->values();
+
+            // Si no hay datos, proporcionar opciones por defecto
+            if ($categorias->isEmpty()) {
+                $categorias = collect(['Electrónicos', 'Ropa', 'Hogar', 'Deportes', 'Libros']);
+            }
+            
+            if ($marcas->isEmpty()) {
+                $marcas = collect(['Samsung', 'Apple', 'Nike', 'Adidas', 'Sony']);
+            }
+            
+            if ($roles->isEmpty()) {
+                $roles = collect(['admin', 'cliente', 'empleado']);
+            }
 
             return response()->json([
                 'categorias' => $categorias,
                 'marcas' => $marcas,
-                'roles' => $roles
+                'roles' => $roles,
+                'status' => 'success'
             ]);
         } catch (\Exception $e) {
+            \Log::error('Error en getFiltros: ' . $e->getMessage());
             return response()->json([
-                'error' => 'Error al cargar filtros: ' . $e->getMessage()
+                'error' => 'Error al cargar filtros: ' . $e->getMessage(),
+                'categorias' => ['Electrónicos', 'Ropa', 'Hogar', 'Deportes', 'Libros'],
+                'marcas' => ['Samsung', 'Apple', 'Nike', 'Adidas', 'Sony'],
+                'roles' => ['admin', 'cliente', 'empleado'],
+                'status' => 'error'
             ], 500);
         }
     }
@@ -199,6 +226,10 @@ class ReporteController extends Controller
             });
         }
 
+        if ($request->filled('tipo_documento')) {
+            $query->where('document_type', $request->tipo_documento);
+        }
+
         $usuarios = $query->limit(50)->get(); // Limitar para vista previa
 
         return view('frontend.reportes.preview-usuarios', compact('usuarios', 'request'));
@@ -259,6 +290,16 @@ class ReporteController extends Controller
      */
     private function obtenerVentasReales($request)
     {
+        // Log de los filtros recibidos
+        \Log::info('Filtros de ventas recibidos:', [
+            'categoria' => $request->categoria,
+            'marca' => $request->marca,
+            'estado' => $request->estado,
+            'fecha_desde' => $request->fecha_desde,
+            'fecha_hasta' => $request->fecha_hasta,
+            'monto_min' => $request->monto_min
+        ]);
+        
         // Usar directamente los datos de compras ya que sabemos que ahí están los datos correctos
         // Comentamos temporalmente la búsqueda en ventas
         /*
@@ -341,8 +382,8 @@ class ReporteController extends Controller
                     u.name as usuario_nombre
                 FROM detallecompras dc 
                 JOIN compras c ON dc.ID_Compras = c.ID_Compras 
-                JOIN productos p ON dc.ID_Producto = p.ID_Producto 
-                LEFT JOIN caracteristica car ON p.ID_Caracteristicas = car.ID_Caracteristicas
+                JOIN producto p ON dc.ID_Producto = p.ID_Producto 
+                LEFT JOIN caracteristicas car ON p.ID_Caracteristicas = car.ID_Caracteristicas
                 LEFT JOIN users u ON c.ID_Usuario = u.id
                 WHERE 1=1
             ";
@@ -390,7 +431,19 @@ class ReporteController extends Controller
 
             $sqlQuery .= " ORDER BY c.Fecha_De_Compra DESC";
 
+            // Log de la consulta SQL y parámetros
+            \Log::info('Consulta SQL de ventas:', [
+                'sql' => $sqlQuery,
+                'bindings' => $bindings
+            ]);
+
             $compras = \DB::select($sqlQuery, $bindings);
+            
+            // Log del resultado
+            \Log::info('Resultado de ventas:', [
+                'total_compras' => count($compras),
+                'primeras_5' => array_slice($compras, 0, 5)
+            ]);
 
 
             if (count($compras) > 0) {

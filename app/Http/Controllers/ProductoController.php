@@ -35,7 +35,7 @@ class ProductoController extends Controller
 $request->validate([
     'Codigo' => 'required|string|max:50',
     'Nombre' => 'required|string|max:100',
-    'Imagen' => 'nullable|url',
+    'Imagen' => 'nullable|string',
     'Categoria' => 'required|string|max:100',
     'Color' => 'required|string|max:100',
     'Descripcion' => 'nullable|string',
@@ -188,7 +188,7 @@ $request->validate([
 $request->validate([
     'Codigo' => 'required|string|max:50',
     'Nombre' => 'required|string|max:100',
-    'Imagen' => 'nullable|url',
+    'Imagen' => 'nullable|string',
     'Categoria' => 'required|string|max:100',
     'Color' => 'required|string|max:100',
     'Descripcion' => 'nullable|string',

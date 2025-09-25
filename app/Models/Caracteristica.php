@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Caracteristica extends Model
 {
-    protected $table = 'caracteristica';
+    protected $table = 'caracteristicas';
     protected $primaryKey = 'ID_Caracteristicas';
     protected $fillable = [
         'Categoria',
