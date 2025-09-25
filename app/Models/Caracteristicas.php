@@ -17,6 +17,7 @@ class Caracteristicas extends Model
         'Color',
         'Descripcion',
         'Precio_Compra',
+        'Porcentaje_Ganancia',
         'Precio_Venta',
         'Marca'
     ];

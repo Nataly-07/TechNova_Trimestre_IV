@@ -40,6 +40,7 @@ $request->validate([
     'Color' => 'required|string|max:100',
     'Descripcion' => 'nullable|string',
     'Precio_Compra' => 'required|numeric',
+    'Porcentaje_Ganancia' => 'required|numeric|min:0|max:1000',
     'Precio_Venta' => 'required|numeric',
     'Marca' => 'required|string|max:100',
     'Ingreso' => 'required|integer|min:0',
@@ -65,6 +66,7 @@ $request->validate([
                 'Color' => $request->input('Color'),
                 'Descripcion' => $request->input('Descripcion'),
                 'Precio_Compra' => $request->input('Precio_Compra'),
+                'Porcentaje_Ganancia' => $request->input('Porcentaje_Ganancia'),
                 'Precio_Venta' => $request->input('Precio_Venta'),
                 'Marca' => $request->input('Marca'),
             ]);
@@ -193,6 +195,7 @@ $request->validate([
     'Color' => 'required|string|max:100',
     'Descripcion' => 'nullable|string',
     'Precio_Compra' => 'required|numeric',
+    'Porcentaje_Ganancia' => 'required|numeric|min:0|max:1000',
     'Precio_Venta' => 'required|numeric',
     'Marca' => 'required|string|max:100',
     'Ingreso' => 'required|integer|min:0',
@@ -209,6 +212,7 @@ $request->validate([
                     'Color' => $request->input('Color'),
                     'Descripcion' => $request->input('Descripcion'),
                     'Precio_Compra' => $request->input('Precio_Compra'),
+                    'Porcentaje_Ganancia' => $request->input('Porcentaje_Ganancia'),
                     'Precio_Venta' => $request->input('Precio_Venta'),
                     'Marca' => $request->input('Marca'),
                 ]);
@@ -219,6 +223,7 @@ $request->validate([
                     'Color' => $request->input('Color'),
                     'Descripcion' => $request->input('Descripcion'),
                     'Precio_Compra' => $request->input('Precio_Compra'),
+                    'Porcentaje_Ganancia' => $request->input('Porcentaje_Ganancia'),
                     'Precio_Venta' => $request->input('Precio_Venta'),
                     'Marca' => $request->input('Marca'),
                 ]);
