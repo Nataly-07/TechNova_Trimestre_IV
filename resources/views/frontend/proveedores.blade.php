@@ -11,36 +11,149 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/stilotech.css') }}">
     <script src="{{ asset('frontend/js/app.js') }}" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Estilos para badges de estado */
+        .estado-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .estado-activo {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .estado-inactivo {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Estilos para botones de estado */
+        .btn-activar {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+            text-decoration: none;
+            margin-left: 8px;
+        }
+
+        .btn-activar:hover {
+            background: linear-gradient(135deg, #218838, #1ea085);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-activar:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-desactivar {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+            text-decoration: none;
+            margin-left: 8px;
+        }
+
+        .btn-desactivar:hover {
+            background: linear-gradient(135deg, #c82333, #c0392b);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+        }
+
+        .btn-desactivar:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+        }
+
+        /* Estilos para el botón de editar */
+        .btn-editar {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+            text-decoration: none;
+            margin-right: 8px;
+        }
+
+        .btn-editar:hover {
+            background: linear-gradient(135deg, #0056b3, #004085);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+            color: white;
+        }
+
+        .btn-editar:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+        }
+    </style>
+
     <script>
-        function confirmarEliminacion(event, nombreProveedor) {
+        function confirmarActivacion(event, nombreProveedor) {
             event.preventDefault();
             
             Swal.fire({
-                title: '⚠️ ¿Eliminar Proveedor?',
+                title: '✅ ¿Activar Proveedor?',
                 html: `
                     <div style="text-align: center; padding: 20px;">
-                        <div style="font-size: 48px; margin-bottom: 20px;">🗑️</div>
+                        <div style="font-size: 48px; margin-bottom: 20px;">🔄</div>
                         <p style="font-size: 18px; color: #333; margin-bottom: 10px;">
-                            <strong>¿Estás seguro de eliminar este proveedor?</strong>
+                            <strong>¿Estás seguro de activar este proveedor?</strong>
                         </p>
-                        <p style="font-size: 16px; color: #666; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #ff4757;">
+                        <p style="font-size: 16px; color: #666; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
                             <strong>Proveedor:</strong> ${nombreProveedor}
                         </p>
                         <p style="font-size: 14px; color: #999; margin-top: 15px;">
-                            Esta acción no se puede deshacer
+                            El proveedor estará disponible para nuevas operaciones
                         </p>
                     </div>
                 `,
                 showCancelButton: true,
                 confirmButtonText: `
-                    <i class='bx bx-trash' style="margin-right: 8px;"></i>
-                    Sí, Eliminar
+                    <i class='bx bx-toggle-right' style="margin-right: 8px;"></i>
+                    Sí, Activar
                 `,
                 cancelButtonText: `
                     <i class='bx bx-x' style="margin-right: 8px;"></i>
                     Cancelar
                 `,
-                confirmButtonColor: '#ff4757',
+                confirmButtonColor: '#28a745',
                 cancelButtonColor: '#6c757d',
                 reverseButtons: true,
                 focusCancel: true,
@@ -68,6 +181,82 @@
                                 <div style="font-size: 48px; margin-bottom: 20px;">⏳</div>
                                 <p style="font-size: 16px; color: #333;">
                                     Eliminando proveedor <strong>${nombreProveedor}</strong>
+                                </p>
+                            </div>
+                        `,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        customClass: {
+                            popup: 'swal2-popup-custom'
+                        },
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Enviar el formulario
+                    event.target.closest('form').submit();
+                }
+            });
+        }
+
+        function confirmarDesactivacion(event, nombreProveedor) {
+            event.preventDefault();
+            
+            Swal.fire({
+                title: '⚠️ ¿Desactivar Proveedor?',
+                html: `
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">🔄</div>
+                        <p style="font-size: 18px; color: #333; margin-bottom: 10px;">
+                            <strong>¿Estás seguro de desactivar este proveedor?</strong>
+                        </p>
+                        <p style="font-size: 16px; color: #666; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545;">
+                            <strong>Proveedor:</strong> ${nombreProveedor}
+                        </p>
+                        <p style="font-size: 14px; color: #999; margin-top: 15px;">
+                            El proveedor no estará disponible para nuevas operaciones
+                        </p>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: `
+                    <i class='bx bx-toggle-left' style="margin-right: 8px;"></i>
+                    Sí, Desactivar
+                `,
+                cancelButtonText: `
+                    <i class='bx bx-x' style="margin-right: 8px;"></i>
+                    Cancelar
+                `,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                reverseButtons: true,
+                focusCancel: true,
+                customClass: {
+                    popup: 'swal2-popup-custom',
+                    title: 'swal2-title-custom',
+                    confirmButton: 'swal2-confirm-custom',
+                    cancelButton: 'swal2-cancel-custom',
+                    htmlContainer: 'swal2-html-custom'
+                },
+                buttonsStyling: true,
+                showClass: {
+                    popup: 'animate__animated animate__zoomIn animate__faster'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__zoomOut animate__faster'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Mostrar loading
+                    Swal.fire({
+                        title: 'Desactivando...',
+                        html: `
+                            <div style="text-align: center; padding: 20px;">
+                                <div style="font-size: 48px; margin-bottom: 20px;">⏳</div>
+                                <p style="font-size: 16px; color: #333;">
+                                    Desactivando proveedor <strong>${nombreProveedor}</strong>
                                 </p>
                             </div>
                         `,
@@ -472,6 +661,7 @@
                             <th><i class='bx bx-phone'></i> Teléfono</th>
                             <th><i class='bx bx-envelope'></i> Correo</th>
                             <th><i class='bx bx-package'></i> ID Producto</th>
+                            <th><i class='bx bx-toggle-left'></i> Estado</th>
                             <th><i class='bx bx-cog'></i> Acciones</th>
           </tr>
         </thead>
@@ -484,18 +674,39 @@
             <td>{{ $proveedor->Empresa ?? 'N/A' }}</td>
             <td>{{ $proveedor->Telefono }}</td>
             <td>{{ $proveedor->Correo }}</td>
-                            <td>{{ $proveedor->ID_producto ?? 'N/A' }}</td>
-                            <td>
-                                <a href="{{ route('proveedores.edit', $proveedor->ID_Proveedor) }}" class="btn-editar">
-                                    <i class='bx bx-edit'></i> Editar
-                                </a>
-                                <form action="{{ route('proveedores.destroy', $proveedor->ID_Proveedor) }}" method="POST" style="display:inline;">
-                @csrf
-                @method('DELETE')
-                                    <button type="submit" class="btn-eliminar" onclick="confirmarEliminacion(event, '{{ $proveedor->Nombre }}')">
-                                        <i class='bx bx-trash'></i> Eliminar
-                                    </button>
-              </form>
+            <td>{{ $proveedor->ID_producto ?? 'N/A' }}</td>
+            <td>
+                @if($proveedor->estado === 'activo')
+                    <span class="estado-badge estado-activo">
+                        <i class='bx bx-check-circle'></i> Activo
+                    </span>
+                @else
+                    <span class="estado-badge estado-inactivo">
+                        <i class='bx bx-x-circle'></i> Inactivo
+                    </span>
+                @endif
+            </td>
+            <td>
+                <a href="{{ route('proveedores.edit', $proveedor->ID_Proveedor) }}" class="btn-editar">
+                    <i class='bx bx-edit'></i> Editar
+                </a>
+                @if($proveedor->estado === 'activo')
+                    <form action="{{ route('proveedores.desactivar', $proveedor->ID_Proveedor) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn-desactivar" onclick="confirmarDesactivacion(event, '{{ $proveedor->Nombre }}')">
+                            <i class='bx bx-toggle-left'></i> Desactivar
+                        </button>
+                    </form>
+                @else
+                    <form action="{{ route('proveedores.activar', $proveedor->ID_Proveedor) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn-activar" onclick="confirmarActivacion(event, '{{ $proveedor->Nombre }}')">
+                            <i class='bx bx-toggle-right'></i> Activar
+                        </button>
+                    </form>
+                @endif
             </td>
           </tr>
           @endforeach

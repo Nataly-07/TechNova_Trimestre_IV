@@ -153,6 +153,7 @@ Route::middleware(['auth', \App\Http\Middleware\ClienteMiddleware::class])->grou
 
     // Rutas de medios de pago
     Route::get('/medios-pago', [MedioPagoController::class, 'index'])->name('medios-pago.index');
+    Route::get('/cliente/medios-pago', [MedioPagoController::class, 'index'])->name('cliente.medios-pago.index');
     Route::post('/compras/procesar', [MedioPagoController::class, 'procesarPago'])->name('compras.procesar');
     
     
@@ -228,7 +229,9 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(
     Route::post('/proveedores', [ProveedorController::class, 'store'])->name('proveedores.store');
     Route::get('/proveedores/{id}/edit', [ProveedorController::class, 'edit'])->name('proveedores.edit');
     Route::put('/proveedores/{id}', [ProveedorController::class, 'update'])->name('proveedores.update');
-    Route::delete('/proveedores/{id}', [ProveedorController::class, 'destroy'])->name('proveedores.destroy');
+    Route::patch('/proveedores/{id}/cambiar-estado', [ProveedorController::class, 'cambiarEstado'])->name('proveedores.cambiar-estado');
+    Route::patch('/proveedores/{id}/activar', [ProveedorController::class, 'activar'])->name('proveedores.activar');
+    Route::patch('/proveedores/{id}/desactivar', [ProveedorController::class, 'desactivar'])->name('proveedores.desactivar');
 
     // Rutas para reportes (solo admin)
     Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');

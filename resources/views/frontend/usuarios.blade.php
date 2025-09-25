@@ -453,12 +453,16 @@
             background: #f9f9f9;
         }
         .table-usuarios tbody tr {
-            display: table-row !important;
-            visibility: visible !important;
+            display: table-row;
+            visibility: visible;
         }
         .table-usuarios tbody td {
-            display: table-cell !important;
-            visibility: visible !important;
+            display: table-cell;
+            visibility: visible;
+        }
+        /* Clase para ocultar filas filtradas */
+        .fila-oculta {
+            display: none !important;
         }
     </style>
 </head>
@@ -555,18 +559,53 @@
       </form>
     </div>
 
-<div class="acciones-usuarios">
-      <input type="text" id="buscadorUsuarios" placeholder="Buscar usuario..." />
+<!-- Filtros de búsqueda -->
+<div class="filtros-container" style="margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+    <h3 style="margin: 0 0 15px 0; color: #333;">🔍 Filtros de Búsqueda</h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px;">
+        <!-- Búsqueda por texto -->
+        <div>
+            <label for="buscadorUsuarios" style="display: block; margin-bottom: 5px; font-weight: 600; color: #555;">Buscar:</label>
+            <input type="text" id="buscadorUsuarios" placeholder="Nombre, correo..." style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" />
+        </div>
+
+        <!-- Filtro por rol -->
+        <div>
+            <label for="filtroRol" style="display: block; margin-bottom: 5px; font-weight: 600; color: #555;">Rol:</label>
+            <select id="filtroRol" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                <option value="todos">Todos los roles</option>
+                <option value="admin">👑 Administrador</option>
+                <option value="cliente">👤 Cliente</option>
+                <option value="empleado">👷 Empleado</option>
+            </select>
+        </div>
+
+        <!-- Filtro de ordenamiento -->
+        <div>
+            <label for="filtroOrden" style="display: block; margin-bottom: 5px; font-weight: 600; color: #555;">Ordenar por:</label>
+            <select id="filtroOrden" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                <option value="sin-orden">Sin orden</option>
+                <option value="nombre-az">📝 Nombre A-Z</option>
+                <option value="nombre-za">📝 Nombre Z-A</option>
+                <option value="correo-az">📧 Correo A-Z</option>
+                <option value="correo-za">📧 Correo Z-A</option>
+                <option value="rol-az">👤 Rol A-Z</option>
+                <option value="rol-za">👤 Rol Z-A</option>
+            </select>
+        </div>
     </div>
 
-    <div class="filtro-roles">
-  <label for="filtroRol">Filtrar por rol:</label>
-  <select id="filtroRol">
-    <option value="todos">Todos</option>
-    <option value="admin">Administrador</option>
-    <option value="cliente">Cliente</option>
-    <option value="empleado">Empleado</option>
-  </select>
+    <!-- Botones de acción -->
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <button id="aplicarFiltrosUsuarios" style="background: var(--gradient-primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+            🔍 Buscar
+        </button>
+        <button id="limpiarFiltrosUsuarios" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+            🗑️ Limpiar
+        </button>
+        <span id="contadorFiltros" style="color: #666; font-size: 14px; margin-left: 10px;"></span>
+    </div>
 </div>
 
             <h2 id="contadorUsuarios">Total de usuarios: {{ $users->count() }}</h2>
@@ -1124,6 +1163,171 @@
     if (event.key === 'Escape') {
       closeErrorModal();
     }
+  });
+</script>
+
+<script>
+  // SISTEMA DE FILTROS CON CLASES CSS - FUNCIONAL
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Iniciando sistema de filtros con clases CSS...');
+    
+    const tabla = document.querySelector('.table-usuarios tbody');
+    const filas = tabla ? Array.from(tabla.querySelectorAll('tr')) : [];
+    const contador = document.getElementById('contadorUsuarios');
+    const contadorFiltros = document.getElementById('contadorFiltros');
+    
+    const buscador = document.getElementById('buscadorUsuarios');
+    const filtroRol = document.getElementById('filtroRol');
+    const filtroOrden = document.getElementById('filtroOrden');
+    const btnBuscar = document.getElementById('aplicarFiltrosUsuarios');
+    const btnLimpiar = document.getElementById('limpiarFiltrosUsuarios');
+
+    function filtrarUsuarios() {
+      const busqueda = buscador ? buscador.value.toLowerCase().trim() : '';
+      const rol = filtroRol ? filtroRol.value : 'todos';
+      const orden = filtroOrden ? filtroOrden.value : 'sin-orden';
+      
+      console.log('🔍 Filtrando:', { busqueda, rol, orden });
+      
+      let visibles = 0;
+      let filasVisibles = [];
+      
+      // Primero remover todas las clases de ocultación
+      filas.forEach(fila => {
+        fila.classList.remove('fila-oculta');
+      });
+      
+      // Filtrar filas
+      filas.forEach((fila, index) => {
+        const celdas = fila.querySelectorAll('td');
+        if (celdas.length < 4) return;
+        
+        const nombre = celdas[0].textContent.toLowerCase();
+        const correo = celdas[1].textContent.toLowerCase();
+        const rolUsuario = celdas[2].textContent.toLowerCase();
+        
+        let mostrar = true;
+        
+        // Filtro por texto
+        if (busqueda) {
+          const texto = `${nombre} ${correo}`;
+          if (!texto.includes(busqueda)) {
+            mostrar = false;
+          }
+        }
+        
+        // Filtro por rol
+        if (rol !== 'todos') {
+          if (rolUsuario !== rol) {
+            mostrar = false;
+          }
+        }
+        
+        // Aplicar resultado usando clases CSS
+        if (mostrar) {
+          fila.classList.remove('fila-oculta');
+          filasVisibles.push({
+            fila: fila,
+            nombre: celdas[0].textContent,
+            correo: celdas[1].textContent,
+            rol: celdas[2].textContent
+          });
+          visibles++;
+          console.log(`✅ MOSTRAR: ${nombre} (${rolUsuario})`);
+        } else {
+          fila.classList.add('fila-oculta');
+          console.log(`❌ OCULTAR: ${nombre} (${rolUsuario})`);
+        }
+      });
+      
+      // Aplicar ordenamiento si se seleccionó
+      if (orden !== 'sin-orden' && filasVisibles.length > 0) {
+        console.log('🔄 Aplicando ordenamiento:', orden);
+        
+        // Ordenar el array de filas visibles
+        filasVisibles.sort((a, b) => {
+          switch(orden) {
+            case 'nombre-az':
+              return a.nombre.localeCompare(b.nombre);
+            case 'nombre-za':
+              return b.nombre.localeCompare(a.nombre);
+            case 'correo-az':
+              return a.correo.localeCompare(b.correo);
+            case 'correo-za':
+              return b.correo.localeCompare(a.correo);
+            case 'rol-az':
+              return a.rol.localeCompare(b.rol);
+            case 'rol-za':
+              return b.rol.localeCompare(a.rol);
+            default:
+              return 0;
+          }
+        });
+        
+        // Reordenar las filas en el DOM
+        const tbody = document.querySelector('.table-usuarios tbody');
+        filasVisibles.forEach(item => {
+          tbody.appendChild(item.fila);
+        });
+        
+        console.log('✅ Ordenamiento aplicado');
+      }
+      
+      // Actualizar contadores
+      if (contador) contador.textContent = `Total de usuarios: ${visibles} (${filas.length} total)`;
+      if (contadorFiltros) contadorFiltros.textContent = `Mostrando ${visibles} de ${filas.length} usuarios`;
+      
+      console.log(`✅ Filtro aplicado: ${visibles} usuarios visibles`);
+    }
+    
+    function limpiarFiltros() {
+      if (buscador) buscador.value = '';
+      if (filtroRol) filtroRol.value = 'todos';
+      if (filtroOrden) filtroOrden.value = 'sin-orden';
+      
+      // Remover todas las clases de ocultación
+      filas.forEach(fila => {
+        fila.classList.remove('fila-oculta');
+      });
+      
+      if (contador) contador.textContent = `Total de usuarios: ${filas.length}`;
+      if (contadorFiltros) contadorFiltros.textContent = `Mostrando ${filas.length} usuarios`;
+      
+      console.log('🧹 Filtros limpiados');
+    }
+    
+    // Event listeners
+    if (btnBuscar) {
+      btnBuscar.addEventListener('click', function(e) {
+        e.preventDefault();
+        filtrarUsuarios();
+      });
+    }
+    
+    if (btnLimpiar) {
+      btnLimpiar.addEventListener('click', function(e) {
+        e.preventDefault();
+        limpiarFiltros();
+      });
+    }
+    
+    if (buscador) {
+      buscador.addEventListener('input', filtrarUsuarios);
+    }
+    
+    if (filtroRol) {
+      filtroRol.addEventListener('change', filtrarUsuarios);
+    }
+    
+    if (filtroOrden) {
+      filtroOrden.addEventListener('change', filtrarUsuarios);
+    }
+    
+    // Inicializar
+    if (contador) contador.textContent = `Total de usuarios: ${filas.length}`;
+    if (contadorFiltros) contadorFiltros.textContent = `Mostrando ${filas.length} usuarios`;
+    
+    console.log('✅ Sistema de filtros con clases CSS cargado correctamente');
   });
 </script>
 

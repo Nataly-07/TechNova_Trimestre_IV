@@ -67,7 +67,8 @@ class ProveedorController extends Controller
                 'Nombre' => $request->input('Nombre'),
                 'Telefono' => $request->input('Telefono'),
                 'Correo' => $request->input('Correo'),
-                'ID_producto' => $idProducto
+                'ID_producto' => $idProducto,
+                'estado' => 'activo'
             ]);
 
             \Log::info('Proveedor creado con ID: ' . $proveedor->ID_Proveedor);
@@ -134,7 +135,8 @@ class ProveedorController extends Controller
                 'Nombre' => $request->input('Nombre'),
                 'Telefono' => $request->input('Telefono'),
                 'Correo' => $request->input('Correo'),
-                'ID_producto' => $idProducto
+                'ID_producto' => $idProducto,
+                'estado' => $request->input('estado', 'activo')
             ]);
 
             return redirect()->route('proveedores.index')->with('success', 'Proveedor actualizado correctamente');
@@ -148,19 +150,57 @@ class ProveedorController extends Controller
     }
 
     /**
-     * Eliminar un proveedor.
+     * Cambiar el estado de un proveedor (activar/desactivar).
      */
-    public function destroy($id)
+    public function cambiarEstado($id)
     {
         try {
             $proveedor = Proveedor::findOrFail($id);
-            $proveedor->delete();
+            
+            // Cambiar el estado
+            $nuevoEstado = $proveedor->estado === 'activo' ? 'inactivo' : 'activo';
+            $proveedor->update(['estado' => $nuevoEstado]);
 
-            return redirect()->route('proveedores.index', ['deleted' => 'success'])->with('success', 'Proveedor eliminado correctamente');
+            $mensaje = $nuevoEstado === 'activo' ? 'Proveedor activado correctamente' : 'Proveedor desactivado correctamente';
+            return redirect()->route('proveedores.index')->with('success', $mensaje);
 
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error al eliminar proveedor: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al eliminar el proveedor');
+            \Illuminate\Support\Facades\Log::error('Error al cambiar estado del proveedor: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al cambiar el estado del proveedor');
+        }
+    }
+
+    /**
+     * Activar un proveedor.
+     */
+    public function activar($id)
+    {
+        try {
+            $proveedor = Proveedor::findOrFail($id);
+            $proveedor->update(['estado' => 'activo']);
+
+            return redirect()->route('proveedores.index')->with('success', 'Proveedor activado correctamente');
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al activar proveedor: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al activar el proveedor');
+        }
+    }
+
+    /**
+     * Desactivar un proveedor.
+     */
+    public function desactivar($id)
+    {
+        try {
+            $proveedor = Proveedor::findOrFail($id);
+            $proveedor->update(['estado' => 'inactivo']);
+
+            return redirect()->route('proveedores.index')->with('success', 'Proveedor desactivado correctamente');
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al desactivar proveedor: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al desactivar el proveedor');
         }
     }
 }

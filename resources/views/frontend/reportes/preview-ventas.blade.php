@@ -5,237 +5,337 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vista Previa - Reporte de Ventas</title>
     <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('frontend/css/estilodas.css') }}" />
     <link rel="stylesheet" href="{{ asset('frontend/css/color-palette.css') }}" />
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background: #f8f9fa;
-            color: #333;
+            background: #f5f5f5;
         }
-        
+
         .preview-container {
             max-width: 1200px;
             margin: 0 auto;
             background: white;
-            padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
-        
-        .header {
+
+        .preview-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 20px;
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--gradient-primary);
-            padding-bottom: 20px;
         }
-        
-        .header h1 {
-            color: var(--gradient-primary);
-            margin: 0 0 10px 0;
-            font-size: 2.5em;
-        }
-        
-        .header p {
-            color: #666;
+
+        .preview-header h1 {
             margin: 0;
-            font-size: 1.1em;
+            font-size: 24px;
         }
-        
-        .stats-grid {
+
+        .preview-header p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+        }
+
+        .filtros-applied {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .filtros-applied h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .filtros-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 10px;
         }
-        
-        .stat-card {
-            background: linear-gradient(135deg, #e3f2fd, #f0f8ff);
+
+        .filtro-item {
+            font-size: 14px;
+            color: #333 !important;
+        }
+
+        .filtro-item strong {
+            color: #00d4ff !important;
+        }
+
+        .resumen {
+            background: #e3f2fd;
             padding: 20px;
-            border-radius: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .resumen h3 {
+            margin: 0 0 15px 0;
+            color: #00d4ff !important;
+            font-size: 18px;
+        }
+
+        .resumen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .resumen-item {
             text-align: center;
-            border-left: 4px solid var(--gradient-primary);
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        
-        .stat-number {
-            font-size: 2em;
+
+        .resumen-item .numero {
+            font-size: 24px;
             font-weight: bold;
-            color: var(--gradient-primary);
-            margin: 0;
+            color: #00d4ff !important;
         }
-        
-        .stat-label {
-            color: #666;
-            font-size: 0.9em;
-            margin: 5px 0 0 0;
+
+        .resumen-item .label {
+            font-size: 12px;
+            color: #333 !important;
+            margin-top: 5px;
         }
-        
+
         .table-container {
             overflow-x: auto;
-            margin-top: 20px;
+            padding: 20px;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
         }
-        
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
+
         th {
-            background: var(--gradient-primary);
-            color: white;
-            font-weight: 600;
+            background: linear-gradient(135deg, #00d4ff, #8b5cf6) !important;
+            color: white !important;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
         }
-        
+
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 11px;
+            color: #333 !important;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
         tr:hover {
-            background: #f8f9fa;
+            background-color: #e3f2fd;
         }
-        
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            font-weight: 600;
-        }
-        
-        .status-completada { background: #d4edda; color: #155724; }
-        .status-pendiente { background: #fff3cd; color: #856404; }
-        .status-procesando { background: #cce5ff; color: #004085; }
-        .status-cancelada { background: #f8d7da; color: #721c24; }
-        .status-cancelado { background: #f8d7da; color: #721c24; }
-        
-        .close-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        
-        .close-btn:hover {
-            background: #c82333;
-        }
-        
+
         .currency {
+            font-weight: bold;
+            color: #00d4ff !important;
+        }
+
+        .status-badge {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .status-completada {
+            background: #2ed573;
+            color: white;
+        }
+
+        .status-pendiente {
+            background: #ffa502;
+            color: white;
+        }
+
+        .status-procesando {
+            background: #3742fa;
+            color: white;
+        }
+
+        .status-cancelada {
+            background: #ff4757;
+            color: white;
+        }
+
+        .status-cancelado {
+            background: #ff4757;
+            color: white;
+        }
+
+        .actions {
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
             font-weight: 600;
-            color: #28a745;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--gradient-secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--gradient-primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
-    <button class="close-btn" onclick="window.close()">
-        <i class="bx bx-x"></i> Cerrar
-    </button>
-    
     <div class="preview-container">
-        <div class="header">
-            <h1><i class="bx bx-chart-line"></i> Reporte de Ventas</h1>
-            <p>Vista previa generada el {{ date('d/m/Y H:i') }}</p>
-            @if($request->filled('fecha_desde') || $request->filled('fecha_hasta'))
-                <p><strong>Período:</strong> 
-                    {{ $request->fecha_desde ? date('d/m/Y', strtotime($request->fecha_desde)) : 'Inicio' }} - 
-                    {{ $request->fecha_hasta ? date('d/m/Y', strtotime($request->fecha_hasta)) : 'Fin' }}
-                </p>
-            @endif
+        <div class="preview-header">
+            <h1><i class="bx bx-chart-line"></i> Vista Previa - Reporte de Ventas</h1>
+            <p>Technova - Sistema de Ventas</p>
         </div>
-        
-        @php
-            $totalVentas = $ventas->count();
-            $ingresosTotales = $ventas->sum('total');
-            $ventaPromedio = $ventas->avg('total');
-            $productosVendidos = $ventas->sum('cantidad');
-        @endphp
-        
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">{{ number_format($totalVentas) }}</div>
-                <div class="stat-label">Total Ventas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">${{ number_format($ingresosTotales, 0, ',', '.') }}</div>
-                <div class="stat-label">Ingresos Totales</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">${{ number_format($ventaPromedio, 0, ',', '.') }}</div>
-                <div class="stat-label">Venta Promedio</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ number_format($productosVendidos) }}</div>
-                <div class="stat-label">Productos Vendidos</div>
+
+        @if($request->hasAny(['categoria', 'marca', 'estado', 'fecha_desde', 'fecha_hasta', 'monto_min']))
+        <div class="filtros-applied">
+            <h3>Filtros Aplicados:</h3>
+            <div class="filtros-grid">
+                @if($request->categoria)
+                    <div class="filtro-item"><strong>Categoría:</strong> {{ $request->categoria }}</div>
+                @endif
+                @if($request->marca)
+                    <div class="filtro-item"><strong>Marca:</strong> {{ $request->marca }}</div>
+                @endif
+                @if($request->estado)
+                    <div class="filtro-item"><strong>Estado:</strong> {{ ucfirst($request->estado) }}</div>
+                @endif
+                @if($request->fecha_desde)
+                    <div class="filtro-item"><strong>Desde:</strong> {{ date('d/m/Y', strtotime($request->fecha_desde)) }}</div>
+                @endif
+                @if($request->fecha_hasta)
+                    <div class="filtro-item"><strong>Hasta:</strong> {{ date('d/m/Y', strtotime($request->fecha_hasta)) }}</div>
+                @endif
+                @if($request->monto_min)
+                    <div class="filtro-item"><strong>Monto Mín:</strong> ${{ number_format($request->monto_min, 0, ',', '.') }}</div>
+                @endif
             </div>
         </div>
+        @endif
         
-        <div class="table-container">
-            <h3><i class="bx bx-list-ul"></i> Detalle de Ventas (Últimas {{ $ventas->count() }} registros)</h3>
-            
-            @if($ventas->count() > 0)
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Fecha</th>
-                            <th>Producto</th>
-                            <th>Categoría</th>
-                            <th>Marca</th>
-                            <th>Cliente</th>
-                            <th>Cantidad</th>
-                            <th>Precio Unit.</th>
-                            <th>Total</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($ventas->take(50) as $venta)
-                        <tr>
-                            <td>#{{ $venta->id }}</td>
-                            <td>{{ date('d/m/Y', strtotime($venta->fecha)) }}</td>
-                            <td>{{ $venta->producto_nombre }}</td>
-                            <td>{{ $venta->categoria }}</td>
-                            <td>{{ $venta->marca }}</td>
-                            <td>{{ $venta->cliente }}</td>
-                            <td>{{ $venta->cantidad }}</td>
-                            <td class="currency">${{ number_format($venta->precio_unitario, 0, ',', '.') }}</td>
-                            <td class="currency">${{ number_format($venta->total, 0, ',', '.') }}</td>
-                            <td>
-                                <span class="status-badge status-{{ $venta->estado }}">
-                                    @switch($venta->estado)
-                                        @case('completada') ✅ Completada @break
-                                        @case('pendiente') ⏳ Pendiente @break
-                                        @case('procesando') 🔄 Procesando @break
-                                        @case('cancelada') ❌ Cancelada @break
-                                        @case('cancelado') ❌ Cancelado @break
-                                    @endswitch
-                                </span>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @else
-                <div style="text-align: center; padding: 40px; color: #666;">
-                    <i class="bx bx-info-circle" style="font-size: 3em; margin-bottom: 10px;"></i>
-                    <h3>No se encontraron ventas</h3>
-                    <p>No hay ventas registradas en la base de datos que coincidan con los filtros seleccionados.</p>
-                    <p><small>💡 <strong>Tip:</strong> Si no hay ventas directas, el sistema mostrará las compras de clientes como ventas alternativas.</small></p>
+        <div class="resumen">
+            <h3>Resumen del Reporte</h3>
+            <div class="resumen-grid">
+                <div class="resumen-item">
+                    <div class="numero">{{ $ventas->count() }}</div>
+                    <div class="label">Total Ventas</div>
                 </div>
-            @endif
+                <div class="resumen-item">
+                    <div class="numero">${{ number_format($ventas->sum('total'), 0, ',', '.') }}</div>
+                    <div class="label">Ingresos Totales</div>
+                </div>
+                <div class="resumen-item">
+                    <div class="numero">${{ number_format($ventas->avg('total'), 0, ',', '.') }}</div>
+                    <div class="label">Venta Promedio</div>
+                </div>
+                <div class="resumen-item">
+                    <div class="numero">{{ $ventas->sum('cantidad') }}</div>
+                    <div class="label">Productos Vendidos</div>
+                </div>
+            </div>
         </div>
-        
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
-            <p><i class="bx bx-info-circle"></i> Esta es una vista previa con datos reales de la base de datos.</p>
-            <p><small>Los datos se obtienen de las tablas de ventas y compras registradas en el sistema.</small></p>
+
+        <div class="table-container">
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Marca</th>
+                        <th>Cliente</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unit.</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($ventas as $venta)
+                    <tr>
+                        <td>#{{ $venta->id }}</td>
+                        <td>{{ date('d/m/Y', strtotime($venta->fecha)) }}</td>
+                        <td>{{ $venta->producto_nombre }}</td>
+                        <td>{{ $venta->categoria }}</td>
+                        <td>{{ $venta->marca }}</td>
+                        <td>{{ $venta->cliente }}</td>
+                        <td>{{ $venta->cantidad }}</td>
+                        <td class="currency">${{ number_format($venta->precio_unitario, 0, ',', '.') }}</td>
+                        <td class="currency">${{ number_format($venta->total, 0, ',', '.') }}</td>
+                        <td>
+                            <span class="status-badge status-{{ $venta->estado }}">
+                                @switch($venta->estado)
+                                    @case('completada') Completada @break
+                                    @case('pendiente') Pendiente @break
+                                    @case('procesando') Procesando @break
+                                    @case('cancelada') Cancelada @break
+                                    @case('cancelado') Cancelado @break
+                                @endswitch
+                            </span>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="10" style="text-align: center; padding: 20px; color: #666;">
+                            No se encontraron ventas con los filtros aplicados
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <div class="actions">
+            <a href="{{ route('reportes.ventas') }}?{{ $request->getQueryString() }}" class="btn btn-primary">
+                <i class="bx bx-download"></i>
+                Generar PDF
+            </a>
+            <button onclick="window.close()" class="btn btn-secondary">
+                <i class="bx bx-x"></i>
+                Cerrar
+            </button>
         </div>
     </div>
 </body>
