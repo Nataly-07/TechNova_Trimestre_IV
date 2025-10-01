@@ -311,9 +311,52 @@
 
                 <!-- Pagination -->
                 @if($pedidos->hasPages())
-                    <div class="pagination">
-                        {{ $pedidos->links() }}
-                    </div>
+                    <nav class="pagination" aria-label="Paginación">
+                        @php
+                            $current = $pedidos->currentPage();
+                            $last = $pedidos->lastPage();
+                            $range = range(max(1, $current - 1), min($last, $current + 1));
+                        @endphp
+
+                        {{-- Prev --}}
+                        @if($pedidos->onFirstPage())
+                            <span class="disabled" style="padding:8px 12px;border:1px solid #e9ecef;border-radius:6px;color:#adb5bd;">&laquo;</span>
+                        @else
+                            <a href="{{ $pedidos->previousPageUrl() }}" style="padding:8px 12px;border:1px solid #e9ecef;border-radius:6px;color:#667eea;text-decoration:none;">&laquo;</a>
+                        @endif
+
+                        {{-- First --}}
+                        @if(!in_array(1, $range))
+                            <a href="{{ $pedidos->url(1) }}" style="padding:8px 12px;border:1px solid #e9ecef;border-radius:6px;color:#667eea;text-decoration:none;margin-left:5px;">1</a>
+                            @if($range[0] > 2)
+                                <span style="margin:0 6px;color:#adb5bd;">…</span>
+                            @endif
+                        @endif
+
+                        {{-- Range --}}
+                        @foreach($range as $page)
+                            @if($page == $current)
+                                <span class="active" style="padding:8px 12px;border:1px solid #667eea;border-radius:6px;background:#667eea;color:#fff;margin-left:5px;">{{ $page }}</span>
+                            @else
+                                <a href="{{ $pedidos->url($page) }}" style="padding:8px 12px;border:1px solid #e9ecef;border-radius:6px;color:#667eea;text-decoration:none;margin-left:5px;">{{ $page }}</a>
+                            @endif
+                        @endforeach
+
+                        {{-- Last --}}
+                        @if(!in_array($last, $range))
+                            @if($range[count($range)-1] < $last - 1)
+                                <span style="margin:0 6px;color:#adb5bd;">…</span>
+                            @endif
+                            <a href="{{ $pedidos->url($last) }}" style="padding:8px 12px;border:1px solid #e9ecef;border-radius:6px;color:#667eea;text-decoration:none;margin-left:5px;">{{ $last }}</a>
+                        @endif
+
+                        {{-- Next --}}
+                        @if($pedidos->hasMorePages())
+                            <a href="{{ $pedidos->nextPageUrl() }}" style="padding:8px 12px;border:1px solid #e9ecef;border-radius:6px;color:#667eea;text-decoration:none;margin-left:5px;">&raquo;</a>
+                        @else
+                            <span class="disabled" style="padding:8px 12px;border:1px solid #e9ecef;border-radius:6px;color:#adb5bd;margin-left:5px;">&raquo;</span>
+                        @endif
+                    </nav>
                 @endif
             </div>
         </main>

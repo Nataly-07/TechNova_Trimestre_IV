@@ -6,6 +6,8 @@
   <title>Technova - {{ ucfirst($categoria) }}</title>
   <link rel="stylesheet" href="{{ asset('frontend/css/stilotech.css') }}">
    <link rel="stylesheet" href="{{ asset('frontend/css/producto.css') }}">
+   <link rel="stylesheet" href="{{ asset('frontend/css/estilodas.css') }}">
+   <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
  <header class="header">
@@ -22,30 +24,48 @@
 </div>
 
   <div class="acciones-usuario">
-    @if(Auth::user()->role === 'admin')
-      <a href="{{ route('perfilad') }}" class="account">
-        <span>Perfil</span>
-      </a>
-    @elseif(Auth::user()->role === 'empleado')
-      <a href="{{ route('perfilemp') }}" class="account">
-        <span>Perfil</span>
-      </a>
-    @else
-      <a href="{{ route('perfillcli') }}" class="account">
-        <span>Perfil</span>
-      </a>
-    @endif
-    
+    <a href="{{ route('perfillcli') }}" class="account">
+      <span>Perfil</span>
+    </a>
     <a href="/logout" class="account">
       <span>Cerrar Sesión</span>
     </a>
-    
-    <a href="#" class="cart">
-      <span class="cart-icon">&#128722;</span>
-      <span>Carrito</span>
-    </a>
   </div>
 </header>
+
+<div class="dashboard-wrapper">
+  @include('frontend.layouts.sidebar-cliente')
+
+  <main class="main-content">
+
+<style>
+  /* Layout overrides to ensure main content fills beside sidebar */
+  .dashboard-wrapper { 
+    gap: 20px; 
+    width: 100%;
+  }
+  .main-content { 
+    width: 100%; 
+    flex: 1;
+    display: flex; 
+    flex-direction: column; 
+    padding: 0;
+  }
+  .menu-principal, 
+  .productos-grid, 
+  .search-results-header { 
+    width: 100%; 
+    margin: 0; 
+    padding: 0 20px; 
+  }
+  @media (max-width: 992px) { 
+    .menu-principal, 
+    .productos-grid, 
+    .search-results-header { 
+      padding: 0 12px; 
+    } 
+  }
+</style>
 
 <nav class="menu-principal">
   <ul>
@@ -108,6 +128,9 @@
     </div>
   @endif
 </div>
+
+  </main><!-- /main-content -->
+</div><!-- /dashboard-wrapper -->
 
 </body>
 </html>
