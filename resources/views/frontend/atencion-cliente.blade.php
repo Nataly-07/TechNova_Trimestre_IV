@@ -1597,9 +1597,6 @@
       <div class="welcome-section">
         <h1><i class='bx bx-headphone'></i> Atención al Cliente</h1>
         <p>Estamos aquí para ayudarte. Envíanos tu consulta y te responderemos lo antes posible.</p>
-        <button onclick="testAuth()" style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 10px;">
-          🔧 Probar Autenticación
-        </button>
       </div>
 
       <!-- Alertas -->
@@ -2486,31 +2483,7 @@
             }
         });
 
-        // Función para probar la autenticación
-        function testAuth() {
-            showAlert('Probando autenticación...', 'info');
-            
-            fetch('/atencion-cliente/debug', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Debug data:', data);
-                if (data.user) {
-                    showAlert(`✅ Usuario autenticado: ${data.user.name} (${data.user.role}) - ${data.mensajes_count} mensajes`, 'success');
-                } else {
-                    showAlert('❌ Usuario no autenticado', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert(`❌ Error de conexión: ${error.message}`, 'error');
-            });
-        }
+        // (Eliminado botón de "Probar Autenticación")
     </script>
 </body>
 </html>

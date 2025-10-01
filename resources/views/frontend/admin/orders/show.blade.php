@@ -107,6 +107,71 @@
         .items-table td {
             padding: 15px;
             border-bottom: 1px solid #f8f9fa;
+            vertical-align: top;
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 10px;
+            float: left;
+        }
+
+        .product-placeholder {
+            width: 60px;
+            height: 60px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-right: 10px;
+            float: left;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-info {
+            margin-left: 70px;
+        }
+
+        .product-details {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .product-details div {
+            margin-bottom: 3px;
+        }
+
+        .quantity-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        @media (max-width: 768px) {
+            .items-table {
+                font-size: 0.8rem;
+            }
+            
+            .items-table th,
+            .items-table td {
+                padding: 8px;
+            }
+            
+            .product-image,
+            .product-placeholder {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .product-info {
+                margin-left: 50px;
+            }
         }
 
         .total-section {
@@ -221,11 +286,15 @@
 
                 <!-- Order Items -->
                 <div class="order-items">
-                    <h3 style="margin: 0 0 20px 0; color: #2c3e50;">Productos del Pedido</h3>
+                    <h3 style="margin: 0 0 20px 0; color: #2c3e50;">
+                        <i class='bx bx-package'></i>
+                        Productos del Pedido ({{ $pedido->detalles->count() }} productos)
+                    </h3>
                     <table class="items-table">
                         <thead>
                             <tr>
                                 <th>Producto</th>
+                                <th>Información</th>
                                 <th>Cantidad</th>
                                 <th>Precio Unitario</th>
                                 <th>Subtotal</th>
@@ -234,17 +303,48 @@
                         <tbody>
                             @forelse($pedido->detalles as $detalle)
                                 <tr>
-                                    <td>
-                                        <strong>{{ $detalle->producto->Nombre ?? 'Producto' }}</strong><br>
-                                        <small>{{ $detalle->producto->Codigo ?? 'Sin código' }}</small>
+                                    <td style="width: 200px;">
+                                        @if($detalle->producto && $detalle->producto->Imagen)
+                                            <img src="{{ asset('storage/' . $detalle->producto->Imagen) }}" 
+                                                 alt="{{ $detalle->producto->Nombre }}" 
+                                                 class="product-image">
+                                        @else
+                                            <div class="product-placeholder">
+                                                <i class='bx bx-package' style="font-size: 24px; color: #6c757d;"></i>
+                                            </div>
+                                        @endif
+                                        <div class="product-info">
+                                            <strong>{{ $detalle->producto->Nombre ?? 'Producto no encontrado' }}</strong><br>
+                                            <small style="color: #6c757d;">Código: {{ $detalle->producto->Codigo ?? 'Sin código' }}</small>
+                                        </div>
                                     </td>
-                                    <td>{{ $detalle->Cantidad }}</td>
-                                    <td>${{ number_format($detalle->Precio, 0, ',', '.') }}</td>
-                                    <td><strong>${{ number_format($detalle->Precio * $detalle->Cantidad, 0, ',', '.') }}</strong></td>
+                                    <td>
+                                        <div class="product-details">
+                                            <div><strong>Stock disponible:</strong> {{ $detalle->producto->Stock ?? 'N/A' }}</div>
+                                            <div><strong>Proveedor:</strong> {{ $detalle->producto->Proveedor ?? 'No especificado' }}</div>
+                                            @if($detalle->producto && $detalle->producto->caracteristicas)
+                                                <div><strong>Características:</strong> {{ $detalle->producto->caracteristicas->Nombre ?? 'Sin características' }}</div>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span class="quantity-badge">
+                                            {{ $detalle->Cantidad }}
+                                        </span>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <strong>${{ number_format($detalle->Precio, 0, ',', '.') }}</strong>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <strong style="color: #2c3e50; font-size: 1.1rem;">
+                                            ${{ number_format($detalle->Precio * $detalle->Cantidad, 0, ',', '.') }}
+                                        </strong>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" style="text-align: center; padding: 40px; color: #6c757d;">
+                                    <td colspan="5" style="text-align: center; padding: 40px; color: #6c757d;">
+                                        <i class='bx bx-package' style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
                                         No se encontraron productos en este pedido
                                     </td>
                                 </tr>

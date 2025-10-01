@@ -141,6 +141,17 @@
             color: #667eea;
         }
 
+        .chart-container {
+            position: relative;
+            height: 350px;
+            max-height: 350px;
+            width: 100%;
+        }
+
+        .chart-container canvas {
+            max-height: 100%;
+        }
+
         .recent-activity {
             background: white;
             padding: 25px;
@@ -255,6 +266,11 @@
             
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 300px;
+                max-height: 300px;
             }
         }
     </style>
@@ -382,7 +398,9 @@
                             <i class='bx bx-bar-chart'></i>
                             Ventas y Compras Mensuales
                         </div>
-                        <canvas id="salesChart" height="300"></canvas>
+                        <div class="chart-container">
+                            <canvas id="salesChart"></canvas>
+                        </div>
                     </div>
 
                     <div class="chart-card">
@@ -390,7 +408,9 @@
                             <i class='bx bx-pie-chart'></i>
                             Productos Más Vendidos
                         </div>
-                        <canvas id="productsChart" height="300"></canvas>
+                        <div class="chart-container">
+                            <canvas id="productsChart"></canvas>
+                        </div>
                     </div>
                 </div>
 

@@ -5,10 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Technova</title>
-  <link rel="stylesheet" href="{{ asset('frontend/css/stilotech.css') }}">
+   <link rel="stylesheet" href="{{ asset('frontend/css/stilotech.css') }}">
    <link rel="stylesheet" href="{{ asset('frontend/css/producto.css') }}">
    <link rel="stylesheet" href="{{ asset('frontend/css/color-palette.css') }}">
+   <link rel="stylesheet" href="{{ asset('frontend/css/estilodas.css') }}">
+   <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
    <style>
+    /* Layout overrides to ensure main content fills beside sidebar */
+    .dashboard-wrapper { 
+      gap: 20px; 
+      width: 100%;
+    }
+    .main-content { 
+      width: 100%; 
+      flex: 1;
+      display: flex; 
+      flex-direction: column; 
+      padding: 0;
+    }
+    
+    /* Expand the main container to use all available space */
+    .contenido-principal { 
+      width: 100%; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    /* Remove width restrictions from the main container */
+    .mas-vendido-container { 
+      max-width: none !important; 
+      margin: 15px 0 !important;
+    }
+    
+    /* Ensure the main content area uses full width */
+    .search-info { 
+      max-width: none !important; 
+      margin: 0; 
+    }
      /* Estilos para búsqueda multifiltro */
      .filter-btn {
        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -411,39 +444,19 @@
   @endphp
 
   <div class="acciones-usuario">
-    @if(Auth::user()->role === 'admin')
-      <a href="{{ route('perfilad') }}" class="account">
-        <span>Perfil</span>
-      </a>
-    @elseif(Auth::user()->role === 'empleado')
-      <a href="{{ route('perfilemp') }}" class="account">
-        <span>Perfil</span>
-      </a>
-    @else
-      <a href="{{ route('perfillcli') }}" class="account">
-        <span>Perfil</span>
-      </a>
-    @endif
-    
+    <a href="{{ route('perfillcli') }}" class="account">
+      <span>Perfil</span>
+    </a>
     <a href="/logout" class="account">
       <span>Cerrar Sesión</span>
     </a>
-    
-    <a href="{{ route('favoritos.index') }}" class="cart">
-      <span class="cart-icon">❤️</span>
-      <span>Favoritos</span>
-    </a>
-    
-    <a href="{{ route('carrito.index') }}" class="cart" style="position: relative;">
-      <span class="cart-icon">&#128722;</span>
-      @if($cartCount > 0)
-        <span class="cart-badge" style="position:absolute; top:-6px; right:-6px; background:#e63946; color:#fff; border-radius:12px; padding:2px 6px; font-size:12px; line-height:1; font-weight:700;">{{ $cartCount }}</span>
-      @endif
-      <span>Carrito</span>
-    </a>
-    
   </div>
 </header>
+
+<div class="dashboard-wrapper">
+  @include('frontend.layouts.sidebar-cliente')
+
+  <main class="main-content">
 
 <!-- Modal de búsqueda multifiltro -->
 <div id="multiFilterModal" class="multi-filter-modal">
@@ -623,7 +636,7 @@
     </div>
   </div>
 
-<div class="info-botones">
+<div class="info-botones" style="width: 100%;">
     <div class="info-btn">
         <span class="icon">&#128666;</span>
         <span>Envios<br>gratis</span>
@@ -638,7 +651,7 @@
     </div>
 </div>
 <div style="background: var(--gradient-light); width: 100%; padding: 20px 0;">
-    <div style="max-width: 1200px; margin: 0 auto; padding: 0 25px; box-sizing: border-box; display: grid; grid-template-columns: 0.6fr 1.4fr; gap: 30px; align-items: stretch;">
+    <div style="width: 100%; padding: 0 25px; box-sizing: border-box; display: grid; grid-template-columns: 0.6fr 1.4fr; gap: 30px; align-items: stretch;">
     <div class="bloque" style="overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;">
         <span class="vendido1" style="background: var(--gradient-secondary); color: white; padding: 6px 15px; border-radius: 15px; font-weight: bold; font-size: 1em; align-self: flex-start;">Oferta del dia</span>
         <div class="producto-card" style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 15px 15px 80px 15px; width: 100%; max-width: 250px; text-align: center; position: relative; margin-top: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;">
@@ -1022,7 +1035,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- Footer -->
+  </main><!-- /main-content -->
+</div><!-- /dashboard-wrapper -->
+
 <footer>
   <p>© 2025 TECHNOVA. Todos los derechos reservados.</p>
 </footer>

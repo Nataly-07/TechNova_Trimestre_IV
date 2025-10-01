@@ -35,7 +35,7 @@ class AdminPaymentsController extends Controller
             $query->where('Monto', '<=', $request->monto_max);
         }
 
-        $pagos = $query->orderBy('Fecha_Pago', 'desc')->paginate(15);
+        $pagos = $query->orderBy('ID_Pagos', 'desc')->paginate(15);
 
         $estados = ['pendiente', 'aprobado', 'rechazado', 'cancelado'];
         $total_pagos = Pago::count();

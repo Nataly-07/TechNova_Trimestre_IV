@@ -13,7 +13,7 @@ class AdminOrdersController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Compra::with(['user', 'medioPago', 'detalles.producto']);
+        $query = Compra::with(['user', 'medioPago', 'detalles.producto.caracteristicas']);
 
         // Filtros
         if ($request->filled('estado')) {
@@ -35,7 +35,7 @@ class AdminOrdersController extends Controller
             });
         }
 
-        $pedidos = $query->orderBy('Fecha_De_Compra', 'desc')->paginate(15);
+        $pedidos = $query->orderBy('ID_Compras', 'desc')->paginate(15);
 
         $estados = ['pendiente', 'procesando', 'enviado', 'entregado', 'cancelado'];
         $total_pedidos = Compra::count();
@@ -51,7 +51,7 @@ class AdminOrdersController extends Controller
 
     public function show($id)
     {
-        $pedido = Compra::with(['user', 'medioPago', 'detalles.producto'])
+        $pedido = Compra::with(['user', 'medioPago', 'detalles.producto.caracteristicas'])
             ->findOrFail($id);
 
         return view('frontend.admin.orders.show', compact('pedido'));
